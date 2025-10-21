@@ -1,0 +1,34 @@
+@use "@styles/variables/colors" as *;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: $color-primary;
+  color: $color-text;
+}
+
+a,
+a:visited,
+a:active,
+a:focus,
+.Link {
+  color: $color-link;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s;
+  &:hover,
+  &:focus-visible {
+    color: $color-link-hover;
+    text-decoration: none;
+  }
+}
