@@ -4,7 +4,7 @@
     "module": "ESNext",
     "lib": ["DOM", "ESNext"],
     "jsx": "react-jsx",
-    "types": ["react", "react-dom","node"],
+    "types": ["react", "react-dom", "node"],
     "moduleResolution": "bundler",
     "strict": true,
     "esModuleInterop": true,

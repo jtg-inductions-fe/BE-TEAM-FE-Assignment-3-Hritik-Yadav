@@ -51,7 +51,7 @@ const commonConfig = {
     }),
     new DotenvWebpackPlugin({
       path: './.env',
-      safe: false,
+      safe: true,
     }),
   ],
 };
