@@ -1,0 +1,38 @@
+import React, { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+import { ROUTES_URL } from "@/routes/routes.const";
+
+const ProtectedRoute: React.FC = () => {
+  const auth = getAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        navigate(ROUTES_URL.LOGIN, { replace: true });
+        setLoading(false);
+        return;
+      }
+
+      await user.reload();
+      if (!user.emailVerified) {
+        navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+      }
+
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, [navigate, auth]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return <Outlet />;
+};
+
+export default ProtectedRoute;

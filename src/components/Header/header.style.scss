@@ -1,0 +1,34 @@
+@use "@styles/variables/colors" as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background-color: $color-bg-header;
+  border-bottom: 1px solid $color-border-light;
+
+  &__title {
+    margin-top: 1rem;
+    color: $color-logo;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+
+      &:hover {
+        color: $color-logo-hover;
+      }
+    }
+
+    &.ant-typography {
+      color: $color-logo;
+    }
+  }
+
+  &__button {
+    display: flex;
+    gap: 12px;
+  }
+
+}

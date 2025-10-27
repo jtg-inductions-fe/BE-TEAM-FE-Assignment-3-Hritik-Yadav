@@ -1,4 +1,8 @@
 export enum ROUTES_URL {
   ROUTE_NOT_FOUND = "*",
-  TEST_ROUTE = "/",
+  HOME = "/",
+  SIGNUP = "/signup",
+  LOGIN = "/login",
+  CONFIRMATION = "/confirm",
+  ADMIN = "/admin",
 }

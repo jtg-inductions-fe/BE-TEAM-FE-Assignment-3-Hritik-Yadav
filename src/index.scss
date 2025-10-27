@@ -14,7 +14,6 @@
 body {
   font-family: Arial, sans-serif;
   background-color: $color-primary;
-  color: $color-text;
 }
 
 a,
@@ -22,13 +21,11 @@ a:visited,
 a:active,
 a:focus,
 .Link {
-  color: $color-link;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
   transition: color 0.3s;
   &:hover,
   &:focus-visible {
-    color: $color-link-hover;
     text-decoration: none;
   }
 }
