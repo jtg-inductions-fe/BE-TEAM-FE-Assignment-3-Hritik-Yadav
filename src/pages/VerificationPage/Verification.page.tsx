@@ -1,8 +1,8 @@
 import React from "react";
-import { ConfirmationContainer } from "@/containers";
+import { VerificationContainer } from "@/containers";
 
 const ConfirmationPage: React.FC = () => {
-  return <ConfirmationContainer />;
+  return <VerificationContainer />;
 };
 
 export default ConfirmationPage;

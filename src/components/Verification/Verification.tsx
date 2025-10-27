@@ -3,7 +3,7 @@ import { Button, Typography, Result, Space } from "antd";
 
 import type { Props } from "./Verification.type";
 
-import "./confirmation.style.scss";
+import "./verification.style.scss";
 
 const { Paragraph } = Typography;
 

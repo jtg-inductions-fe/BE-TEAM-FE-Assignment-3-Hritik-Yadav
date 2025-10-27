@@ -5,7 +5,7 @@ import { ROUTES_URL } from "./routes.const";
 import {
   NotFoundPage,
   SignupPage,
-  ConfirmationPage,
+  VerificationPage,
   LoginPage,
   HomePage,
   AdminPage,
@@ -20,7 +20,7 @@ const AppRoutes: React.FC = () => {
           <Route path={ROUTES_URL.SIGNUP} element={<SignupPage />} />
           <Route path={ROUTES_URL.LOGIN} element={<LoginPage />} />
         </Route>
-        <Route path={ROUTES_URL.CONFIRMATION} element={<ConfirmationPage />} />
+        <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
         <Route path={ROUTES_URL.HOME} element={<HomePage />} />
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES_URL.ADMIN} element={<AdminPage />} />

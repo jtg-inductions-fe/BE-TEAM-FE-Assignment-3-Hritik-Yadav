@@ -1,3 +1,3 @@
 export { SignupContainer } from "./SignupContainer";
-export { ConfirmationContainer } from "./VerificationContainer";
+export { VerificationContainer } from "./VerificationContainer";
 export { LoginContainer } from "./LoginContainer";

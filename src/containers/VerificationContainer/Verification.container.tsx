@@ -4,7 +4,7 @@ import { getAuth, sendEmailVerification } from "firebase/auth";
 
 import app from "@/firebase/firebase";
 
-import { Confirmation } from "@/components";
+import { Verification } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
 
 const VerificationContainer: React.FC = () => {
@@ -48,7 +48,7 @@ const VerificationContainer: React.FC = () => {
   const resultStatus = status;
 
   return (
-    <Confirmation
+    <Verification
       status={resultStatus}
       title={title}
       subTitle={subTitle}
