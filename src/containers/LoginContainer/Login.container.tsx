@@ -13,38 +13,37 @@ import { LoginValues } from "@components/Login";
 const LoginContainer: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (values: LoginValues) => {
-    (async () => {
-      try {
-        const auth = getAuth(app);
-        const cred = await signInWithEmailAndPassword(auth, values.email, values.password);
-        const uid = cred.user?.uid;
-        if (!uid) {
-          message.error("Login failed: no user id");
-          return;
-        }
-        const resp = await getUserById(uid);
-        const role = resp?.data?.role;
-        message.success(resp?.message || "Logged in successfully");
-        // Navigate based on role; Owner -> /admin else HOME
-        if (auth.currentUser?.emailVerified) {
-          navigate(ROUTES_URL.CONFIRMATION);
-        }
-        if (role === "Owner") {
-          navigate("/admin");
-        } else {
-          navigate(ROUTES_URL.HOME);
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          console.error("login error", err);
-          const msg: string = err?.message || "Login failed";
-          message.error(msg);
-        } else {
-          console.error("Unexpected error", err);
-        }
+  const handleSubmit = async (values: LoginValues) => {
+    try {
+      const auth = getAuth(app);
+      const cred = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const uid = cred.user?.uid;
+      if (!uid) {
+        message.error("Login failed: no user id");
+        return;
       }
-    })();
+      const resp = await getUserById(uid);
+      const role = resp?.data?.role;
+      message.success(resp?.message || "Logged in successfully");
+
+      if (!auth.currentUser?.emailVerified) {
+        navigate(ROUTES_URL.CONFIRMATION);
+        return;
+      }
+      if (role === "Owner") {
+        navigate("/admin"); //dummy route
+      } else {
+        navigate(ROUTES_URL.HOME);
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("login error", err);
+        const msg: string = err?.message || "Login failed";
+        message.error(msg);
+      } else {
+        console.error("Unexpected error", err);
+      }
+    }
   };
 
   return <Login onSubmit={handleSubmit} />;

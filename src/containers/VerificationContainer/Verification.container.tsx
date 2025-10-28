@@ -6,6 +6,7 @@ import app from "@/firebase/firebase";
 
 import { Verification } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
+import { message } from "antd";
 
 const VerificationContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -39,10 +40,20 @@ const VerificationContainer: React.FC = () => {
   }, [checkVerified]);
 
   const handleResend = useCallback(async () => {
-    const auth = getAuth(app);
-    const user = auth.currentUser;
-    if (!user) return;
-    await sendEmailVerification(user);
+    try {
+      const auth = getAuth(app);
+      const user = auth.currentUser;
+      if (!user) return;
+      await sendEmailVerification(user);
+      message.success("Verification email sent successfully!");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Resend verification error", err);
+        message.error(err.message || "Failed to send verification email");
+      } else {
+        console.error("Unexpected error", err);
+      }
+    }
   }, []);
 
   const resultStatus = status;

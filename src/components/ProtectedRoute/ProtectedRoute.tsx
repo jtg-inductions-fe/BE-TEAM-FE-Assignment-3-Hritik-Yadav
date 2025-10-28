@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import { ROUTES_URL } from "@/routes/routes.const";
+import { Loading } from "@/components";
 
 const ProtectedRoute: React.FC = () => {
   const auth = getAuth();
@@ -20,8 +21,9 @@ const ProtectedRoute: React.FC = () => {
       await user.reload();
       if (!user.emailVerified) {
         navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+        setLoading(false);
+        return;
       }
-
       setLoading(false);
     });
 
@@ -29,7 +31,7 @@ const ProtectedRoute: React.FC = () => {
   }, [navigate, auth]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return <Outlet />;

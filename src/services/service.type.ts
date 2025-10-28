@@ -1,11 +1,11 @@
+export type Role = "Customer" | "Owner";
+
 export interface UserData {
   uid: string;
   username: string;
   email: string;
-  role: string;
+  role: Role;
 }
-
-export type Role = "Customer" | "Owner";
 
 export interface SignupPayload {
   username: string;

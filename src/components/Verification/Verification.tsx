@@ -7,9 +7,9 @@ import "./verification.style.scss";
 
 const { Paragraph } = Typography;
 
-const Confirmation: React.FC<Props> = ({ status, title, subTitle, onRetry, onResend }) => {
+const Verification: React.FC<Props> = ({ status, title, subTitle, onRetry, onResend }) => {
   const message = "If you didn't receive an email, check your spam folder or try signing up again.";
-  
+
   return (
     <div className="confirmation-wrapper">
       <div className="confirmation-card">
@@ -39,4 +39,4 @@ const Confirmation: React.FC<Props> = ({ status, title, subTitle, onRetry, onRes
   );
 };
 
-export default Confirmation;
+export default Verification;

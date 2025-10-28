@@ -3,5 +3,5 @@ export const LOGIN_LABELS = {
   email: "Email",
   password: "Password",
   submit: "Log in",
-  message: "Don't have an account?"
+  message: "Don't have an account?",
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { Button, Layout, Typography } from "antd";
+import { Button, Layout, message, Typography } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 
@@ -26,11 +26,17 @@ const Header: React.FC = () => {
     });
 
     return unsubscribe;
-  }, [navigate, auth]);
+  }, [auth]);
 
-  const logout = () => {
-    auth.signOut();
-    navigate(ROUTES_URL.LOGIN);
+  const logout = async () => {
+    try {
+      await auth.signOut();
+      message.success("Logout Successfully");
+      navigate(ROUTES_URL.LOGIN);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      message.error("Logout failed");
+    }
   };
 
   return (

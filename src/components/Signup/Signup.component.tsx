@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { SIGNUP_LABELS, VALUES } from "./Signup.const";
-import { LOGIN_LABELS } from "@components/Login/Login.const";
 
 import type { SignupProps, SignupValues } from "./Signup.type";
 
@@ -34,9 +33,9 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
   });
 
   return (
-    <div className="signup-container">
-      <div className="signup-card">
-        <Typography.Title level={3} className="signup-title">
+    <div className="signup">
+      <div className="signup__card">
+        <Typography.Title level={3} className="signup__title">
           {SIGNUP_LABELS.title}
         </Typography.Title>
         <Formik
@@ -57,12 +56,11 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
             isSubmitting,
             setFieldValue,
             submitCount,
-            setFieldTouched,
             isValid,
           }) => (
             <AntForm layout="vertical" onFinish={() => handleSubmit()}>
               <AntForm.Item
-                className="signup-field"
+                className="signup__field"
                 label={SIGNUP_LABELS.name}
                 validateStatus={
                   (touched.username || submitCount > 0) && errors.username ? "error" : ""
@@ -79,12 +77,11 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                   value={values.username}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  onFocus={() => setFieldTouched("username", false)}
                 />
               </AntForm.Item>
 
               <AntForm.Item
-                className="signup-field"
+                className="signup__field"
                 label={SIGNUP_LABELS.email}
                 validateStatus={(touched.email || submitCount > 0) && errors.email ? "error" : ""}
                 help={(touched.email || submitCount > 0) && errors.email ? errors.email : undefined}
@@ -95,12 +92,11 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  onFocus={() => setFieldTouched("email", false)}
                 />
               </AntForm.Item>
 
               <AntForm.Item
-                className="signup-field"
+                className="signup__field"
                 label={SIGNUP_LABELS.password}
                 validateStatus={
                   (touched.password || submitCount > 0) && errors.password ? "error" : ""
@@ -117,12 +113,11 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  onFocus={() => setFieldTouched("password", false)}
                 />
               </AntForm.Item>
 
               <AntForm.Item
-                className="signup-field"
+                className="signup__field"
                 label={SIGNUP_LABELS.confirmPassword}
                 validateStatus={
                   (touched.confirmPassword || submitCount > 0) && errors.confirmPassword
@@ -141,12 +136,11 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                   value={values.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  onFocus={() => setFieldTouched("confirmPassword", false)}
                 />
               </AntForm.Item>
 
               <AntForm.Item
-                className="signup-role"
+                className="signup__role"
                 label={SIGNUP_LABELS.role}
                 validateStatus={(touched.role || submitCount > 0) && errors.role ? "error" : ""}
                 help={
@@ -166,7 +160,7 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                 </Radio.Group>
               </AntForm.Item>
 
-              <AntForm.Item className="signup-actions">
+              <AntForm.Item className="signup__actions">
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -177,8 +171,8 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                   {SIGNUP_LABELS.submit}
                 </Button>
               </AntForm.Item>
-              <Typography.Paragraph style={{ textAlign: "center", marginTop: 8 }}>
-                Already have an account? <Link to={ROUTES_URL.LOGIN}>{LOGIN_LABELS.submit}</Link>
+              <Typography.Paragraph className="signup__message">
+                Already have an account? <Link to={ROUTES_URL.LOGIN}>Log in</Link>
               </Typography.Paragraph>
             </AntForm>
           )}
