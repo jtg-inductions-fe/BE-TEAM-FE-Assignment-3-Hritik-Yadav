@@ -8,7 +8,7 @@ export default {
 
   // This tells Jest to transpile antd (and other ESM-only packages)
   transformIgnorePatterns: [
-    '/node_modules/(?!antd|@ant-design|rc-util|rc-pagination|rc-picker|rc-tree|rc-table)/',
+    "/node_modules/(?!antd|@ant-design|rc-util|rc-pagination|rc-picker|rc-tree|rc-table)/",
   ],
 
   // Tell Jest how to handle file imports (like Webpack does)
@@ -17,9 +17,8 @@ export default {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
 
     // This mocks antd's global CSS imports
-    'antd/dist/reset.css': '<rootDir>/__mocks__/fileMock.js',
+    "antd/dist/reset.css": "<rootDir>/__mocks__/fileMock.js",
 
-    '^@/(.*)$': '<rootDir>/src/$1',
-    
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
 };

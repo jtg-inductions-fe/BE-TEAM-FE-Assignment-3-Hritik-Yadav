@@ -1,6 +1,6 @@
 @use "@styles/variables/colors" as *;
 
-.signup {
+.login {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,10 +33,6 @@
 
   &__field {
     margin-bottom: 12px;
-  }
-
-  &__role {
-    margin-bottom: 18px;
   }
 
   &__actions {

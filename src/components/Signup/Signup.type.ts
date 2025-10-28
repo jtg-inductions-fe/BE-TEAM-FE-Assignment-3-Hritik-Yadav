@@ -1,4 +1,4 @@
-import { Role } from "@services/service.type";
+import type { Role } from "@services/service.type";
 
 export interface SignupValues {
   username: string;

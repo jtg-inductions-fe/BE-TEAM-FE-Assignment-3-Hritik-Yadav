@@ -12,7 +12,7 @@ const VerificationContainer: React.FC = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState<"success" | "error" | "info">("info");
   const [title, setTitle] = useState<string>("Checking verification status...");
-  const [subTitle, setSubTitle] = useState<string>("");
+  const [subtitle, setSubtitle] = useState<string>("");
 
   const checkVerified = useCallback(async () => {
     const auth = getAuth(app);
@@ -20,17 +20,17 @@ const VerificationContainer: React.FC = () => {
     if (!user) {
       setStatus("info");
       setTitle("Please sign in first");
-      setSubTitle("Go to signup, create an account and sign in to verify.");
+      setSubtitle("Go to signup, create an account and sign in to verify.");
       return;
     }
     await user.reload();
     if (user.emailVerified) {
-      navigate(ROUTES_URL.HOME);
+      navigate(ROUTES_URL.HOME, { replace: true });
       return;
     }
     setStatus("info");
     setTitle("Email not verified yet");
-    setSubTitle("Click resend to send the verification email again.");
+    setSubtitle("Click resend to send the verification email again.");
   }, [navigate]);
 
   useEffect(() => {
@@ -43,7 +43,10 @@ const VerificationContainer: React.FC = () => {
     try {
       const auth = getAuth(app);
       const user = auth.currentUser;
-      if (!user) return;
+      if (!user) {
+        message.info("Please sign in to resend the verification email.");
+        return;
+      }
       await sendEmailVerification(user);
       message.success("Verification email sent successfully!");
     } catch (err: unknown) {
@@ -56,13 +59,11 @@ const VerificationContainer: React.FC = () => {
     }
   }, []);
 
-  const resultStatus = status;
-
   return (
     <Verification
-      status={resultStatus}
+      status={status}
       title={title}
-      subTitle={subTitle}
+      subtitle={subtitle}
       onRetry={checkVerified}
       onResend={handleResend}
     />

@@ -8,7 +8,7 @@ describe("test Verification component", () => {
       <Verification
         status="info"
         title="Verify your email"
-        subTitle="Please check your inbox for a verification link."
+        subtitle="Please check your inbox for a verification link."
       />,
     );
 
@@ -23,14 +23,14 @@ describe("test Verification component", () => {
     expect(screen.queryByRole("button", { name: "Resend verification email" })).toBeNull();
   });
 
-  test(" test shows and triggers Retry button when onRetry provided", async () => {
+  test("test shows and triggers Retry button when onRetry provided", async () => {
     const user = userEvent.setup();
     const onRetry = jest.fn();
     render(
       <Verification
         status="error"
         title="Verification failed"
-        subTitle="Something went wrong."
+        subtitle="Something went wrong."
         onRetry={onRetry}
       />,
     );
@@ -42,14 +42,14 @@ describe("test Verification component", () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
-  test("shows and triggers Resend button when onResend provided", async () => {
+  test("test shows and triggers Resend button when onResend provided", async () => {
     const user = userEvent.setup();
     const onResend = jest.fn();
     render(
       <Verification
         status="warning"
         title="Email not verified"
-        subTitle="You need to verify your email."
+        subtitle="You need to verify your email."
         onResend={onResend}
       />,
     );
@@ -61,7 +61,7 @@ describe("test Verification component", () => {
     expect(onResend).toHaveBeenCalledTimes(1);
   });
 
-  test("shows both buttons and both are clickable when both handlers provided", async () => {
+  test("test shows both buttons and both are clickable when both handlers provided", async () => {
     const user = userEvent.setup();
     const onRetry = jest.fn();
     const onResend = jest.fn();
@@ -69,7 +69,7 @@ describe("test Verification component", () => {
       <Verification
         status="warning"
         title="Action required"
-        subTitle="Please verify or try again."
+        subtitle="Please verify or try again."
         onRetry={onRetry}
         onResend={onResend}
       />,

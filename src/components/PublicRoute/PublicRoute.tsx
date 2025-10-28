@@ -16,6 +16,7 @@ const PublicRoute: React.FC = () => {
       (user) => {
         if (user) {
           navigate(ROUTES_URL.HOME, { replace: true });
+          return;
         }
         setLoading(false);
       },

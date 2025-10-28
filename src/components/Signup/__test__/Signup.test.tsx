@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import Signup from "../Signup.component";
 
 describe("test Signup component", () => {
-  test("test rendering of the login component", () => {
+  test("test rendering of the signup component", () => {
     render(
       <MemoryRouter>
         <Signup onSubmit={() => {}} />
@@ -39,7 +39,7 @@ describe("test Signup component", () => {
     expect(screen.getByText("Confirm password is required")).toBeVisible();
   });
 
-  test("test show validation error wrong email, password<8 confirm password not match and disabled button", async () => {
+  test("test shows validation error wrong email, password<8 confirm password not match and disabled button", async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>

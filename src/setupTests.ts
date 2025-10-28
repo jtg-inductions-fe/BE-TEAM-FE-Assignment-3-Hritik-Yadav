@@ -4,11 +4,11 @@ import "@testing-library/jest-dom";
 
 import { TextEncoder, TextDecoder } from "util";
 
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder as typeof global.TextDecoder;
+Object.assign(globalThis, { TextEncoder, TextDecoder });
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
+  configurable: true,
   value: jest.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
@@ -23,10 +23,12 @@ Object.defineProperty(window, "matchMedia", {
 
 jest.mock("antd", () => {
   const originalAntd = jest.requireActual("antd"); // Get all the real antd components
+  const realMessage = originalAntd.message ?? {};
+
   return {
     ...originalAntd,
     message: {
-      // Overwrite just the 'message' part
+      ...realMessage,
       success: jest.fn(),
       error: jest.fn(),
       warning: jest.fn(),

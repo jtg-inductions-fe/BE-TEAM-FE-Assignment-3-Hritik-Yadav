@@ -1,10 +1,7 @@
 module.exports = {
   getAuth: jest.fn(() => {
     return {
-      currentUser: {
-        uid: "test-user-123",
-        email: "test@example.com",
-      },
+      currentUser: null,
     };
   }),
 
@@ -15,6 +12,17 @@ module.exports = {
   }),
 
   signInWithEmailAndPassword: jest.fn(() => {
+    return Promise.resolve({
+      user: {
+        uid: "test-user-123",
+        email: "test@example.com",
+      },
+    });
+  }),
+
+  sendEmailVerification: jest.fn(() => Promise.resolve()),
+
+  signInWithCustomToken: jest.fn(() => {
     return Promise.resolve({
       user: {
         uid: "test-user-123",

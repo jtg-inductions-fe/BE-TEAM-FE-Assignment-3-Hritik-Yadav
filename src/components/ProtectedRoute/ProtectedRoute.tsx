@@ -11,24 +11,36 @@ const ProtectedRoute: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        navigate(ROUTES_URL.LOGIN, { replace: true });
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      async (user) => {
+        if (!user) {
+          navigate(ROUTES_URL.LOGIN, { replace: true });
+          setLoading(false);
+          return;
+        }
+        try {
+          await user.reload();
+        } catch (error) {
+          console.error("Firebase reload error:", error);
+          setLoading(false);
+          return;
+        }
+        if (!user.emailVerified) {
+          navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+          setLoading(false);
+          return;
+        }
         setLoading(false);
-        return;
-      }
-
-      await user.reload();
-      if (!user.emailVerified) {
-        navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+      },
+      (error) => {
+        console.error("Firebase auth state change error:", error);
         setLoading(false);
-        return;
-      }
-      setLoading(false);
-    });
+      },
+    );
 
     return unsubscribe;
-  }, [navigate, auth]);
+  }, [navigate]);
 
   if (loading) {
     return <Loading />;

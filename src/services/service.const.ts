@@ -6,5 +6,5 @@ export enum ENDPOINT {
 }
 
 export interface ApiUrlParams {
-  [key: string]: string | number | boolean | undefined;
+  [key: string]: string | number | undefined;
 }

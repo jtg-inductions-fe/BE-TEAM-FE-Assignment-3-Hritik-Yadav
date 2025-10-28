@@ -9,7 +9,7 @@ import { LOGIN_LABELS } from "./Login.const";
 
 import type { LoginProps, LoginValues } from "./Login.type";
 
-import "@/components/Signup/signup.style.scss";
+import "./login.style.scss"
 
 const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   const initialValues: LoginValues = { email: "", password: "" };
@@ -19,9 +19,9 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   });
 
   return (
-    <div className="signup">
-      <div className="signup__card">
-        <Typography.Title level={3} className="signup__title">
+    <div className="login">
+      <div className="login__card">
+        <Typography.Title level={3} className="login__title">
           {LOGIN_LABELS.title}
         </Typography.Title>
         <Formik
@@ -45,7 +45,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
           }) => (
             <AntForm layout="vertical" onFinish={() => handleSubmit()}>
               <AntForm.Item
-                className="signup__field"
+                className="login__field"
                 label={LOGIN_LABELS.email}
                 validateStatus={(touched.email || submitCount > 0) && errors.email ? "error" : ""}
                 help={(touched.email || submitCount > 0) && errors.email ? errors.email : undefined}
@@ -60,7 +60,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
               </AntForm.Item>
 
               <AntForm.Item
-                className="signup__field"
+                className="login__field"
                 label={LOGIN_LABELS.password}
                 validateStatus={
                   (touched.password || submitCount > 0) && errors.password ? "error" : ""
@@ -80,7 +80,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
                 />
               </AntForm.Item>
 
-              <AntForm.Item className="signup__actions">
+              <AntForm.Item className="login__actions">
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -91,7 +91,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
                   {LOGIN_LABELS.submit}
                 </Button>
               </AntForm.Item>
-              <Typography.Paragraph className="signup__message">
+              <Typography.Paragraph className="login__message">
                 {LOGIN_LABELS.message}
                 <Link to={ROUTES_URL.SIGNUP}>Sign up</Link>
               </Typography.Paragraph>

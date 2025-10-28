@@ -67,31 +67,13 @@ describe("Header testing", () => {
     expect(screen.getByText("Login")).toBeVisible();
   });
 
-  test(" test login and signup buttons on Login route", () => {
+  test.each([
+    { route: "/login", routeName: "Login" },
+    { route: "/signup", routeName: "Signup" },
+    { route: "/confirm", routeName: "Confirmation" },
+  ])("hides Login and Signup buttons on $routeName route", ({ route }) => {
     render(
-      <MemoryRouter initialEntries={["/login"]}>
-        <Header />
-      </MemoryRouter>,
-    );
-
-    expect(screen.queryByText("Signup")).not.toBeInTheDocument();
-    expect(screen.queryByText("Login")).not.toBeInTheDocument();
-  });
-
-  test(" test login and signup buttons on Signup route", () => {
-    render(
-      <MemoryRouter initialEntries={["/signup"]}>
-        <Header />
-      </MemoryRouter>,
-    );
-
-    expect(screen.queryByText("Signup")).not.toBeInTheDocument();
-    expect(screen.queryByText("Login")).not.toBeInTheDocument();
-  });
-
-  test(" test login and signup buttons on Confrimation route", () => {
-    render(
-      <MemoryRouter initialEntries={["/confirm"]}>
+      <MemoryRouter initialEntries={[route]}>
         <Header />
       </MemoryRouter>,
     );
