@@ -1,2 +1,2 @@
 export { signup } from "./auth.service";
-export { getUserById } from "./user.service";
+export { getUserDetails } from "./user.service";

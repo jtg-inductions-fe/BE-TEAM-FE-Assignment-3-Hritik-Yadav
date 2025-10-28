@@ -22,5 +22,5 @@ export interface BackendResponse<T = unknown> {
 }
 
 export interface SignupResponseData {
-  uid: string;
+  customToken: string;
 }

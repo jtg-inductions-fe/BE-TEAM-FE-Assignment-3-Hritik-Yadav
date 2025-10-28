@@ -1,9 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-import app from "@/firebase/firebase";
+import { getAuth, signInWithCustomToken } from "firebase/auth";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { signup } from "@/services";
@@ -21,13 +19,17 @@ const SignupContainer: React.FC = () => {
         password: values.password,
         role: values.role,
       });
-      const uid = resp?.data?.uid;
-      if (!uid) {
+
+      const customToken = resp?.data?.customToken;
+      if (!customToken) {
         message.error(resp?.message || "User not created. Try Again Later");
         return;
       }
-      const auth = getAuth(app);
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const auth = getAuth();
+      const userCredential = await signInWithCustomToken(auth, customToken);
+      const user = userCredential.user;
+      console.log(user);
+
       message.success(resp?.message || "User created successfully. Please confirm your email.");
       navigate(ROUTES_URL.CONFIRMATION);
     } catch (err: unknown) {

@@ -6,7 +6,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import app from "@/firebase/firebase";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { getUserById } from "@/services";
+import { getUserDetails } from "@/services";
 import { Login } from "@/components";
 import { LoginValues } from "@components/Login";
 
@@ -17,12 +17,13 @@ const LoginContainer: React.FC = () => {
     try {
       const auth = getAuth(app);
       const cred = await signInWithEmailAndPassword(auth, values.email, values.password);
-      const uid = cred.user?.uid;
-      if (!uid) {
+      const user = cred.user;
+      const token = await user.getIdToken();
+      if (!token) {
         message.error("Login failed: no user id");
         return;
       }
-      const resp = await getUserById(uid);
+      const resp = await getUserDetails(token);
       const role = resp?.data?.role;
       message.success(resp?.message || "Logged in successfully");
 
