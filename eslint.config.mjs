@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({ baseDirectory: __dirname });
 
 export default defineConfig([
-  { ignores: ["dist/**", "build/**", "coverage/**", "node_modules/**"] },
+  { ignores: ["dist/**", "node_modules/**"] },
 
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -22,7 +22,7 @@ export default defineConfig([
   prettierConfig,
 
   {
-    files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    files: ["**/*.{mjs,ts,tsx}"],
     plugins: {
       react: pluginReact,
     },

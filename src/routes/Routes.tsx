@@ -6,7 +6,7 @@ import { ROUTES_URL } from "./routes.const";
 import { TestPage } from "@/pages";
 import { NotFoundPage } from "@/pages";
 
-const AppRoutes: React.FC = () => {
+export const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path={ROUTES_URL.TEST_ROUTE} element={<TestPage />} />
@@ -14,5 +14,3 @@ const AppRoutes: React.FC = () => {
     </Routes>
   );
 };
-
-export default AppRoutes;
