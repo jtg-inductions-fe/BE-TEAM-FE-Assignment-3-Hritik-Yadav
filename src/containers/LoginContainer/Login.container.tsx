@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useDispatch } from "react-redux";
 
 import { app } from "@/firebase/firebase";
 
@@ -9,9 +10,11 @@ import { ROUTES_URL } from "@/routes/routes.const";
 import { getUserDetails } from "@/services";
 import { Login } from "@/components";
 import { LoginValues } from "@components/Login";
+import { setUser } from "@/store/actions/actions";
 
 export const LoginContainer: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (values: LoginValues) => {
     try {
@@ -23,8 +26,17 @@ export const LoginContainer: React.FC = () => {
         message.error("Login failed: no user id");
         return;
       }
+      const idTokenResult = await user.getIdTokenResult();
+      const roleFromClaims = (idTokenResult.claims as Record<string, unknown>)["role"] as
+        | "Customer"
+        | "Owner"
+        | undefined;
+
       const resp = await getUserDetails(token);
-      const role = resp?.data?.role;
+      const role = resp?.data?.role || roleFromClaims;
+      if (resp?.data) {
+        dispatch(setUser(resp.data));
+      }
       message.success(resp?.message || "Logged in successfully");
 
       if (!auth.currentUser?.emailVerified) {
@@ -32,7 +44,7 @@ export const LoginContainer: React.FC = () => {
         return;
       }
       if (role === "Owner") {
-        navigate("/admin"); //dummy route
+        navigate(ROUTES_URL.ADMIN);
       } else {
         navigate(ROUTES_URL.HOME);
       }

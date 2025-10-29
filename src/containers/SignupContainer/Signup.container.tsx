@@ -1,15 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { useDispatch } from "react-redux";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { signup } from "@/services";
 import { Signup } from "@/components";
+import { setUser } from "@/store/actions/actions";
 import type { SignupValues } from "@components/Signup";
 
 export const SignupContainer: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (values: SignupValues) => {
     try {
@@ -26,9 +29,15 @@ export const SignupContainer: React.FC = () => {
         return;
       }
       const auth = getAuth();
-      const userCredential = await signInWithCustomToken(auth, customToken);
-      const user = userCredential.user;
-      console.log(user);
+      await signInWithCustomToken(auth, customToken);
+      dispatch(
+        setUser({
+          uid: "",
+          username: values.username,
+          email: values.email,
+          role: values.role,
+        }),
+      );
 
       message.success(resp?.message || "User created successfully. Please confirm your email.");
       navigate(ROUTES_URL.CONFIRMATION);
