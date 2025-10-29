@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useContext, useLayoutEffect } from "react";
 import { ConfigProvider } from "antd";
 import { Theme, ThemeContextType, ThemeProviderProps } from "./context.type";
 import { THEME } from "./context.const";
@@ -24,7 +24,10 @@ const darkTheme = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+  const isBrowser = typeof window !== "undefined";
+
   const [theme, setTheme] = useState<Theme>(() => {
+    if (!isBrowser) return THEME.LIGHT;
     const storedTheme = localStorage.getItem("theme") as Theme | null;
     return storedTheme || THEME.LIGHT;
   });
@@ -33,7 +36,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     setTheme((prev) => (prev === THEME.LIGHT ? THEME.DARK : THEME.LIGHT));
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (!isBrowser) return;
     document.body.classList.remove(THEME.LIGHT, THEME.DARK);
     document.body.classList.add(theme);
     localStorage.setItem("theme", theme);
