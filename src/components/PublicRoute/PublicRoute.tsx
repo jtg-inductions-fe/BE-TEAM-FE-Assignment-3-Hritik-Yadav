@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { Loading } from "@/components";
 
-const PublicRoute: React.FC = () => {
+export const PublicRoute: React.FC = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -34,5 +34,3 @@ const PublicRoute: React.FC = () => {
 
   return <Outlet />;
 };
-
-export default PublicRoute;

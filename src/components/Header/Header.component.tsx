@@ -10,7 +10,7 @@ import "./header.style.scss";
 const { Header: AntHeader } = Layout;
 const { Title } = Typography;
 
-const Header: React.FC = () => {
+export const Header: React.FC = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,5 +63,3 @@ const Header: React.FC = () => {
     </AntHeader>
   );
 };
-
-export default Header;

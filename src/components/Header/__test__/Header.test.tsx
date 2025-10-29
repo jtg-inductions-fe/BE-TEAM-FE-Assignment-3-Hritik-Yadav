@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { message } from "antd";
 
-import Header from "../Header.component";
+import { Header } from "../Header.component";
 
 const mockedGetAuth = getAuth as jest.Mock;
 const mockedOnAuthStateChanged = onAuthStateChanged as jest.Mock;

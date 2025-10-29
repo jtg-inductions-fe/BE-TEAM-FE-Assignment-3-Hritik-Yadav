@@ -8,7 +8,7 @@ import "./rootLayout.style.scss";
 
 const { Content } = Layout;
 
-const RootLayout: React.FC = () => {
+export const RootLayout: React.FC = () => {
   return (
     <Layout className="page">
       <Header />
@@ -18,5 +18,3 @@ const RootLayout: React.FC = () => {
     </Layout>
   );
 };
-
-export default RootLayout;

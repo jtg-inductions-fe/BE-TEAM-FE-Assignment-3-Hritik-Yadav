@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-import app from "@/firebase/firebase";
+import { app } from "@/firebase/firebase";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { getUserDetails } from "@/services";
 import { Login } from "@/components";
 import { LoginValues } from "@components/Login";
 
-const LoginContainer: React.FC = () => {
+export const LoginContainer: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (values: LoginValues) => {
@@ -49,5 +49,3 @@ const LoginContainer: React.FC = () => {
 
   return <Login onSubmit={handleSubmit} />;
 };
-
-export default LoginContainer;

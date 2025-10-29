@@ -9,9 +9,9 @@ import { LOGIN_LABELS } from "./Login.const";
 
 import type { LoginProps, LoginValues } from "./Login.type";
 
-import "./login.style.scss"
+import "./login.style.scss";
 
-const Login: React.FC<LoginProps> = ({ onSubmit }) => {
+export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   const initialValues: LoginValues = { email: "", password: "" };
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -102,5 +102,3 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
     </div>
   );
 };
-
-export default Login;

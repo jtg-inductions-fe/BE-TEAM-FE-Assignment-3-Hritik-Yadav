@@ -1,1 +1,1 @@
-export { default as VerificationContainer } from "./Verification.container";
+export { VerificationContainer } from "./Verification.container";

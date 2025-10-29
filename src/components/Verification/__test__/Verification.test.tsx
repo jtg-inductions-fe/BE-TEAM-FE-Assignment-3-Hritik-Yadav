@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Verification from "../Verification";
+
+import { Verification } from "../Verification";
 
 describe("test Verification component", () => {
   test("renders basic info and hint", () => {

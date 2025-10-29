@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import Login from "../Login.component";
+import { Login } from "../Login.component";
 
 describe("test Login component", () => {
   test("test rendering of the login component", () => {

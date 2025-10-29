@@ -1,1 +1,1 @@
-export { default as VerificationPage } from "./Verification.page";
+export { VerificationPage } from "./Verification.page";

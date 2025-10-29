@@ -8,7 +8,7 @@ import { signup } from "@/services";
 import { Signup } from "@/components";
 import type { SignupValues } from "@components/Signup";
 
-const SignupContainer: React.FC = () => {
+export const SignupContainer: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (values: SignupValues) => {
@@ -45,5 +45,3 @@ const SignupContainer: React.FC = () => {
 
   return <Signup onSubmit={handleSubmit} />;
 };
-
-export default SignupContainer;

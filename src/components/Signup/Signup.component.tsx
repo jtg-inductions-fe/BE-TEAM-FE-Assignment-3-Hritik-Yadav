@@ -11,7 +11,7 @@ import type { SignupProps, SignupValues } from "./Signup.type";
 
 import "./signup.style.scss";
 
-const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
+export const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
   const initialValues: SignupValues = {
     username: "",
     email: "",
@@ -181,5 +181,3 @@ const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
     </div>
   );
 };
-
-export default Signup;

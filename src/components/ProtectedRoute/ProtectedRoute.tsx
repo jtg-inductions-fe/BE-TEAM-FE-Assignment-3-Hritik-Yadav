@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { Loading } from "@/components";
 
-const ProtectedRoute: React.FC = () => {
+export const ProtectedRoute: React.FC = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -48,5 +48,3 @@ const ProtectedRoute: React.FC = () => {
 
   return <Outlet />;
 };
-
-export default ProtectedRoute;

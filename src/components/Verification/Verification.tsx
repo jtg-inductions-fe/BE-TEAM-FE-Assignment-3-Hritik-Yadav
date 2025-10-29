@@ -7,7 +7,7 @@ import "./verification.style.scss";
 
 const { Paragraph } = Typography;
 
-const Verification: React.FC<Props> = ({ status, title, subtitle, onRetry, onResend }) => {
+export const Verification: React.FC<Props> = ({ status, title, subtitle, onRetry, onResend }) => {
   const message = "If you didn't receive an email, check your spam folder or try signing up again.";
 
   return (
@@ -38,5 +38,3 @@ const Verification: React.FC<Props> = ({ status, title, subtitle, onRetry, onRes
     </div>
   );
 };
-
-export default Verification;

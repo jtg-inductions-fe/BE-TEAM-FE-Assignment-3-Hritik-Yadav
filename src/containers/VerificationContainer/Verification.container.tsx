@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, sendEmailVerification } from "firebase/auth";
 
-import app from "@/firebase/firebase";
+import { app } from "@/firebase/firebase";
 
 import { Verification } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { message } from "antd";
 
-const VerificationContainer: React.FC = () => {
+export const VerificationContainer: React.FC = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState<"success" | "error" | "info">("info");
   const [title, setTitle] = useState<string>("Checking verification status...");
@@ -69,5 +69,3 @@ const VerificationContainer: React.FC = () => {
     />
   );
 };
-
-export default VerificationContainer;
