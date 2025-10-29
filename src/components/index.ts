@@ -3,6 +3,8 @@ export { Login } from "./Login";
 export { Loading } from "./Loading";
 export { PublicRoute } from "./PublicRoute";
 export { ProtectedRoute } from "./ProtectedRoute";
+export { RestaurantCard } from "./RestaurantCard";
+export { RestaurantList } from "./RestaurantList";
 export { RootLayout } from "./Layout";
 export { Signup } from "./Signup";
 export { Verification } from "./Verification";

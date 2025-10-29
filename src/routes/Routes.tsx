@@ -8,7 +8,7 @@ import {
   VerificationPage,
   LoginPage,
   HomePage,
-  AdminPage,
+  RestaurantPage,
 } from "@/pages";
 import { ProtectedRoute, PublicRoute, RootLayout } from "@/components";
 
@@ -23,7 +23,7 @@ export const AppRoutes: React.FC = () => {
         </Route>
         <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
         <Route element={<ProtectedRoute />}>
-          <Route path={ROUTES_URL.ADMIN} element={<AdminPage />} />
+          <Route path={ROUTES_URL.RESTAURANT} element={<RestaurantPage />} />
         </Route>
       </Route>
       <Route path={ROUTES_URL.ROUTE_NOT_FOUND} element={<NotFoundPage />} />
