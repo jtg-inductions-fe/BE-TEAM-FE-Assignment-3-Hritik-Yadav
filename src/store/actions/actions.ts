@@ -1,1 +1,11 @@
-//this file will contain redux actions
+import { CLEAR_USER, SET_USER } from "@store/reducers/user.const";
+import type { UserData } from "@/services/service.type";
+
+export const setUser = (user: UserData | null) => ({
+  type: SET_USER,
+  payload: user,
+});
+
+export const clearUser = () => ({
+  type: CLEAR_USER,
+});
