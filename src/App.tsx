@@ -7,9 +7,9 @@ import { Provider } from "react-redux";
 export const App: React.FC = () => {
   return (
     <Provider store={store}>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
     </Provider>
   );
 };
