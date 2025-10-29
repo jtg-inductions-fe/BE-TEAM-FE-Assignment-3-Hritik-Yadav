@@ -20,17 +20,20 @@ The project utilizes the following technologies:
 Follow these steps to get the project running locally:
 
 1.  **Node Version:** Ensure you are using the correct Node version.
+
     ```bash
     nvm use
     # (If 'nvm' is not installed, ensure your Node version is v22)
     ```
 
 2.  **Install Dependencies:**
+
     ```bash
     npm install
     ```
 
 3.  **Run Development Server:**
+
     ```bash
     npm run dev
     ```
@@ -41,7 +44,7 @@ Follow these steps to get the project running locally:
 
 Here is a guide to the common development commands:
 
-| Script Name | Command | Description |
+| Script Name | Description |
 | :--- | :--- | :--- |
 | `dev` | Runs the **development server** with live reloading. |
 | `build` | Generates the **production build** in the `dist/` directory. |
