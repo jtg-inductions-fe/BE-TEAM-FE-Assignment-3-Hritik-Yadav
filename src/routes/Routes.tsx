@@ -12,7 +12,7 @@ import {
 } from "@/pages";
 import { ProtectedRoute, PublicRoute, RootLayout } from "@/components";
 
-const AppRoutes: React.FC = () => {
+export const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path={ROUTES_URL.HOME} element={<RootLayout />}>
@@ -30,5 +30,3 @@ const AppRoutes: React.FC = () => {
     </Routes>
   );
 };
-
-export default AppRoutes;

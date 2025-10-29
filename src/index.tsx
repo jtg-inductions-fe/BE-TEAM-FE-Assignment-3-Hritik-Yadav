@@ -2,9 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "antd/dist/antd.css";
 
-import App from "@/App";
+import { App } from "@/App";
 
 import "./index.scss";
+import "antd/dist/antd.variable.min.css";
+import "./styles/theme.scss";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {

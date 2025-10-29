@@ -1,17 +1,18 @@
 import React from "react";
-import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./routes/Routes";
-import store from "./store";
+import { AppRoutes } from "./routes/Routes";
+import { store } from "./store";
+import { Provider } from "react-redux";
+import { ThemeProvider } from "./context/ThemeContext";
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </ThemeProvider>
     </Provider>
   );
 };
-
-export default App;
