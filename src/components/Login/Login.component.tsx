@@ -2,7 +2,7 @@ import React from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
-import { Form as AntForm, Input, Button, Typography } from "antd";
+import { Form, Input, Button, Typography } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { LOGIN_LABELS } from "./Login.const";
@@ -43,8 +43,8 @@ export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
             submitCount,
             isValid,
           }) => (
-            <AntForm layout="vertical" onFinish={() => handleSubmit()}>
-              <AntForm.Item
+            <Form layout="vertical" onFinish={() => handleSubmit()}>
+              <Form.Item
                 className="login__field"
                 label={LOGIN_LABELS.email}
                 validateStatus={(touched.email || submitCount > 0) && errors.email ? "error" : ""}
@@ -57,9 +57,9 @@ export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-              </AntForm.Item>
+              </Form.Item>
 
-              <AntForm.Item
+              <Form.Item
                 className="login__field"
                 label={LOGIN_LABELS.password}
                 validateStatus={
@@ -78,9 +78,9 @@ export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-              </AntForm.Item>
+              </Form.Item>
 
-              <AntForm.Item className="login__actions">
+              <Form.Item className="login__actions">
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -90,12 +90,12 @@ export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
                 >
                   {LOGIN_LABELS.submit}
                 </Button>
-              </AntForm.Item>
+              </Form.Item>
               <Typography.Paragraph className="login__message">
                 {LOGIN_LABELS.message}
                 <Link to={ROUTES_URL.SIGNUP}>Sign up</Link>
               </Typography.Paragraph>
-            </AntForm>
+            </Form>
           )}
         </Formik>
       </div>

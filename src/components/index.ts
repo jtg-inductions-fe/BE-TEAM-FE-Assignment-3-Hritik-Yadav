@@ -8,3 +8,5 @@ export { RestaurantList } from "./RestaurantList";
 export { RootLayout } from "./Layout";
 export { Signup } from "./Signup";
 export { Verification } from "./Verification";
+export { DeleteConfirmModal } from "./RestaurantModal/DeleteConfirmModal";
+export { RestaurantFormModal } from "./RestaurantModal/RestaurantFormModal";

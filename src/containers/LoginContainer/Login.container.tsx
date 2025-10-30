@@ -44,7 +44,7 @@ export const LoginContainer: React.FC = () => {
         return;
       }
       if (role === "Owner") {
-        navigate(ROUTES_URL.ADMIN);
+        navigate(ROUTES_URL.RESTAURANT);
       } else {
         navigate(ROUTES_URL.HOME);
       }
@@ -61,3 +61,4 @@ export const LoginContainer: React.FC = () => {
 
   return <Login onSubmit={handleSubmit} />;
 };
+
