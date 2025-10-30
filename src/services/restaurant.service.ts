@@ -7,24 +7,22 @@ import {
   CreateRestaurantResponseData,
   DeleteRestaurantResponseData,
   GetRestaurantResponseData,
-  RestaurantPayLoad,
+  ListRestaurantsResponseData,
+  RestaurantPayload,
   UpdateRestaurantResponseData,
 } from "./restaurant.type";
 
 export const createRestaurant = async (
   token: string,
-  payload: RestaurantPayLoad,
+  payload: RestaurantPayload,
 ): Promise<BackendResponse<CreateRestaurantResponseData>> => {
   const url = buildApiUrl(ENDPOINT.RESTAURANT);
-  const { data } = await axios.post<BackendResponse<CreateRestaurantResponseData>>(
-    url,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  const { data } = await axios.post<BackendResponse<CreateRestaurantResponseData>>(url, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-    payload,
-  );
+  });
   return data;
 };
 
@@ -44,18 +42,15 @@ export const getRestaurant = async (
 export const updateRestaurant = async (
   token: string,
   restaurantId: string,
-  payload: RestaurantPayLoad,
+  payload: RestaurantPayload,
 ): Promise<BackendResponse<UpdateRestaurantResponseData>> => {
   const url = buildApiUrl(ENDPOINT.RESTAURANT, restaurantId);
-  const { data } = await axios.post<BackendResponse<UpdateRestaurantResponseData>>(
-    url,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  const { data } = await axios.put<BackendResponse<UpdateRestaurantResponseData>>(url, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-    payload,
-  );
+  });
   return data;
 };
 
@@ -65,6 +60,34 @@ export const deleteRestaurant = async (
 ): Promise<BackendResponse<DeleteRestaurantResponseData>> => {
   const url = buildApiUrl(ENDPOINT.RESTAURANT, restaurantId);
   const { data } = await axios.delete<BackendResponse<DeleteRestaurantResponseData>>(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+};
+
+interface ListRestaurantParams {
+  perPage?: number;
+  nextPageToken?: string | null;
+}
+
+export const listRestaurants = async (
+  token: string,
+  { perPage = 10, nextPageToken }: ListRestaurantParams = {},
+): Promise<BackendResponse<ListRestaurantsResponseData>> => {
+  const params: Record<string, string | number> = {};
+
+  if (perPage) {
+    params.perpage = perPage;
+  }
+
+  if (nextPageToken) {
+    params.nextPageToken = nextPageToken;
+  }
+
+  const url = buildApiUrl(ENDPOINT.RESTAURANT, undefined, params);
+  const { data } = await axios.get<BackendResponse<ListRestaurantsResponseData>>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -1,11 +1,11 @@
-import { Restaurant, RestaurantPayLoad } from "@services/restaurant.type";
+import { Restaurant, RestaurantPayload } from "@services/restaurant.type";
 
 export interface RestaurantFormModalProps {
   open: boolean;
   mode: "create" | "update";
   initial?: Partial<Restaurant>;
   onCancel: () => void;
-  onSubmit: (values: RestaurantPayLoad) => Promise<void> | void;
+  onSubmit: (values: RestaurantPayload) => Promise<void> | void;
 }
 
 export interface DeleteConfirmModalProps {

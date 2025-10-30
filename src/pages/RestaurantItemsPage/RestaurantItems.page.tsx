@@ -8,7 +8,7 @@ export const RestaurantItemsPage: React.FC = () => {
     <div>
       <Typography.Title level={3}>Menu Items (Dummy)</Typography.Title>
       <Typography.Paragraph>
-        This is a placeholder for restaurant {id}'s menu items.
+        This is a placeholder for restaurant {id}s menu items.
       </Typography.Paragraph>
       <Link to="/restaurant">
         <Button type="default">Back to Restaurants</Button>

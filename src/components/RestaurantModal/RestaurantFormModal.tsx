@@ -4,8 +4,12 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
 
-import type { RestaurantPayLoad, RestaurantStatus } from "@services/restaurant.type";
-import { RestaurantFormModalProps } from "./RestaurantModal.type";
+import type {
+  RestaurantFormValues,
+  RestaurantPayload,
+  RestaurantStatus,
+} from "@services/restaurant.type";
+import type { RestaurantFormModalProps } from "./RestaurantModal.type";
 
 const timeFormat = "HH:mm";
 
@@ -23,7 +27,7 @@ export const RestaurantFormModal: React.FC<RestaurantFormModalProps> = ({
   onCancel,
   onSubmit,
 }) => {
-  const initialValues: RestaurantPayLoad = {
+  const initialValues: RestaurantFormValues = {
     name: initial?.name ?? "",
     openingTime: initial?.openingTime
       ? moment(initial.openingTime, timeFormat)
@@ -35,14 +39,15 @@ export const RestaurantFormModal: React.FC<RestaurantFormModalProps> = ({
   };
 
   return (
-    <Formik
+    <Formik<RestaurantFormValues>
       initialValues={initialValues}
       validationSchema={Schema}
       onSubmit={async (values, helpers) => {
-        const payload: RestaurantPayLoad = {
-          ...values,
+        const payload: RestaurantPayload = {
+          name: values.name,
           openingTime: values.openingTime.format(timeFormat),
           closingTime: values.closingTime.format(timeFormat),
+          status: values.status,
         };
         await onSubmit(payload);
         helpers.setSubmitting(false);
@@ -64,31 +69,44 @@ export const RestaurantFormModal: React.FC<RestaurantFormModalProps> = ({
               validateStatus={touched.name && errors.name ? "error" : ""}
               help={touched.name && errors.name ? errors.name : ""}
             >
-              <Input name="name" value={values.name} onChange={handleChange} placeholder="Restaurant name" />
+              <Input
+                name="name"
+                value={values.name}
+                onChange={handleChange}
+                placeholder="Restaurant name"
+              />
             </Form.Item>
 
-            <Space size="large" >
+            <Space size="large">
               <Form.Item
                 label="Opening Time"
                 validateStatus={touched.openingTime && errors.openingTime ? "error" : ""}
-                help={touched.openingTime && errors.openingTime ? errors.openingTime : ""}
+                help={touched.openingTime && errors.openingTime ? String(errors.openingTime) : ""}
               >
                 <TimePicker
                   value={values.openingTime}
                   format={timeFormat}
-                  onChange={(time) => setFieldValue("openingTime", time)}
+                  onChange={(time) => {
+                    if (time) {
+                      setFieldValue("openingTime", time);
+                    }
+                  }}
                 />
               </Form.Item>
 
               <Form.Item
                 label="Closing Time"
                 validateStatus={touched.closingTime && errors.closingTime ? "error" : ""}
-                help={touched.closingTime && errors.closingTime ? errors.closingTime : ""}
+                help={touched.closingTime && errors.closingTime ? String(errors.closingTime) : ""}
               >
                 <TimePicker
                   value={values.closingTime}
                   format={timeFormat}
-                  onChange={(time) => setFieldValue("closingTime", time)}
+                  onChange={(time) => {
+                    if (time) {
+                      setFieldValue("closingTime", time);
+                    }
+                  }}
                 />
               </Form.Item>
             </Space>
@@ -98,11 +116,7 @@ export const RestaurantFormModal: React.FC<RestaurantFormModalProps> = ({
               validateStatus={touched.status && errors.status ? "error" : ""}
               help={touched.status && errors.status ? errors.status : ""}
             >
-              <Radio.Group
-                name="status"
-                onChange={handleChange}
-                value={values.status}
-              >
+              <Radio.Group name="status" onChange={handleChange} value={values.status}>
                 <Radio value="active">Active</Radio>
                 <Radio value="inactive">Inactive</Radio>
               </Radio.Group>
