@@ -21,15 +21,33 @@ export const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
   };
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
+    username: Yup.string()
+      .required("Name is required")
+      .min(3, "Name must be at least 3 characters")
+      .max(30, "Name cannot exceed 30 characters")
+      .matches(
+        /^[a-zA-Z0-9_ ]+$/,
+        "Name can only contain letters, numbers, spaces, and underscores",
+      ),
+
+    email: Yup.string().email("Invalid email address format").required("Email is required"),
+
     password: Yup.string()
+      .required("Password is required")
       .min(8, "Password must be at least 8 characters")
-      .required("Password is required"),
+      .max(64, "Password cannot exceed 64 characters")
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+      .matches(/[0-9]/, "Password must contain at least one number")
+      .matches(/[@$!%*?&]/, "Password must contain at least one special character"),
+
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Passwords must match")
-      .required("Confirm password is required"),
-    role: Yup.string().oneOf(["Customer", "Owner"]).required("Role is required"),
+      .required("Confirm password is required")
+      .oneOf([Yup.ref("password")], "Passwords must match"),
+
+    role: Yup.string()
+      .required("Role is required")
+      .oneOf(["Customer", "Owner"], "Invalid role selected"),
   });
 
   return (
