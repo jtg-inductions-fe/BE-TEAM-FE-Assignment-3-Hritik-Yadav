@@ -17,11 +17,8 @@ const commonConfig = {
     alias: {
       "@components": path.resolve(__dirname, "src/components"),
       "@styles": path.resolve(__dirname, "src/styles"),
-      "@assets": path.resolve(__dirname, "src/assets"),
-      "@hooks": path.resolve(__dirname, "src/hooks"),
       "@services": path.resolve(__dirname, "src/services"),
       "@store": path.resolve(__dirname, "src/store"),
-      "@utils": path.resolve(__dirname, "src/utils"),
       "@pages": path.resolve(__dirname, "src/pages"),
       "@containers": path.resolve(__dirname, "src/containers"),
       "@": path.resolve(__dirname, "src"),
