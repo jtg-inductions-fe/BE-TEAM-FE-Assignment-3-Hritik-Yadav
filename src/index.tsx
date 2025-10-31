@@ -6,17 +6,7 @@ import { App } from "@/App";
 
 import "./index.scss";
 import "antd/dist/antd.variable.min.css";
-
-ConfigProvider.config({
-  theme: {
-    primaryColor: "#1890ff",
-    infoColor: "#1890ff",
-    successColor: "#52c41a",
-    processingColor: "#1890ff",
-    errorColor: "#f5222d",
-    warningColor: "#faad14",
-  },
-});
+import "@/theme";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
