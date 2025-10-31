@@ -1,14 +1,8 @@
-import { ConfigProvider } from "antd";
-
 export const themeConfig = {
-    primaryColor: "#1890ff",
-    infoColor: "#1890ff",
-    successColor: "#52c41a",
-    processingColor: "#1890ff",
-    errorColor: "#f5222d",
-    warningColor: "#faad14",
-}
-
-ConfigProvider.config({
-  theme: themeConfig
-});
+  primaryColor: "#1890ff",
+  infoColor: "#1890ff",
+  successColor: "#52c41a",
+  processingColor: "#1890ff",
+  errorColor: "#f5222d",
+  warningColor: "#faad14",
+};

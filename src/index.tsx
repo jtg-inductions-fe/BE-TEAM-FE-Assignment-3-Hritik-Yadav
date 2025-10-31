@@ -4,9 +4,13 @@ import ReactDOM from "react-dom/client";
 
 import { App } from "@/App";
 
-import "./index.scss";
+import "@/index.scss";
 import "antd/dist/antd.variable.min.css";
-import "@/theme";
+import { themeConfig } from "@/theme";
+
+ConfigProvider.config({
+  theme: themeConfig,
+});
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
