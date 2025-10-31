@@ -31,10 +31,10 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({
         </div>
         <div className="restaurant-card__meta">
           <Text type="secondary" className="restaurant-card__timings">
-            Opens&nbsp;at&nbsp;{openingTime}
+            Opens at {openingTime}
           </Text>
           <Text type="secondary" className="restaurant-card__timings">
-            Closes&nbsp;at&nbsp;{closingTime}
+            Closes at {closingTime}
           </Text>
         </div>
         <div className="restaurant-card__actions">

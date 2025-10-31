@@ -1,6 +1,10 @@
 import { ApiUrlParams, BASE_URL, ENDPOINT } from "@services/service.const";
 
-export const buildApiUrl = (ENDPOINT: ENDPOINT, id?: string, params?: ApiUrlParams): string => {
+export const buildApiUrl = (
+  ENDPOINT: ENDPOINT,
+  id?: number | string,
+  params?: ApiUrlParams,
+): string => {
   let url = `${BASE_URL}/${ENDPOINT}`;
 
   if (id) {

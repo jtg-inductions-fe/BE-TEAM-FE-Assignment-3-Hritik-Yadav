@@ -44,6 +44,7 @@ export const RestaurantContainer: React.FC = () => {
   const [isUserReady, setIsUserReady] = useState(false);
   const [userLoading, setUserLoading] = useState(true);
 
+  // works during mounting and refresh and user change
   useEffect(() => {
     const loadUser = async () => {
       if (storedUser) {
@@ -80,6 +81,7 @@ export const RestaurantContainer: React.FC = () => {
     void loadUser();
   }, [dispatch, firebaseAuth, storedUser]);
 
+  // to provide consistent token to all functions
   const getAuthToken = useCallback(async (): Promise<string | null> => {
     const currentUser = firebaseAuth.currentUser;
     if (!currentUser) {
@@ -97,6 +99,7 @@ export const RestaurantContainer: React.FC = () => {
     }
   }, [firebaseAuth]);
 
+  // restaurant list function to fetch list
   const fetchPage = useCallback(
     async (append: boolean, cursorId?: string | null) => {
       if (append) {
@@ -144,7 +147,7 @@ export const RestaurantContainer: React.FC = () => {
     setItems([]);
     dispatch(clearRestaurantPagination());
     setHasMore(true);
-    void fetchPage(false, null);
+    fetchPage(false, null);
   }, [dispatch, fetchPage, isUserReady]);
 
   const loadMore = useCallback(() => {
@@ -152,9 +155,10 @@ export const RestaurantContainer: React.FC = () => {
       return;
     }
 
-    void fetchPage(true, nextPageToken);
+    fetchPage(true, nextPageToken);
   }, [fetchPage, hasMore, loading, loadingMore, nextPageToken]);
 
+  // handles creation of restaurant
   const handleCreate = async (values: RestaurantPayload) => {
     const token = await getAuthToken();
     if (!token) {
@@ -184,6 +188,7 @@ export const RestaurantContainer: React.FC = () => {
     }
   };
 
+  // handles updation of restaurant 
   const handleUpdate = async (values: RestaurantPayload) => {
     if (!editTarget) {
       return;
@@ -213,6 +218,7 @@ export const RestaurantContainer: React.FC = () => {
     }
   };
 
+  // handles deletion of restaurant
   const handleDelete = async () => {
     if (!deleteTarget) {
       return;

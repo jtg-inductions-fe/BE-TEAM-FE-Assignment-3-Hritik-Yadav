@@ -30,7 +30,7 @@ export const RestaurantList: React.FC<RestaurantListProps> = ({
   return (
     <div className="restaurant-list">
       {loading ? (
-        <div style={{ textAlign: "center", padding: 24 }}>
+        <div className="restuarant-list__loader">
           <Spin />
         </div>
       ) : items.length === 0 ? (
