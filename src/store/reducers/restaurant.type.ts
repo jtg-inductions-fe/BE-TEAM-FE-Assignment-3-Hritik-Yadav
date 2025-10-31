@@ -1,7 +1,4 @@
-import type {
-  CLEAR_RESTAURANT_PAGINATION,
-  SET_RESTAURANT_NEXT_TOKEN,
-} from "./restaurant.const";
+import type { CLEAR_RESTAURANT_PAGINATION, SET_RESTAURANT_NEXT_TOKEN } from "./restaurant.const";
 
 export interface RestaurantPaginationState {
   nextPageToken: string | null;

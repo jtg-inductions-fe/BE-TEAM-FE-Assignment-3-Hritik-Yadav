@@ -188,7 +188,7 @@ export const RestaurantContainer: React.FC = () => {
     }
   };
 
-  // handles updation of restaurant 
+  // handles updation of restaurant
   const handleUpdate = async (values: RestaurantPayload) => {
     if (!editTarget) {
       return;
