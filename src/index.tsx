@@ -5,18 +5,12 @@ import "antd/dist/antd.css";
 
 import { App } from "@/App";
 
-import "./index.scss";
+import "@/index.scss";
 import "antd/dist/antd.variable.min.css";
+import { themeConfig } from "@/theme";
 
 ConfigProvider.config({
-  theme: {
-    primaryColor: "#1890ff",
-    infoColor: "#1890ff",
-    successColor: "#52c41a",
-    processingColor: "#1890ff",
-    errorColor: "#f5222d",
-    warningColor: "#faad14",
-  },
+  theme: themeConfig,
 });
 
 const rootElement = document.getElementById("root");

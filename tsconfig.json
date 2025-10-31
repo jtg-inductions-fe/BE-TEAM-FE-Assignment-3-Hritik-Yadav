@@ -14,11 +14,8 @@
     "paths": {
       "@components/*": ["components/*"],
       "@styles/*": ["styles/*"],
-      "@assets/*": ["assets/*"],
-      "@hooks/*": ["hooks/*"],
       "@services/*": ["services/*"],
       "@store/*": ["store/*"],
-      "@utils/*": ["utils/*"],
       "@pages/*": ["pages/*"],
       "@containers/*": ["containers/*"],
       "@/*": ["*"]
