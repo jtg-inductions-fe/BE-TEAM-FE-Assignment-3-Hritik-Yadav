@@ -25,9 +25,11 @@ export const Header: React.FC<HeaderProps> = ({
       </Title>
       {isAuthenticate ? (
         <div className="header__button">
-          <Button type="primary" onClick={onCreateRestaurant}>
-            Create Restaurant
-          </Button>
+          {onCreateRestaurant && (
+            <Button type="primary" onClick={onCreateRestaurant}>
+              Create Restaurant
+            </Button>
+          )}
           <Button type="default" onClick={logout}>
             Logout
           </Button>

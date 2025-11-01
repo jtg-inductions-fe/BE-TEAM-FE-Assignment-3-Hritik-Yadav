@@ -9,8 +9,12 @@ import type { RestaurantCardProps } from "@/components/RestaurantCard/Restaurant
 const mockRestaurantCard = jest.fn(({ restaurant, onUpdate, onDelete }) => (
   <div data-testid={`restaurant-card-${restaurant.id}`}>
     <span>{restaurant.name}</span>
-    <button onClick={onUpdate}>update card</button>
-    <button onClick={onDelete}>delete card</button>
+    <button type="button" onClick={onUpdate}>
+      update card
+    </button>
+    <button type="button" onClick={onDelete}>
+      delete card
+    </button>
   </div>
 ));
 
@@ -33,7 +37,7 @@ jest.mock("react-infinite-scroll-component", () => ({
   __esModule: true,
   default: ({ children, next, loader, endMessage, hasMore }: MockInfiniteScrollProps) => (
     <div>
-      <button data-testid="load-more-trigger" onClick={next}>
+      <button type="button" data-testid="load-more-trigger" onClick={next}>
         load more
       </button>
       <div data-testid="infinite-content">{children}</div>

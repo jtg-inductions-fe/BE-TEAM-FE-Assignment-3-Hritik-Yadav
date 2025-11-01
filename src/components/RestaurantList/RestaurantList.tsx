@@ -30,7 +30,7 @@ export const RestaurantList: React.FC<RestaurantListProps> = ({
   return (
     <div className="restaurant-list">
       {loading ? (
-        <div className="restuarant-list__loader">
+        <div className="restaurant-list__loader">
           <Spin />
         </div>
       ) : items.length === 0 ? (
@@ -54,8 +54,8 @@ export const RestaurantList: React.FC<RestaurantListProps> = ({
               <div key={restaurantItem.id} className="restaurant-list__item">
                 <RestaurantCard
                   restaurant={restaurantItem}
-                  onUpdate={() => onUpdate(restaurantItem)}
-                  onDelete={() => onDelete(restaurantItem)}
+                  onUpdate={onUpdate}
+                  onDelete={onDelete}
                 />
               </div>
             ))}

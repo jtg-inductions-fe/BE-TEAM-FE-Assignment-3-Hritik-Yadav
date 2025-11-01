@@ -19,7 +19,7 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({
   const statusColor = STATUS_TAG_COLOR[status] || "default";
 
   return (
-    <Card key={id} className="restaurant-card">
+    <Card className="restaurant-card">
       <div className="restaurant-card__content">
         <div className="restaurant-card__header">
           <Title level={4} className="restaurant-card__title">
