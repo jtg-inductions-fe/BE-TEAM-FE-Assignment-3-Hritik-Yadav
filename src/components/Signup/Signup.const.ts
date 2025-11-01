@@ -1,14 +1,15 @@
-export const SIGNUP_LABELS = {
-  title: "Create your account",
-  name: "Name",
-  email: "Email",
-  password: "Password",
-  confirmPassword: "Confirm Password",
-  role: "Role",
-  submit: "Sign up",
-};
+import { USER_ROLE } from "@/services/service.const";
+import { SignupValues } from "./Signup.type";
 
 export const VALUES = {
-  Customer: "Customer",
-  Owner: "Owner",
+  Customer: USER_ROLE.Customer,
+  Owner: USER_ROLE.Owner,
+};
+
+export const INITIAL_SIGNUP_VALUES: SignupValues = {
+  username: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  role: USER_ROLE.Customer,
 };

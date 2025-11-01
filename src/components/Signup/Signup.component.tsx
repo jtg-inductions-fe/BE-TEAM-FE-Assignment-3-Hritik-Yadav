@@ -1,184 +1,114 @@
 import React from "react";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { Form as AntForm, Input, Button, Typography, Radio } from "antd";
 import { Link } from "react-router-dom";
+import { Input, Button, Typography, Radio } from "antd";
+import { Formik, Form as FormikForm, Field, FieldProps } from "formik";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { SIGNUP_LABELS, VALUES } from "./Signup.const";
+import { USER_ROLE } from "@/services/service.const";
 
+import { signupValidationSchema } from "./Signup.validation";
+import { INITIAL_SIGNUP_VALUES } from "./Signup.const";
 import type { SignupProps, SignupValues } from "./Signup.type";
 
 import "./signup.style.scss";
 
 export const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
-  const initialValues: SignupValues = {
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "Customer",
-  };
-
-  const validationSchema = Yup.object().shape({
-    username: Yup.string()
-      .required("Name is required")
-      .min(3, "Name must be at least 3 characters")
-      .max(30, "Name cannot exceed 30 characters")
-      .matches(
-        /^[a-zA-Z0-9_ ]+$/,
-        "Name can only contain letters, numbers, spaces, and underscores",
-      ),
-
-    email: Yup.string().email("Invalid email address format").required("Email is required"),
-
-    password: Yup.string()
-      .required("Password is required")
-      .min(8, "Password must be at least 8 characters")
-      .max(64, "Password cannot exceed 64 characters")
-      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-      .matches(/[0-9]/, "Password must contain at least one number")
-      .matches(/[@$!%*?&]/, "Password must contain at least one special character"),
-
-    confirmPassword: Yup.string()
-      .required("Confirm password is required")
-      .oneOf([Yup.ref("password")], "Passwords must match"),
-
-    role: Yup.string()
-      .required("Role is required")
-      .oneOf(["Customer", "Owner"], "Invalid role selected"),
-  });
-
   return (
     <div className="signup">
       <div className="signup__card">
         <Typography.Title level={3} className="signup__title">
-          {SIGNUP_LABELS.title}
+          Create your account
         </Typography.Title>
         <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
+          initialValues={INITIAL_SIGNUP_VALUES}
+          validationSchema={signupValidationSchema}
           onSubmit={(values, { setSubmitting }) => {
             onSubmit(values);
             setSubmitting(false);
           }}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            setFieldValue,
-            submitCount,
-            isValid,
-          }) => (
-            <AntForm layout="vertical" onFinish={() => handleSubmit()}>
-              <AntForm.Item
-                className="signup__field"
-                label={SIGNUP_LABELS.name}
-                validateStatus={
-                  (touched.username || submitCount > 0) && errors.username ? "error" : ""
-                }
-                help={
-                  (touched.username || submitCount > 0) && errors.username
-                    ? errors.username
-                    : undefined
-                }
-              >
-                <Input
-                  name="username"
-                  placeholder="Your username"
-                  value={values.username}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </AntForm.Item>
+          {({ isSubmitting, submitCount, isValid }) => (
+            <FormikForm className="signup__form">
+              <Field name="username">
+                {({ field, meta }: FieldProps<string>) => (
+                  <div className="signup__field">
+                    <label className="signup__label" htmlFor="username">
+                      Name
+                    </label>
+                    <Input id="username" placeholder="Your username" {...field} />
+                    {(meta.touched || submitCount > 0) && meta.error && (
+                      <div className="signup__error">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
 
-              <AntForm.Item
-                className="signup__field"
-                label={SIGNUP_LABELS.email}
-                validateStatus={(touched.email || submitCount > 0) && errors.email ? "error" : ""}
-                help={(touched.email || submitCount > 0) && errors.email ? errors.email : undefined}
-              >
-                <Input
-                  name="email"
-                  placeholder="you@example.com"
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </AntForm.Item>
+              <Field name="email">
+                {({ field, meta }: FieldProps<string>) => (
+                  <div className="signup__field">
+                    <label className="signup__label" htmlFor="email">
+                      Email
+                    </label>
+                    <Input id="email" placeholder="you@example.com" {...field} />
+                    {(meta.touched || submitCount > 0) && meta.error && (
+                      <div className="signup__error">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
 
-              <AntForm.Item
-                className="signup__field"
-                label={SIGNUP_LABELS.password}
-                validateStatus={
-                  (touched.password || submitCount > 0) && errors.password ? "error" : ""
-                }
-                help={
-                  (touched.password || submitCount > 0) && errors.password
-                    ? errors.password
-                    : undefined
-                }
-              >
-                <Input.Password
-                  name="password"
-                  placeholder="Password"
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </AntForm.Item>
+              <Field name="password">
+                {({ field, meta }: FieldProps<string>) => (
+                  <div className="signup__field">
+                    <label className="signup__label" htmlFor="password">
+                      Password
+                    </label>
+                    <Input.Password id="password" placeholder="Password" {...field} />
+                    {(meta.touched || submitCount > 0) && meta.error && (
+                      <div className="signup__error">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
 
-              <AntForm.Item
-                className="signup__field"
-                label={SIGNUP_LABELS.confirmPassword}
-                validateStatus={
-                  (touched.confirmPassword || submitCount > 0) && errors.confirmPassword
-                    ? "error"
-                    : ""
-                }
-                help={
-                  (touched.confirmPassword || submitCount > 0) && errors.confirmPassword
-                    ? errors.confirmPassword
-                    : undefined
-                }
-              >
-                <Input.Password
-                  name="confirmPassword"
-                  placeholder="Confirm Password"
-                  value={values.confirmPassword}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </AntForm.Item>
+              <Field name="confirmPassword">
+                {({ field, meta }: FieldProps<string>) => (
+                  <div className="signup__field">
+                    <label className="signup__label" htmlFor="confirmPassword">
+                      Confirm Password
+                    </label>
+                    <Input.Password
+                      id="confirmPassword"
+                      placeholder="Confirm Password"
+                      {...field}
+                    />
+                    {(meta.touched || submitCount > 0) && meta.error && (
+                      <div className="signup__error">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
 
-              <AntForm.Item
-                className="signup__role"
-                label={SIGNUP_LABELS.role}
-                validateStatus={(touched.role || submitCount > 0) && errors.role ? "error" : ""}
-                help={
-                  (touched.role || submitCount > 0) && errors.role
-                    ? (errors.role as string)
-                    : undefined
-                }
-              >
-                <Radio.Group
-                  optionType="button"
-                  buttonStyle="solid"
-                  value={values.role}
-                  onChange={(e) => setFieldValue("role", e.target.value)}
-                >
-                  <Radio.Button value="Customer">{VALUES.Customer}</Radio.Button>
-                  <Radio.Button value="Owner">{VALUES.Owner}</Radio.Button>
-                </Radio.Group>
-              </AntForm.Item>
+              <Field name="role">
+                {({ field, form }: FieldProps<SignupValues["role"]>) => (
+                  <div className="signup__role">
+                    <span className="signup__label">Role</span>
+                    <Radio.Group
+                      className="signup__role-options"
+                      optionType="button"
+                      buttonStyle="solid"
+                      value={field.value}
+                      onChange={(e) => form.setFieldValue(field.name, e.target.value)}
+                      onBlur={() => form.setFieldTouched(field.name, true)}
+                    >
+                      <Radio.Button value={USER_ROLE.Customer}>{USER_ROLE.Customer}</Radio.Button>
+                      <Radio.Button value={USER_ROLE.Owner}>{USER_ROLE.Owner}</Radio.Button>
+                    </Radio.Group>
+                  </div>
+                )}
+              </Field>
 
-              <AntForm.Item className="signup__actions">
+              <div className="signup__actions">
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -186,13 +116,13 @@ export const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                   loading={isSubmitting}
                   disabled={!isValid}
                 >
-                  {SIGNUP_LABELS.submit}
+                  Sign up
                 </Button>
-              </AntForm.Item>
+              </div>
               <Typography.Paragraph className="signup__message">
                 Already have an account? <Link to={ROUTES_URL.LOGIN}>Log in</Link>
               </Typography.Paragraph>
-            </AntForm>
+            </FormikForm>
           )}
         </Formik>
       </div>

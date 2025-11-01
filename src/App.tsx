@@ -1,15 +1,17 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { AppRoutes } from "./routes/Routes";
-import { store } from "./store";
 import { Provider } from "react-redux";
 
-export const App: React.FC = () => {
-  return (
-    <Provider store={store}>
+import { AuthProvider } from "@/context/AuthContext";
+import { AppRoutes } from "./routes/Routes";
+import { store } from "./store";
+
+export const App: React.FC = () => (
+  <Provider store={store}>
+    <AuthProvider>
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
-    </Provider>
-  );
-};
+    </AuthProvider>
+  </Provider>
+);

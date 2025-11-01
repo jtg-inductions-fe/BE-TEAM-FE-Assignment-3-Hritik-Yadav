@@ -43,11 +43,8 @@ export const SignupContainer: React.FC = () => {
       navigate(ROUTES_URL.CONFIRMATION);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error("signup error", err);
         const msg: string = err?.message || "User not created.";
         message.error(msg);
-      } else {
-        console.error("Unexpected error", err);
       }
     }
   };

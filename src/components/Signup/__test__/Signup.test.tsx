@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { USER_ROLE } from "@/services/service.const";
 import { Signup } from "../Signup.component";
 
 describe("test Signup component", () => {
@@ -96,7 +97,7 @@ describe("test Signup component", () => {
         email: "test@example.com",
         password: "Password@123",
         confirmPassword: "Password@123",
-        role: "Owner",
+        role: USER_ROLE.Owner,
       });
     });
   });

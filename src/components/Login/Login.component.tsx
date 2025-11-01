@@ -1,86 +1,62 @@
 import React from "react";
-import * as Yup from "yup";
-import { Formik } from "formik";
 import { Link } from "react-router-dom";
-import { Form as AntForm, Input, Button, Typography } from "antd";
+import { Input, Button, Typography } from "antd";
+import { Formik, Form as FormikForm, Field, FieldProps } from "formik";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { LOGIN_LABELS } from "./Login.const";
 
-import type { LoginProps, LoginValues } from "./Login.type";
+import { INITIAL_LOGIN_VALUES } from "./Login.const";
+import { loginValidationSchema } from "./Login.validation";
+import type { LoginProps } from "./Login.type";
 
 import "./login.style.scss";
 
 export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
-  const initialValues: LoginValues = { email: "", password: "" };
-  const validationSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    password: Yup.string().required("Password is required"),
-  });
-
   return (
     <div className="login">
       <div className="login__card">
         <Typography.Title level={3} className="login__title">
-          {LOGIN_LABELS.title}
+          Welcome back
         </Typography.Title>
         <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
+          initialValues={INITIAL_LOGIN_VALUES}
+          validationSchema={loginValidationSchema}
           onSubmit={(values, { setSubmitting }) => {
             onSubmit(values);
             setSubmitting(false);
           }}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            submitCount,
-            isValid,
-          }) => (
-            <AntForm layout="vertical" onFinish={() => handleSubmit()}>
-              <AntForm.Item
-                className="login__field"
-                label={LOGIN_LABELS.email}
-                validateStatus={(touched.email || submitCount > 0) && errors.email ? "error" : ""}
-                help={(touched.email || submitCount > 0) && errors.email ? errors.email : undefined}
-              >
-                <Input
-                  name="email"
-                  placeholder="you@example.com"
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </AntForm.Item>
+          {({ isSubmitting, submitCount, isValid }) => (
+            <FormikForm className="login__form">
+              <Field name="email">
+                {({ field, meta }: FieldProps<string>) => (
+                  <div className="login__field">
+                    <label className="login__label" htmlFor="email">
+                      Email
+                    </label>
+                    <Input id="email" placeholder="you@example.com" {...field} />
+                    {(meta.touched || submitCount > 0) && meta.error && (
+                      <div className="login__error">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
 
-              <AntForm.Item
-                className="login__field"
-                label={LOGIN_LABELS.password}
-                validateStatus={
-                  (touched.password || submitCount > 0) && errors.password ? "error" : ""
-                }
-                help={
-                  (touched.password || submitCount > 0) && errors.password
-                    ? errors.password
-                    : undefined
-                }
-              >
-                <Input.Password
-                  name="password"
-                  placeholder="Password"
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </AntForm.Item>
+              <Field name="password">
+                {({ field, meta }: FieldProps<string>) => (
+                  <div className="login__field">
+                    <label className="login__label" htmlFor="password">
+                      Password
+                    </label>
+                    <Input.Password id="password" placeholder="Password" {...field} />
+                    {(meta.touched || submitCount > 0) && meta.error && (
+                      <div className="login__error">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
 
-              <AntForm.Item className="login__actions">
+              <div className="login__actions">
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -88,14 +64,14 @@ export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
                   loading={isSubmitting}
                   disabled={!isValid}
                 >
-                  {LOGIN_LABELS.submit}
+                  Log in
                 </Button>
-              </AntForm.Item>
+              </div>
               <Typography.Paragraph className="login__message">
-                {LOGIN_LABELS.message}
+                Don&apos;t have an account?
                 <Link to={ROUTES_URL.SIGNUP}>Sign up</Link>
               </Typography.Paragraph>
-            </AntForm>
+            </FormikForm>
           )}
         </Formik>
       </div>

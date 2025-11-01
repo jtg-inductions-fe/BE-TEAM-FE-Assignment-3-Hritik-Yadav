@@ -13,12 +13,15 @@ export default {
 
   // Tell Jest how to handle file imports (like Webpack does)
   moduleNameMapper: {
-    // Mock CSS/SCSS/LESS modules to prevent errors
-    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
-
-    // This mocks antd's global CSS imports
-    "antd/dist/reset.css": "<rootDir>/__mocks__/fileMock.js",
+    // Mock SCSS modules to prevent errors
+    "\\.(scss)$": "identity-obj-proxy",
 
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^@components/(.*)$": "<rootDir>/src/components/$1",
+    "^@containers/(.*)$": "<rootDir>/src/containers/$1",
+    "^@pages/(.*)$": "<rootDir>/src/pages/$1",
+    "^@services/(.*)$": "<rootDir>/src/services/$1",
+    "^@store/(.*)$": "<rootDir>/src/store/$1",
+    "^@styles/(.*)$": "<rootDir>/src/styles/$1",
   },
 };

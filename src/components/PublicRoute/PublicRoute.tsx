@@ -1,35 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { Loading } from "@/components";
+import { AppLoader } from "@/components";
+import { useAuthContext } from "@/context/AuthContext";
+import { USER_ROLE } from "@/services/service.const";
 
 export const PublicRoute: React.FC = () => {
-  const auth = getAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const { authUser, isAuthLoading, role } = useAuthContext();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (user) => {
-        if (user) {
-          navigate(ROUTES_URL.HOME, { replace: true });
-          return;
-        }
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Firebase auth state change error:", error);
-        setLoading(false);
-      },
-    );
-    return () => unsubscribe();
-  }, [navigate]);
+    if (isAuthLoading) {
+      return;
+    }
 
-  if (loading) {
-    return <Loading />;
+    if (authUser) {
+      const destination = role === USER_ROLE.Owner ? ROUTES_URL.ADMIN : ROUTES_URL.HOME;
+      navigate(destination, { replace: true });
+    }
+  }, [authUser, isAuthLoading, navigate, role]);
+
+  if (isAuthLoading || authUser) {
+    return <AppLoader />;
   }
 
   return <Outlet />;
