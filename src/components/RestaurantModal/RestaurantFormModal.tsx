@@ -1,24 +1,16 @@
 import React from "react";
 import { Modal, Form, Input, Radio, Space, TimePicker } from "antd";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import moment from "moment";
+import { Formik, Field } from "formik";
+import type { FieldProps } from "formik";
 
-import type {
-  RestaurantFormValues,
-  RestaurantPayload,
-  RestaurantStatus,
-} from "@services/restaurant.type";
+import type { RestaurantFormValues, RestaurantPayload } from "@services/restaurant.type";
 import type { RestaurantFormModalProps } from "./RestaurantModal.type";
 
-const timeFormat = "HH:mm";
-
-const Schema = Yup.object().shape({
-  name: Yup.string().min(2).max(100).required("Name is required"),
-  openingTime: Yup.mixed().required("Opening time is required"),
-  closingTime: Yup.mixed().required("Closing time is required"),
-  status: Yup.mixed<RestaurantStatus>().oneOf(["active", "inactive"]).required("Required"),
-});
+import {
+  RESTAURANT_MODAL_TIME_FORMAT,
+  getRestaurantFormInitialValues,
+} from "./RestaurantFormModal.const";
+import { restaurantFormValidationSchema } from "./RestaurantFormModal.validation";
 
 export const RestaurantFormModal: React.FC<RestaurantFormModalProps> = ({
   open,
@@ -27,26 +19,17 @@ export const RestaurantFormModal: React.FC<RestaurantFormModalProps> = ({
   onCancel,
   onSubmit,
 }) => {
-  const initialValues: RestaurantFormValues = {
-    name: initial?.name ?? "",
-    openingTime: initial?.openingTime
-      ? moment(initial.openingTime, timeFormat)
-      : moment("08:00", timeFormat),
-    closingTime: initial?.closingTime
-      ? moment(initial.closingTime, timeFormat)
-      : moment("22:00", timeFormat),
-    status: (initial?.status as RestaurantStatus) ?? "active",
-  };
+  const initialValues: RestaurantFormValues = getRestaurantFormInitialValues(initial);
 
   return (
     <Formik<RestaurantFormValues>
       initialValues={initialValues}
-      validationSchema={Schema}
+      validationSchema={restaurantFormValidationSchema}
       onSubmit={async (values, helpers) => {
         const payload: RestaurantPayload = {
           name: values.name,
-          openingTime: values.openingTime.format(timeFormat),
-          closingTime: values.closingTime.format(timeFormat),
+          openingTime: values.openingTime.format(RESTAURANT_MODAL_TIME_FORMAT),
+          closingTime: values.closingTime.format(RESTAURANT_MODAL_TIME_FORMAT),
           status: values.status,
         };
         await onSubmit(payload);
@@ -54,7 +37,7 @@ export const RestaurantFormModal: React.FC<RestaurantFormModalProps> = ({
       }}
       enableReinitialize
     >
-      {({ values, errors, touched, handleChange, setFieldValue, submitForm, isSubmitting }) => (
+      {({ submitForm, isSubmitting }) => (
         <Modal
           open={open}
           title={mode === "create" ? "Create Restaurant" : "Update Restaurant"}
@@ -64,63 +47,82 @@ export const RestaurantFormModal: React.FC<RestaurantFormModalProps> = ({
           destroyOnClose
         >
           <Form layout="vertical">
-            <Form.Item
-              label="Name"
-              validateStatus={touched.name && errors.name ? "error" : ""}
-              help={touched.name && errors.name ? errors.name : ""}
-            >
-              <Input
-                name="name"
-                value={values.name}
-                onChange={handleChange}
-                placeholder="Restaurant name"
-              />
-            </Form.Item>
+            <Field name="name">
+              {({ field, meta }: FieldProps<RestaurantFormValues["name"]>) => (
+                <Form.Item
+                  label="Name"
+                  validateStatus={meta.touched && meta.error ? "error" : ""}
+                  help={meta.touched && meta.error ? meta.error : ""}
+                >
+                  <Input {...field} placeholder="Restaurant name" />
+                </Form.Item>
+              )}
+            </Field>
 
             <Space size="large">
-              <Form.Item
-                label="Opening Time"
-                validateStatus={touched.openingTime && errors.openingTime ? "error" : ""}
-                help={touched.openingTime && errors.openingTime ? String(errors.openingTime) : ""}
-              >
-                <TimePicker
-                  value={values.openingTime}
-                  format={timeFormat}
-                  onChange={(time) => {
-                    if (time) {
-                      setFieldValue("openingTime", time);
-                    }
-                  }}
-                />
-              </Form.Item>
+              <Field name="openingTime">
+                {({ field, form, meta }: FieldProps<RestaurantFormValues["openingTime"]>) => (
+                  <Form.Item
+                    label="Opening Time"
+                    validateStatus={meta.touched && meta.error ? "error" : ""}
+                    help={meta.touched && meta.error ? String(meta.error) : ""}
+                  >
+                    <TimePicker
+                      value={field.value}
+                      format={RESTAURANT_MODAL_TIME_FORMAT}
+                      onChange={(time) => {
+                        if (time) {
+                          form.setFieldValue(field.name, time);
+                        }
+                      }}
+                      onBlur={() => form.setFieldTouched(field.name, true)}
+                      allowClear={false}
+                    />
+                  </Form.Item>
+                )}
+              </Field>
 
-              <Form.Item
-                label="Closing Time"
-                validateStatus={touched.closingTime && errors.closingTime ? "error" : ""}
-                help={touched.closingTime && errors.closingTime ? String(errors.closingTime) : ""}
-              >
-                <TimePicker
-                  value={values.closingTime}
-                  format={timeFormat}
-                  onChange={(time) => {
-                    if (time) {
-                      setFieldValue("closingTime", time);
-                    }
-                  }}
-                />
-              </Form.Item>
+              <Field name="closingTime">
+                {({ field, form, meta }: FieldProps<RestaurantFormValues["closingTime"]>) => (
+                  <Form.Item
+                    label="Closing Time"
+                    validateStatus={meta.touched && meta.error ? "error" : ""}
+                    help={meta.touched && meta.error ? String(meta.error) : ""}
+                  >
+                    <TimePicker
+                      value={field.value}
+                      format={RESTAURANT_MODAL_TIME_FORMAT}
+                      onChange={(time) => {
+                        if (time) {
+                          form.setFieldValue(field.name, time);
+                        }
+                      }}
+                      onBlur={() => form.setFieldTouched(field.name, true)}
+                      allowClear={false}
+                    />
+                  </Form.Item>
+                )}
+              </Field>
             </Space>
 
-            <Form.Item
-              label="Status"
-              validateStatus={touched.status && errors.status ? "error" : ""}
-              help={touched.status && errors.status ? errors.status : ""}
-            >
-              <Radio.Group name="status" onChange={handleChange} value={values.status}>
-                <Radio value="active">Active</Radio>
-                <Radio value="inactive">Inactive</Radio>
-              </Radio.Group>
-            </Form.Item>
+            <Field name="status">
+              {({ field, form, meta }: FieldProps<RestaurantFormValues["status"]>) => (
+                <Form.Item
+                  label="Status"
+                  validateStatus={meta.touched && meta.error ? "error" : ""}
+                  help={meta.touched && meta.error ? meta.error : ""}
+                >
+                  <Radio.Group
+                    value={field.value}
+                    onChange={(event) => form.setFieldValue(field.name, event.target.value)}
+                    onBlur={() => form.setFieldTouched(field.name, true)}
+                  >
+                    <Radio value="active">Active</Radio>
+                    <Radio value="inactive">Inactive</Radio>
+                  </Radio.Group>
+                </Form.Item>
+              )}
+            </Field>
           </Form>
         </Modal>
       )}

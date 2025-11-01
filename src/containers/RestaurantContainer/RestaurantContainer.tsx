@@ -1,19 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Typography, Button, message } from "antd";
+import { Typography, message } from "antd";
 import { getAuth } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 
-import { RestaurantList, RestaurantFormModal, DeleteConfirmModal, Loading } from "@/components";
-import { getUserDetails } from "@/services/user.service";
+import { RestaurantList, RestaurantFormModal, DeleteConfirmModal, AppLoader } from "@/components";
+import { getUserDetails } from "@services/user.service";
 import {
   createRestaurant,
   deleteRestaurant,
   listRestaurants,
   updateRestaurant,
-} from "@/services/restaurant.service";
-import { selectRestaurantNextPageToken, selectUser } from "@/store/selectors/selector";
+} from "@services/restaurant.service";
+import {
+  selectIsRestaurantFormModalOpen,
+  selectRestaurantNextPageToken,
+  selectUser,
+} from "@store/selectors/selector";
 import {
   clearRestaurantPagination,
+  closeRestaurantFormModal,
   setRestaurantNextToken,
   setUser,
 } from "@/store/actions/actions";
@@ -34,7 +39,6 @@ export const RestaurantContainer: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Restaurant | null>(null);
 
@@ -43,6 +47,14 @@ export const RestaurantContainer: React.FC = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isUserReady, setIsUserReady] = useState(false);
   const [userLoading, setUserLoading] = useState(true);
+  const isCreateModalOpen = useSelector(selectIsRestaurantFormModalOpen);
+
+  useEffect(
+    () => () => {
+      dispatch(closeRestaurantFormModal());
+    },
+    [dispatch],
+  );
 
   // works during mounting and refresh and user change
   useEffect(() => {
@@ -181,7 +193,7 @@ export const RestaurantContainer: React.FC = () => {
         setItems((previousItems) => [createdRestaurant, ...previousItems]);
       }
       message.success("Restaurant created");
-      setCreateOpen(false);
+      dispatch(closeRestaurantFormModal());
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Create failed";
       message.error(errorMessage);
@@ -250,7 +262,7 @@ export const RestaurantContainer: React.FC = () => {
   const greetingName = storedUser?.username ?? firebaseAuth.currentUser?.displayName ?? "Owner";
 
   if (userLoading) {
-    return <Loading />;
+    return <AppLoader />;
   }
 
   return (
@@ -259,9 +271,6 @@ export const RestaurantContainer: React.FC = () => {
         <Title level={2} className="restaurant-container__heading-title">
           Hi, {greetingName}
         </Title>
-        <Button type="primary" onClick={() => setCreateOpen(true)}>
-          Create Restaurant
-        </Button>
       </header>
       <div className="restaurant-container__section">
         <Title level={3} className="restaurant-container__section-title">
@@ -286,9 +295,9 @@ export const RestaurantContainer: React.FC = () => {
       />
 
       <RestaurantFormModal
-        open={createOpen}
+        open={isCreateModalOpen}
         mode="create"
-        onCancel={() => setCreateOpen(false)}
+        onCancel={() => dispatch(closeRestaurantFormModal())}
         onSubmit={handleCreate}
       />
 

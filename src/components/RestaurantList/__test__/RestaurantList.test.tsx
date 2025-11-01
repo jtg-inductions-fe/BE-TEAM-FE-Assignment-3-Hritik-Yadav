@@ -1,10 +1,12 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 
-import type { Restaurant } from "@/services/restaurant.type";
 import { RestaurantList } from "../RestaurantList";
+import type { Restaurant } from "@/services/restaurant.type";
+import type { RestaurantCardProps } from "@/components/RestaurantCard/RestaurantCard.type";
 
-const mockRestaurantCard = jest.fn(({ restaurant, onUpdate, onDelete }: any) => (
+const mockRestaurantCard = jest.fn(({ restaurant, onUpdate, onDelete }) => (
   <div data-testid={`restaurant-card-${restaurant.id}`}>
     <span>{restaurant.name}</span>
     <button onClick={onUpdate}>update card</button>
@@ -16,13 +18,20 @@ jest.mock("@/components", () => {
   const actual = jest.requireActual("@/components");
   return {
     ...actual,
-    RestaurantCard: (props: any) => mockRestaurantCard(props),
+    RestaurantCard: (props: RestaurantCardProps) => mockRestaurantCard(props),
   };
 });
 
+interface MockInfiniteScrollProps {
+  children: ReactNode;
+  next: () => void;
+  loader?: ReactNode;
+  endMessage?: ReactNode;
+  hasMore: boolean;
+}
 jest.mock("react-infinite-scroll-component", () => ({
   __esModule: true,
-  default: ({ children, next, loader, endMessage, hasMore }: any) => (
+  default: ({ children, next, loader, endMessage, hasMore }: MockInfiniteScrollProps) => (
     <div>
       <button data-testid="load-more-trigger" onClick={next}>
         load more

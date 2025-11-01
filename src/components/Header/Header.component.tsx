@@ -10,7 +10,12 @@ import "./header.style.scss";
 const { Header: AntHeader } = Layout;
 const { Title } = Typography;
 
-export const Header: React.FC<HeaderProps> = ({ logout, isAuthenticate, isAllowedPage }) => {
+export const Header: React.FC<HeaderProps> = ({
+  logout,
+  isAuthenticate,
+  isAllowedPage,
+  onCreateRestaurant,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -19,9 +24,14 @@ export const Header: React.FC<HeaderProps> = ({ logout, isAuthenticate, isAllowe
         <Link to={ROUTES_URL.HOME}>Zomato Lite</Link>
       </Title>
       {isAuthenticate ? (
-        <Button type="primary" onClick={logout}>
-          Logout
-        </Button>
+        <div className="header__button">
+          <Button type="primary" onClick={onCreateRestaurant}>
+            Create Restaurant
+          </Button>
+          <Button type="default" onClick={logout}>
+            Logout
+          </Button>
+        </div>
       ) : (
         isAllowedPage && (
           <div className="header__button">

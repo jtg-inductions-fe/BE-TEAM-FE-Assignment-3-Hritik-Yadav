@@ -5,7 +5,6 @@ import type { Restaurant } from "@/services/restaurant.type";
 import { DeleteConfirmModal } from "../DeleteConfirmModal";
 import { RestaurantFormModal } from "../RestaurantFormModal";
 
-
 describe("RestaurantFormModal", () => {
   const defaultProps = {
     open: true,

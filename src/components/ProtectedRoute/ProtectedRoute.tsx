@@ -26,7 +26,7 @@ export const ProtectedRoute: React.FC = () => {
       return;
     }
 
-    if (location.pathname === ROUTES_URL.ADMIN && role !== USER_ROLE.Owner) {
+    if (location.pathname === ROUTES_URL.RESTAURANT && role !== USER_ROLE.Owner) {
       navigate(ROUTES_URL.HOME, { replace: true });
     }
   }, [authUser, isAuthLoading, navigate, role, location.pathname]);

@@ -16,7 +16,7 @@ export const PublicRoute: React.FC = () => {
     }
 
     if (authUser) {
-      const destination = role === USER_ROLE.Owner ? ROUTES_URL.ADMIN : ROUTES_URL.HOME;
+      const destination = role === USER_ROLE.Owner ? ROUTES_URL.RESTAURANT : ROUTES_URL.HOME;
       navigate(destination, { replace: true });
     }
   }, [authUser, isAuthLoading, navigate, role]);
