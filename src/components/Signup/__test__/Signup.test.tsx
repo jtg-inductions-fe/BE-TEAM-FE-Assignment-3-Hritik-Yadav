@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { USER_ROLE } from "@/services/service.const";
 import { Signup } from "../Signup.component";
 
 describe("test Signup component", () => {
@@ -52,7 +53,7 @@ describe("test Signup component", () => {
 
     await userEvent.type(emailInput, "test");
     await userEvent.type(passwordInput, "pass");
-    expect(await screen.findByText("Invalid email")).toBeVisible();
+    expect(await screen.findByText("Invalid email address format")).toBeVisible();
     await userEvent.type(confirmPasswordInput, "diff");
     expect(await screen.findByText("Password must be at least 8 characters")).toBeVisible();
     await user.click(emailInput);
@@ -77,8 +78,8 @@ describe("test Signup component", () => {
 
     await userEvent.type(usernameInput, "test example");
     await userEvent.type(emailInput, "test@example.com");
-    await userEvent.type(passwordInput, "password123");
-    await userEvent.type(confirmPasswordInput, "password123");
+    await userEvent.type(passwordInput, "Password@123");
+    await userEvent.type(confirmPasswordInput, "Password@123");
     const ownerRadio = screen.getByRole("radio", { name: "Owner" });
     await user.click(ownerRadio);
     const loginButton = screen.getByRole("button", { name: "Sign up" });
@@ -94,9 +95,9 @@ describe("test Signup component", () => {
       expect(mockOnSubmit).toHaveBeenCalledWith({
         username: "test example",
         email: "test@example.com",
-        password: "password123",
-        confirmPassword: "password123",
-        role: "Owner",
+        password: "Password@123",
+        confirmPassword: "Password@123",
+        role: USER_ROLE.Owner,
       });
     });
   });

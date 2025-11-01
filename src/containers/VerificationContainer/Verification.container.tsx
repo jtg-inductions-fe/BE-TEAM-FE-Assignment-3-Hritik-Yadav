@@ -51,10 +51,7 @@ export const VerificationContainer: React.FC = () => {
       message.success("Verification email sent successfully!");
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error("Resend verification error", err);
         message.error(err.message || "Failed to send verification email");
-      } else {
-        console.error("Unexpected error", err);
       }
     }
   }, []);

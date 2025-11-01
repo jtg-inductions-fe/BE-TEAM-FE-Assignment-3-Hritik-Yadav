@@ -1,33 +1,39 @@
-module.exports = {
-  getAuth: jest.fn(() => {
-    return {
-      currentUser: null,
-    };
+
+const createFirebaseUser = () => ({
+  uid: "test-user-123",
+  email: "test@example.com",
+  emailVerified: true,
+  reload: jest.fn().mockResolvedValue(undefined),
+  getIdToken: jest.fn().mockResolvedValue("mock-token"),
+  getIdTokenResult: jest.fn().mockResolvedValue({
+    claims: {
+      role: "Customer",
+    },
   }),
+});
+
+module.exports = {
+  getAuth: jest.fn(() => ({
+    currentUser: null,
+    signOut: jest.fn().mockResolvedValue(undefined),
+  })),
 
   onAuthStateChanged: jest.fn((auth, callback) => {
-    const user = null;
-    callback(user);
+    callback(null);
     return jest.fn();
   }),
 
-  signInWithEmailAndPassword: jest.fn(() => {
-    return Promise.resolve({
-      user: {
-        uid: "test-user-123",
-        email: "test@example.com",
-      },
-    });
-  }),
+  signInWithEmailAndPassword: jest.fn(() =>
+    Promise.resolve({
+      user: createFirebaseUser(),
+    }),
+  ),
 
-  sendEmailVerification: jest.fn(() => Promise.resolve()),
+  sendEmailVerification: jest.fn().mockResolvedValue(undefined),
 
-  signInWithCustomToken: jest.fn(() => {
-    return Promise.resolve({
-      user: {
-        uid: "test-user-123",
-        email: "test@example.com",
-      },
-    });
-  }),
+  signInWithCustomToken: jest.fn(() =>
+    Promise.resolve({
+      user: createFirebaseUser(),
+    }),
+  ),
 };

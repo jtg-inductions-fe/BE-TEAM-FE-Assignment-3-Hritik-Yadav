@@ -4,47 +4,69 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 50vh;
+  min-height: 60vh;
+  padding: 1.5rem 1rem;
 
   &__card {
     width: 480px;
     background: $color-bg-surface;
     border: 1px solid $color-border-light;
     border-radius: 12px;
-    padding: 24px;
+    padding: 1.5rem;
     box-shadow: 0 6px 18px $color-box-shadow;
     position: relative;
     max-width: 100%;
     margin: 0 auto;
-
-    @media (max-width: 480px) {
-      width: 100%;
-      padding: 16px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px $color-box-shadow;
-    }
   }
 
   &__title {
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
     color: $color-link;
   }
 
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
   &__field {
-    margin-bottom: 12px;
+    margin-bottom: 0;
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: $color-text-primary;
+    font-weight: 500;
+  }
+
+  &__error {
+    min-height: 1.125rem;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: $color-error;
+    line-height: 1.25;
   }
 
   &__role {
-    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__role-options {
+    display: flex;
+    gap: 0.5rem;
   }
 
   &__actions {
-    margin-top: 8px;
+    margin-top: 0.5rem;
   }
 
   &__message {
     text-align: center;
-    margin-top: 8px;
+    margin-top: 0.5rem;
+    line-height: 1.4;
   }
 }

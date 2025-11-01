@@ -1,49 +1,38 @@
-import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import React, { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { Loading } from "@/components";
+import { AppLoader } from "@/components";
+import { useAuthContext } from "@/context/AuthContext";
+import { USER_ROLE } from "@/services/service.const";
 
 export const ProtectedRoute: React.FC = () => {
-  const auth = getAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const { authUser, isAuthLoading, role } = useAuthContext();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      async (user) => {
-        if (!user) {
-          navigate(ROUTES_URL.LOGIN, { replace: true });
-          setLoading(false);
-          return;
-        }
-        try {
-          await user.reload();
-        } catch (error) {
-          console.error("Firebase reload error:", error);
-          setLoading(false);
-          return;
-        }
-        if (!user.emailVerified) {
-          navigate(ROUTES_URL.CONFIRMATION, { replace: true });
-          setLoading(false);
-          return;
-        }
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Firebase auth state change error:", error);
-        setLoading(false);
-      },
-    );
+    if (isAuthLoading) {
+      return;
+    }
 
-    return unsubscribe;
-  }, [navigate]);
+    if (!authUser) {
+      navigate(ROUTES_URL.LOGIN, { replace: true });
+      return;
+    }
 
-  if (loading) {
-    return <Loading />;
+    if (!authUser.emailVerified) {
+      navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+      return;
+    }
+
+    if (location.pathname === ROUTES_URL.ADMIN && role !== USER_ROLE.Owner) {
+      navigate(ROUTES_URL.HOME, { replace: true });
+    }
+  }, [authUser, isAuthLoading, navigate, role, location.pathname]);
+
+  if (isAuthLoading || !authUser || !authUser.emailVerified) {
+    return <AppLoader />;
   }
 
   return <Outlet />;

@@ -1,43 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { Button, Layout, message, Typography } from "antd";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Layout, Typography } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
+import type { HeaderProps } from "./header.type";
 
 import "./header.style.scss";
 
 const { Header: AntHeader } = Layout;
 const { Title } = Typography;
 
-export const Header: React.FC = () => {
-  const auth = getAuth();
+export const Header: React.FC<HeaderProps> = ({ logout, isAuthenticate, isAllowedPage }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const isSignupPage = location.pathname === ROUTES_URL.SIGNUP;
-  const isLoginPage = location.pathname === ROUTES_URL.LOGIN;
-  const isVerificationPage = location.pathname === ROUTES_URL.CONFIRMATION;
-  const isAllowedPage = !isSignupPage && !isLoginPage && !isVerificationPage;
-  const [isAuthenticate, setIsAuthenticate] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsAuthenticate(!!user);
-    });
-
-    return unsubscribe;
-  }, [auth]);
-
-  const logout = async () => {
-    try {
-      await auth.signOut();
-      message.success("Logout Successfully");
-      navigate(ROUTES_URL.LOGIN);
-    } catch (error) {
-      console.error("Logout failed:", error);
-      message.error("Logout failed");
-    }
-  };
 
   return (
     <AntHeader className="header">

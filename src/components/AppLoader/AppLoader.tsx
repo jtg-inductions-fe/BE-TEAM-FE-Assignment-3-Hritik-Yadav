@@ -1,8 +1,8 @@
 import React from "react";
 import { Spin } from "antd";
-import "./loading.style.scss";
+import "./appLoader.style.scss";
 
-export const Loading: React.FC = () => {
+export const AppLoader: React.FC = () => {
   return (
     <div className="loader">
       <Spin size="large" />

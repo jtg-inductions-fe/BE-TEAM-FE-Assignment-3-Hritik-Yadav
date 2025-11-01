@@ -1,64 +1,16 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { message } from "antd";
 
 import { Header } from "../Header.component";
 
-const mockedGetAuth = getAuth as jest.Mock;
-const mockedOnAuthStateChanged = onAuthStateChanged as jest.Mock;
-const mockSignOut = jest.fn(() => Promise.resolve());
+describe("Header", () => {
+  test("shows signup and login buttons when user is not authenticated and page is allowed", () => {
+    const logout = jest.fn();
 
-type MockUser = {
-  uid: string;
-  email: string;
-};
-
-const mockAuthObject: { currentUser: MockUser | null; signOut: jest.Mock } = {
-  currentUser: null,
-  signOut: mockSignOut,
-};
-
-const mockUser = {
-  uid: "test-user-123",
-  email: "test@example.com",
-};
-
-const setLoggedInState = () => {
-  mockAuthObject.currentUser = mockUser;
-  mockedGetAuth.mockReturnValue(mockAuthObject);
-
-  mockedOnAuthStateChanged.mockImplementation((auth, callback) => {
-    callback(mockUser);
-    return jest.fn();
-  });
-};
-
-const setLoggedOutState = () => {
-  mockAuthObject.currentUser = null;
-  mockedGetAuth.mockReturnValue(mockAuthObject);
-
-  mockedOnAuthStateChanged.mockImplementation((auth, callback) => {
-    callback(null);
-    return jest.fn();
-  });
-};
-
-describe("Header testing", () => {
-  beforeEach(() => {
-    mockedGetAuth.mockClear();
-    mockedOnAuthStateChanged.mockClear();
-    mockSignOut.mockClear();
-    (message.success as jest.Mock).mockClear();
-
-    setLoggedOutState();
-  });
-
-  test("renders the Home page header for the default route and test logo", () => {
     render(
-      <MemoryRouter initialEntries={["/"]}>
-        <Header />
+      <MemoryRouter>
+        <Header logout={logout} isAuthenticate={false} isAllowedPage />
       </MemoryRouter>,
     );
 
@@ -67,14 +19,12 @@ describe("Header testing", () => {
     expect(screen.getByText("Login")).toBeVisible();
   });
 
-  test.each([
-    { route: "/login", routeName: "Login" },
-    { route: "/signup", routeName: "Signup" },
-    { route: "/confirm", routeName: "Confirmation" },
-  ])("hides Login and Signup buttons on $routeName route", ({ route }) => {
+  test("hides auth actions when page is not allowed", () => {
+    const logout = jest.fn();
+
     render(
-      <MemoryRouter initialEntries={[route]}>
-        <Header />
+      <MemoryRouter>
+        <Header logout={logout} isAuthenticate={false} isAllowedPage={false} />
       </MemoryRouter>,
     );
 
@@ -82,12 +32,12 @@ describe("Header testing", () => {
     expect(screen.queryByText("Login")).not.toBeInTheDocument();
   });
 
-  test('renders "Logout" button when user is logged in', () => {
-    setLoggedInState();
+  test("shows logout button when user is authenticated", () => {
+    const logout = jest.fn();
 
     render(
-      <MemoryRouter initialEntries={["/"]}>
-        <Header />
+      <MemoryRouter>
+        <Header logout={logout} isAuthenticate isAllowedPage />
       </MemoryRouter>,
     );
 
@@ -96,22 +46,18 @@ describe("Header testing", () => {
     expect(screen.queryByText("Login")).not.toBeInTheDocument();
   });
 
-  test("renders Logout button working on click", async () => {
+  test("calls logout handler when logout button is clicked", async () => {
     const user = userEvent.setup();
-    setLoggedInState();
+    const logout = jest.fn();
 
     render(
-      <MemoryRouter initialEntries={["/"]}>
-        <Header />
+      <MemoryRouter>
+        <Header logout={logout} isAuthenticate isAllowedPage />
       </MemoryRouter>,
     );
 
-    const logoutButton = screen.getByText("Logout");
-    await user.click(logoutButton);
+    await user.click(screen.getByText("Logout"));
 
-    expect(mockSignOut).toHaveBeenCalledTimes(1);
-    await waitFor(() => {
-      expect(message.success).toHaveBeenCalledWith("Logout Successfully");
-    });
+    expect(logout).toHaveBeenCalledTimes(1);
   });
 });

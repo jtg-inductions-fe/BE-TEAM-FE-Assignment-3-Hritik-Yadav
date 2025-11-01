@@ -1,0 +1,36 @@
+import React, { useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { message } from "antd";
+import { getAuth } from "firebase/auth";
+
+import { Header } from "@/components";
+import { useAuthContext } from "@/context/AuthContext";
+import { app } from "@/firebase/firebase";
+import { ROUTES_URL } from "@/routes/routes.const";
+
+export const HeaderContainer: React.FC = () => {
+  const auth = getAuth(app);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isSignupPage = location.pathname === ROUTES_URL.SIGNUP;
+  const isLoginPage = location.pathname === ROUTES_URL.LOGIN;
+  const isVerificationPage = location.pathname === ROUTES_URL.CONFIRMATION;
+  const isAllowedPage = useMemo(
+    () => !isSignupPage && !isLoginPage && !isVerificationPage,
+    [isLoginPage, isSignupPage, isVerificationPage],
+  );
+  const { authUser, isAuthLoading } = useAuthContext();
+  const isAuthenticate = !!authUser && !isAuthLoading;
+
+  const logout = async () => {
+    try {
+      await auth.signOut();
+      message.success("Logout Successfully");
+      navigate(ROUTES_URL.LOGIN);
+    } catch {
+      message.error("Logout failed");
+    }
+  };
+
+  return <Header logout={logout} isAllowedPage={isAllowedPage} isAuthenticate={isAuthenticate} />;
+};

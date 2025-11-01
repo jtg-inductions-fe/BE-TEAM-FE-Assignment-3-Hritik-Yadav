@@ -11,6 +11,7 @@ import { getUserDetails } from "@/services";
 import { Login } from "@/components";
 import { LoginValues } from "@components/Login";
 import { setUser } from "@/store/actions/actions";
+import { USER_ROLE } from "@/services/service.const";
 
 export const LoginContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -28,8 +29,7 @@ export const LoginContainer: React.FC = () => {
       }
       const idTokenResult = await user.getIdTokenResult();
       const roleFromClaims = (idTokenResult.claims as Record<string, unknown>)["role"] as
-        | "Customer"
-        | "Owner"
+        | USER_ROLE
         | undefined;
 
       const resp = await getUserDetails(token);
@@ -43,18 +43,15 @@ export const LoginContainer: React.FC = () => {
         navigate(ROUTES_URL.CONFIRMATION);
         return;
       }
-      if (role === "Owner") {
+      if (role === USER_ROLE.Owner) {
         navigate(ROUTES_URL.RESTAURANT);
       } else {
         navigate(ROUTES_URL.HOME);
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error("login error", err);
         const msg: string = err?.message || "Login failed";
         message.error(msg);
-      } else {
-        console.error("Unexpected error", err);
       }
     }
   };
