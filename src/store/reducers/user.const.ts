@@ -4,5 +4,5 @@ export const INITIAL_STATE: UserState = {
   user: null,
 };
 
-export const SET_USER = "user/SET_USER" as const;
-export const CLEAR_USER = "user/CLEAR_USER" as const;
+export const SET_USER = "SET_USER";
+export const CLEAR_USER = "CLEAR_USER";

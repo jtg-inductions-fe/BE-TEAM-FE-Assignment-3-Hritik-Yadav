@@ -68,8 +68,7 @@ export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
                 </Button>
               </div>
               <Typography.Paragraph className="login__message">
-                Don&apos;t have an account?
-                <Link to={ROUTES_URL.SIGNUP}>Sign up</Link>
+                Don&apos;t have an account? <Link to={ROUTES_URL.SIGNUP}>Sign up</Link>
               </Typography.Paragraph>
             </FormikForm>
           )}

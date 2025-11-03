@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
-import { Header } from "../Header";
+import { Header } from "@/components";
 
 describe("Header", () => {
   test("shows signup and login buttons when user is not authenticated and page is allowed", () => {

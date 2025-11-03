@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { USER_ROLE_VALUES } from "@/services/service.const";
+import { USER_ROLE_VALUES } from "@services/service.const";
 
 export const signupValidationSchema = Yup.object().shape({
   username: Yup.string()

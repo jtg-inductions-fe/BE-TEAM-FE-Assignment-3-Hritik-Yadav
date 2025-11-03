@@ -1,20 +1,24 @@
 import React from "react";
 import { Button, Typography, Result, Space } from "antd";
 
-import type { Props } from "./Verification.type";
+import type { VerificationProps } from "./Verification.type";
 
 import "./verification.style.scss";
 
 const { Paragraph } = Typography;
 
-export const Verification: React.FC<Props> = ({ status, title, subtitle, onRetry, onResend }) => {
+export const Verification: React.FC<VerificationProps> = ({
+  title,
+  subtitle,
+  onRetry,
+  onResend,
+}) => {
   const message = "If you didn't receive an email, check your spam folder or try signing up again.";
 
   return (
     <div className="confirmation-wrapper">
       <div className="confirmation-card">
         <Result
-          status={status}
           title={title}
           subTitle={subtitle}
           extra={

@@ -1,21 +1,19 @@
 import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { useDispatch } from "react-redux";
 
 import { app } from "@/firebase/firebase";
 import { getUserDetails } from "@/services";
-import { USER_ROLE_VALUES } from "@services/service.const";
 import { clearUser, setUser } from "@store/actions/actions";
+import { isValidRole } from "@/utils/helper";
 import type { Role } from "@services/service.type";
-import type { AuthContextType, AuthUser } from "./context.type";
+import type { AuthContextType } from "./context.type";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const isValidRole = (value: unknown): value is Role => USER_ROLE_VALUES.includes(value as Role);
-
 export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
-  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [role, setRole] = useState<Role | null>(null);
 
@@ -47,12 +45,7 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
       }
 
       // set user
-      setAuthUser({
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        emailVerified: firebaseUser.emailVerified,
-      });
-
+      setAuthUser(firebaseUser);
       let currentRole: Role | null = null;
 
       // set role
@@ -65,6 +58,7 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
       } catch {
         currentRole = null;
       }
+
       // set user details
       try {
         const token = await firebaseUser.getIdToken();
