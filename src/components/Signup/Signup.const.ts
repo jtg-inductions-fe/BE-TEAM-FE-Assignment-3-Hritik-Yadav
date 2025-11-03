@@ -1,5 +1,5 @@
 import { USER_ROLE } from "@/services/service.const";
-import { SignupValues } from "./Signup.type";
+import type { SignupValues } from "./Signup.type";
 
 export const VALUES = {
   Customer: USER_ROLE.Customer,

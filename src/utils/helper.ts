@@ -1,4 +1,5 @@
-import { ApiUrlParams, BASE_URL, ENDPOINT } from "@services/service.const";
+import { ApiUrlParams, BASE_URL, ENDPOINT, USER_ROLE_VALUES } from "@services/service.const";
+import type { Role } from "@/services/service.type";
 
 export const buildApiUrl = (
   ENDPOINT: ENDPOINT,
@@ -22,3 +23,6 @@ export const buildApiUrl = (
 
   return url;
 };
+
+export const isValidRole = (value: unknown): value is Role =>
+  USER_ROLE_VALUES.includes(value as Role);

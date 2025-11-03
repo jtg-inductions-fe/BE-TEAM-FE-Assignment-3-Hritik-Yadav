@@ -1,5 +1,3 @@
-import { AnyAction } from "redux";
-
 import { CLEAR_USER, SET_USER } from "./user.const";
 import type { UserData } from "@services/service.type";
 
@@ -16,4 +14,4 @@ export type ClearUserAction = {
   type: typeof CLEAR_USER;
 };
 
-export type UserActions = SetUserAction | ClearUserAction | AnyAction;
+export type UserActions = SetUserAction | ClearUserAction;

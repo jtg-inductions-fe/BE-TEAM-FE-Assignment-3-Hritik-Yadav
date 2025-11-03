@@ -4,7 +4,7 @@ import { Input, Button, Typography, Radio } from "antd";
 import { Formik, Form as FormikForm, Field, FieldProps } from "formik";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { USER_ROLE } from "@/services/service.const";
+import { USER_ROLE } from "@services/service.const";
 
 import { signupValidationSchema } from "./Signup.validation";
 import { INITIAL_SIGNUP_VALUES } from "./Signup.const";

@@ -4,11 +4,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
+  min-height: 79vh;
   padding: 1.5rem 1rem;
 
   &__card {
-    width: 480px;
+    width: 400px;
     background: $color-bg-surface;
     border: 1px solid $color-border-light;
     border-radius: 12px;

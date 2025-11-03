@@ -1,37 +1,35 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth, sendEmailVerification } from "firebase/auth";
-
-import { app } from "@/firebase/firebase";
+import { useSelector } from "react-redux";
+import { sendEmailVerification } from "firebase/auth";
+import { message } from "antd";
 
 import { Verification } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { message } from "antd";
+import { USER_ROLE } from "@services/service.const";
+import { selectUserRole } from "@store/selectors/selector";
+import { useAuthContext } from "@/context/AuthContext";
 
 export const VerificationContainer: React.FC = () => {
   const navigate = useNavigate();
-  const [status, setStatus] = useState<"success" | "error" | "info">("info");
   const [title, setTitle] = useState<string>("Checking verification status...");
   const [subtitle, setSubtitle] = useState<string>("");
+  const role = useSelector(selectUserRole);
+  const auth = useAuthContext();
 
   const checkVerified = useCallback(async () => {
-    const auth = getAuth(app);
-    const user = auth.currentUser;
+    const user = auth.authUser;
     if (!user) {
-      setStatus("info");
-      setTitle("Please sign in first");
-      setSubtitle("Go to signup, create an account and sign in to verify.");
       return;
     }
-    await user.reload();
     if (user.emailVerified) {
-      navigate(ROUTES_URL.HOME, { replace: true });
+      const route = role == USER_ROLE.Owner ? ROUTES_URL.ADMIN : ROUTES_URL.HOME;
+      navigate(route, { replace: true });
       return;
     }
-    setStatus("info");
     setTitle("Email not verified yet");
     setSubtitle("Click resend to send the verification email again.");
-  }, [navigate]);
+  }, [auth, navigate, role]);
 
   useEffect(() => {
     (async () => {
@@ -41,24 +39,21 @@ export const VerificationContainer: React.FC = () => {
 
   const handleResend = useCallback(async () => {
     try {
-      const auth = getAuth(app);
-      const user = auth.currentUser;
+      const user = auth.authUser;
       if (!user) {
-        message.info("Please sign in to resend the verification email.");
+        message.info("Please Log in to resend the verification email.");
+        navigate(ROUTES_URL.LOGIN);
         return;
       }
       await sendEmailVerification(user);
       message.success("Verification email sent successfully!");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        message.error(err.message || "Failed to send verification email");
-      }
+    } catch {
+      message.error("Failed to send verification email");
     }
-  }, []);
+  }, [auth, navigate]);
 
   return (
     <Verification
-      status={status}
       title={title}
       subtitle={subtitle}
       onRetry={checkVerified}

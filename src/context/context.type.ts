@@ -1,13 +1,8 @@
-import { Role } from "@services/service.type";
+import type { User } from "firebase/auth";
+import type { Role } from "@services/service.type";
 
 export interface AuthContextType {
-  authUser: AuthUser | null;
+  authUser: User | null;
   isAuthLoading: boolean;
   role: Role | null;
-}
-
-export interface AuthUser {
-  uid: string;
-  email: string | null;
-  emailVerified: boolean;
 }

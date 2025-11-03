@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { AppLoader } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
-import { USER_ROLE } from "@/services/service.const";
+import { USER_ROLE } from "@services/service.const";
 
 export const PublicRoute: React.FC = () => {
   const navigate = useNavigate();

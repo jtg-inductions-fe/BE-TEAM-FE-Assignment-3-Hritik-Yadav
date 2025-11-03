@@ -1,7 +1,4 @@
-export type ResultStatusType = "success" | "error" | "info" | "warning";
-
-export type Props = {
-  status: ResultStatusType;
+export type VerificationProps = {
   title: string;
   subtitle: string;
   onRetry?: () => void;

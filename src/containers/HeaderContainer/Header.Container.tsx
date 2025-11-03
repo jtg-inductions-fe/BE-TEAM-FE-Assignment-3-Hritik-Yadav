@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getAuth } from "firebase/auth";
 
+import { app } from "@/firebase/firebase";
 import { Header } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
-import { app } from "@/firebase/firebase";
 import { ROUTES_URL } from "@/routes/routes.const";
 
 export const HeaderContainer: React.FC = () => {
@@ -15,10 +15,7 @@ export const HeaderContainer: React.FC = () => {
   const isSignupPage = location.pathname === ROUTES_URL.SIGNUP;
   const isLoginPage = location.pathname === ROUTES_URL.LOGIN;
   const isVerificationPage = location.pathname === ROUTES_URL.CONFIRMATION;
-  const isAllowedPage = useMemo(
-    () => !isSignupPage && !isLoginPage && !isVerificationPage,
-    [isLoginPage, isSignupPage, isVerificationPage],
-  );
+  const isAllowedPage = !isSignupPage && !isLoginPage && !isVerificationPage;
   const { authUser, isAuthLoading } = useAuthContext();
   const isAuthenticate = !!authUser && !isAuthLoading;
 

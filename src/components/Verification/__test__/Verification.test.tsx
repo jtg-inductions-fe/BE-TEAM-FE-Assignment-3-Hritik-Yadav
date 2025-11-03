@@ -1,13 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Verification } from "../Verification";
+import { Verification } from "@/components";
 
 describe("test Verification component", () => {
   test("renders basic info and hint", () => {
     render(
       <Verification
-        status="info"
         title="Verify your email"
         subtitle="Please check your inbox for a verification link."
       />,
@@ -29,7 +28,6 @@ describe("test Verification component", () => {
     const onRetry = jest.fn();
     render(
       <Verification
-        status="error"
         title="Verification failed"
         subtitle="Something went wrong."
         onRetry={onRetry}
@@ -48,7 +46,6 @@ describe("test Verification component", () => {
     const onResend = jest.fn();
     render(
       <Verification
-        status="warning"
         title="Email not verified"
         subtitle="You need to verify your email."
         onResend={onResend}
@@ -68,7 +65,6 @@ describe("test Verification component", () => {
     const onResend = jest.fn();
     render(
       <Verification
-        status="warning"
         title="Action required"
         subtitle="Please verify or try again."
         onRetry={onRetry}

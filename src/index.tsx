@@ -1,12 +1,11 @@
 import React from "react";
 import { ConfigProvider } from "antd";
 import ReactDOM from "react-dom/client";
-import "antd/dist/antd.css";
+import "antd/dist/antd.variable.min.css";
 
 import { App } from "@/App";
 
 import "@/index.scss";
-import "antd/dist/antd.variable.min.css";
 import { themeConfig } from "@/theme";
 
 ConfigProvider.config({
