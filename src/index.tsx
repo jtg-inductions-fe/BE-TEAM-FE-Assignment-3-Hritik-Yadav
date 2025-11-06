@@ -6,10 +6,11 @@ import "antd/dist/antd.variable.min.css";
 import { App } from "@/App";
 
 import "@/index.scss";
-import { themeConfig } from "@/theme";
+import "antd/dist/antd.variable.min.css";
+import { THEME_CONFIG } from "@/theme/theme";
 
 ConfigProvider.config({
-  theme: themeConfig,
+  theme: THEME_CONFIG,
 });
 
 const rootElement = document.getElementById("root");
