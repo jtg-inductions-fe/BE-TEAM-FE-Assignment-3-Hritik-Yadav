@@ -1,4 +1,4 @@
-# 🍔 BE-TEAM-FE-Assignment-3-Hritik-Yadav
+#  BE-TEAM-FE-Assignment-3-Hritik-Yadav
 
 This repository contains the **Frontend Setup** for **Zomato Lite**.
 
@@ -15,24 +15,17 @@ The project utilizes the following technologies:
 
 ---
 
-## 🚀 Setup Guide
+##  Setup Guide
 
 Follow these steps to get the project running locally:
 
-1.  **Node Version:** Ensure you are using the correct Node version.
-
-    ```bash
-    nvm use
-    # (If 'nvm' is not installed, ensure your Node version is v22)
-    ```
-
-2.  **Install Dependencies:**
+1.  **Install Dependencies:**
 
     ```bash
     npm install
     ```
 
-3.  **Run Development Server:**
+2.  **Run Development Server:**
 
     ```bash
     npm run dev
@@ -40,7 +33,7 @@ Follow these steps to get the project running locally:
 
 ---
 
-## ✅ Available NPM Scripts
+##  Available NPM Scripts
 
 Here is a guide to the common development commands:
 
@@ -52,6 +45,5 @@ Here is a guide to the common development commands:
 | `lint` | Checks for code style and quality issues in all source files. |
 | `lint:fix` | **Automatically fixes** linting and formatting issues where possible. |
 | `format` | **Formats** all specified source files according to Prettier rules. |
-| `format:check` | Checks if any formatting issues are present. |
 
 ---
