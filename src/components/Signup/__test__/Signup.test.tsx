@@ -20,8 +20,7 @@ describe("test Signup component", () => {
     const customerRadio = screen.getByRole("radio", { name: "Customer" });
     expect(customerRadio).toBeVisible();
     expect(screen.getByRole("button", { name: "Sign up" })).toBeVisible();
-    const message = "Already have an account?";
-    expect(screen.getByText(message)).toBeVisible();
+    expect(screen.getByText("Already have an account?")).toBeVisible();
     expect(screen.getByText("Log in")).toBeVisible();
   });
 

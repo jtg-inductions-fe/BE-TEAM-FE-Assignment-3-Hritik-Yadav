@@ -1,6 +1,7 @@
-import { CLEAR_USER, INITIAL_STATE, SET_USER } from "./user.const";
-
-import type { SetUserAction, UserActions, UserState } from "./user.type";
+import { CLEAR_USER, SET_USER } from "../actions/actions.const";
+import { INITIAL_STATE } from "./user.const";
+import type { SetUserAction, UserActions } from "../actions/actions.type";
+import type { UserState } from "./user.type";
 
 export const userReducer = (state: UserState = INITIAL_STATE, action: UserActions): UserState => {
   switch (action.type) {

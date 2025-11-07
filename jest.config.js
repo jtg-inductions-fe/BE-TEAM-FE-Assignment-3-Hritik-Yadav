@@ -6,11 +6,6 @@ export default {
 
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
 
-  // This tells Jest to transpile antd (and other ESM-only packages)
-  transformIgnorePatterns: [
-    "/node_modules/(?!antd|@ant-design|rc-util|rc-pagination|rc-picker|rc-tree|rc-table)/",
-  ],
-
   // Tell Jest how to handle file imports (like Webpack does)
   moduleNameMapper: {
     // Mock SCSS modules to prevent errors

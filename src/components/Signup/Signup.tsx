@@ -6,7 +6,7 @@ import { Formik, Form as FormikForm, Field, FieldProps } from "formik";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { USER_ROLE } from "@services/service.const";
 
-import { signupValidationSchema } from "./Signup.validation";
+import { SIGNUP_VALIDATION_SCHEMA } from "./Signup.validation";
 import { INITIAL_SIGNUP_VALUES } from "./Signup.const";
 import type { SignupProps, SignupValues } from "./Signup.type";
 
@@ -21,7 +21,7 @@ export const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
         </Typography.Title>
         <Formik
           initialValues={INITIAL_SIGNUP_VALUES}
-          validationSchema={signupValidationSchema}
+          validationSchema={SIGNUP_VALIDATION_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
             onSubmit(values);
             setSubmitting(false);
@@ -101,8 +101,8 @@ export const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                       onChange={(e) => form.setFieldValue(field.name, e.target.value)}
                       onBlur={() => form.setFieldTouched(field.name, true)}
                     >
-                      <Radio.Button value={USER_ROLE.Customer}>{USER_ROLE.Customer}</Radio.Button>
-                      <Radio.Button value={USER_ROLE.Owner}>{USER_ROLE.Owner}</Radio.Button>
+                      <Radio.Button value={USER_ROLE.Customer}>Customer</Radio.Button>
+                      <Radio.Button value={USER_ROLE.Owner}>Owner</Radio.Button>
                     </Radio.Group>
                   </div>
                 )}

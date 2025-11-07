@@ -1,2 +1,2 @@
-export { Login } from "./Login.component";
+export { Login } from "./Login";
 export type { LoginValues } from "./Login.type";

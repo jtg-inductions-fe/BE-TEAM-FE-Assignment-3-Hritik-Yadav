@@ -17,6 +17,13 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [role, setRole] = useState<Role | null>(null);
 
+  const clearUserData = () => {
+    setAuthUser(null);
+    setRole(null);
+    dispatch(clearUser());
+    setIsAuthLoading(false);
+  };
+
   useEffect(() => {
     const auth = getAuth(app);
 
@@ -26,24 +33,16 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
       // checking if firebase user is present or not
       // if not ---
       if (!firebaseUser) {
-        setAuthUser(null);
-        setRole(null);
-        dispatch(clearUser());
-        setIsAuthLoading(false);
+        clearUserData();
         return;
       }
-
       // if present --
       try {
         await firebaseUser.reload();
       } catch {
-        setAuthUser(null);
-        setRole(null);
-        dispatch(clearUser());
-        setIsAuthLoading(false);
+        clearUserData();
         return;
       }
-
       // set user
       setAuthUser(firebaseUser);
       let currentRole: Role | null = null;

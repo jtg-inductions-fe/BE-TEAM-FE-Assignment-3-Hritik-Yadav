@@ -4,14 +4,12 @@ import { Result } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 
-import { NOT_FOUND_STATUS, NOT_FOUND_SUBTITLE } from "./notFound.const";
-
 export const NotFoundPage: React.FC = () => {
   return (
     <Result
-      status={NOT_FOUND_STATUS}
-      title={NOT_FOUND_STATUS}
-      subTitle={NOT_FOUND_SUBTITLE}
+      status={404}
+      title={"Page Not Found"}
+      subTitle={"Sorry, the page you visited does not exist."}
       extra={
         <Link type="primary" to={ROUTES_URL.HOME}>
           Go Home

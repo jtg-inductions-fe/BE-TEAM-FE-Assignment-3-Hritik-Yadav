@@ -15,9 +15,11 @@ describe("test Verification component", () => {
     expect(screen.getByText("Verify your email")).toBeVisible();
     expect(screen.getByText("Please check your inbox for a verification link.")).toBeVisible();
 
-    const message =
-      "If you didn't receive an email, check your spam folder or try signing up again.";
-    expect(screen.getByText(message)).toBeVisible();
+    expect(
+      screen.getByText(
+        "If you didn't receive an email, check your spam folder or try signing up again.",
+      ),
+    ).toBeVisible();
 
     expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Resend verification email" })).toBeNull();

@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 import { USER_ROLE_VALUES } from "@services/service.const";
 
-export const signupValidationSchema = Yup.object().shape({
+export const SIGNUP_VALIDATION_SCHEMA = Yup.object().shape({
   username: Yup.string()
     .required("Name is required")
     .min(3, "Name must be at least 3 characters")

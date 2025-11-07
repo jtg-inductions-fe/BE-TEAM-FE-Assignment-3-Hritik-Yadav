@@ -15,8 +15,7 @@ describe("test Login component", () => {
     expect(screen.getByPlaceholderText("you@example.com")).toBeVisible();
     expect(screen.getByPlaceholderText("Password")).toBeVisible();
     expect(screen.getByRole("button", { name: "Log in" })).toBeVisible();
-    const message = "Don't have an account?";
-    expect(screen.getByText(message)).toBeVisible();
+    expect(screen.getByText("Don't have an account?")).toBeVisible();
     expect(screen.getByText("Sign up")).toBeVisible();
   });
 
