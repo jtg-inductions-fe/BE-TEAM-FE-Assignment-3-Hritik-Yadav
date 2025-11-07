@@ -13,7 +13,7 @@ describe("test Signup component", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByPlaceholderText("Your username")).toBeVisible();
+    expect(screen.getByPlaceholderText("Your Name")).toBeVisible();
     expect(screen.getByPlaceholderText("you@example.com")).toBeVisible();
     expect(screen.getByPlaceholderText("Password")).toBeVisible();
     expect(screen.getByPlaceholderText("Confirm Password")).toBeVisible();
@@ -71,7 +71,7 @@ describe("test Signup component", () => {
       </MemoryRouter>,
     );
 
-    const usernameInput = screen.getByPlaceholderText("Your username");
+    const usernameInput = screen.getByPlaceholderText("Your Name");
     const emailInput = screen.getByPlaceholderText("you@example.com");
     const passwordInput = screen.getByPlaceholderText("Password");
     const confirmPasswordInput = screen.getByPlaceholderText("Confirm Password");
@@ -97,7 +97,7 @@ describe("test Signup component", () => {
         email: "test@example.com",
         password: "Password@123",
         confirmPassword: "Password@123",
-        role: USER_ROLE.Owner,
+        role: USER_ROLE.OWNER,
       });
     });
   });

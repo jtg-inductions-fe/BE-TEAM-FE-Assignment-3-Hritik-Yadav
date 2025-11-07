@@ -16,7 +16,7 @@ export const HeaderContainer: React.FC = () => {
   const isLoginPage = location.pathname === ROUTES_URL.LOGIN;
   const isVerificationPage = location.pathname === ROUTES_URL.CONFIRMATION;
   const isAllowedPage = !isSignupPage && !isLoginPage && !isVerificationPage;
-  const { authUser, isAuthLoading } = useAuthContext();
+  const { authUser, isAuthLoading, userName } = useAuthContext();
   const isAuthenticate = !!authUser && !isAuthLoading;
 
   const logout = async () => {
@@ -29,5 +29,12 @@ export const HeaderContainer: React.FC = () => {
     }
   };
 
-  return <Header logout={logout} isAllowedPage={isAllowedPage} isAuthenticate={isAuthenticate} />;
+  return (
+    <Header
+      logout={logout}
+      isAllowedPage={isAllowedPage}
+      isAuthenticate={isAuthenticate}
+      userName={userName}
+    />
+  );
 };

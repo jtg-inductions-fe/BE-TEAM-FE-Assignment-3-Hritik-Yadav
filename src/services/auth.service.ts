@@ -8,7 +8,6 @@ export const signup = async (
   payload: SignupPayload,
 ): Promise<BackendResponse<SignupResponseData>> => {
   const url = buildApiUrl(ENDPOINT.SIGNUP);
-
   const { data } = await axios.post<BackendResponse<SignupResponseData>>(url, payload);
   return data;
 };

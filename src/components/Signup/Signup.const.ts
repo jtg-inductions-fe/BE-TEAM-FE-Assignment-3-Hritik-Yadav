@@ -6,5 +6,5 @@ export const INITIAL_SIGNUP_VALUES: SignupValues = {
   email: "",
   password: "",
   confirmPassword: "",
-  role: USER_ROLE.Customer,
+  role: USER_ROLE.CUSTOMER,
 };

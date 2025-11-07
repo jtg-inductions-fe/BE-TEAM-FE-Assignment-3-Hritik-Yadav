@@ -5,4 +5,5 @@ export interface AuthContextType {
   authUser: User | null;
   isAuthLoading: boolean;
   role: Role | null;
+  userName: string | null;
 }

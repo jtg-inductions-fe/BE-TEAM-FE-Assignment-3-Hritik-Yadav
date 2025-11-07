@@ -16,13 +16,13 @@ export const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path={ROUTES_URL.HOME} element={<RootLayout />}>
-        <Route index element={<HomePage />} />
         <Route element={<PublicRoute />}>
+          <Route index element={<HomePage />} />
           <Route path={ROUTES_URL.SIGNUP} element={<SignupPage />} />
           <Route path={ROUTES_URL.LOGIN} element={<LoginPage />} />
         </Route>
-        <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
         <Route element={<ProtectedRoute />}>
+          <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
           <Route path={ROUTES_URL.ADMIN} element={<AdminPage />} />
         </Route>
       </Route>

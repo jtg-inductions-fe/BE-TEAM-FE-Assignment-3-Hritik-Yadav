@@ -10,10 +10,10 @@
   &__card {
     width: 30rem;
     background: $color-bg-surface;
-    border: 1px solid $color-border-light;
-    border-radius: 12px;
+    border: 0.06rem solid $color-border-light;
+    border-radius: 0.75rem;
     padding: 1.5rem;
-    box-shadow: 0 6px 18px $color-box-shadow;
+    box-shadow: 0 0.35rem 1.25rem $color-box-shadow;
     position: relative;
     max-width: 100%;
     margin: 0 auto;
@@ -67,6 +67,6 @@
   &__message {
     text-align: center;
     margin-top: 0.5rem;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 }

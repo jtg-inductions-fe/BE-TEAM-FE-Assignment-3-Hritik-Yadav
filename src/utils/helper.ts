@@ -1,4 +1,4 @@
-import { BASE_URL, ENDPOINT } from "@services/service.const";
+import { BASE_URL, ENDPOINT, USER_ROLE } from "@services/service.const";
 import type { ApiUrlParams, Role } from "@/services/service.type";
 
 export const buildApiUrl = (
@@ -16,13 +16,20 @@ export const buildApiUrl = (
     const queryString = new URLSearchParams(
       Object.entries(params).map(([key, value]) => [key, String(value)]),
     ).toString();
-    if (queryString) {
-      url += `?${queryString}`;
-    }
+    url += `?${queryString}`;
   }
 
   return url;
 };
 
-export const isValidRole = (value: unknown): value is Role =>
-  value === "customer" || value === "owner";
+export const normalizeRole = (value: unknown): Role | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const normalized = value.trim().toLowerCase();
+  if (normalized === USER_ROLE.CUSTOMER || normalized === USER_ROLE.OWNER) {
+    return normalized as Role;
+  }
+
+  return null;
+};

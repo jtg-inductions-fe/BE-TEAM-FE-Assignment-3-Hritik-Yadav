@@ -7,11 +7,11 @@ export enum ENDPOINT {
 }
 
 export enum USER_ROLE {
-  Customer = "customer",
-  Owner = "owner",
+  CUSTOMER = "customer",
+  OWNER = "owner",
 }
 
-export const USER_ROLE_VALUES: Role[] = ["customer", "owner"];
+export const USER_ROLE_VALUES: Role[] = [USER_ROLE.CUSTOMER, USER_ROLE.OWNER];
 
 export interface ApiUrlParams {
   [key: string]: string | number | undefined;

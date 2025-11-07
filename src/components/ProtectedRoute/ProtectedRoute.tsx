@@ -10,6 +10,9 @@ export const ProtectedRoute: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { authUser, isAuthLoading, role } = useAuthContext();
+  const { pathname } = location;
+  const isVerificationRoute = pathname === ROUTES_URL.CONFIRMATION;
+  const isAdminRoute = pathname === ROUTES_URL.ADMIN;
 
   useEffect(() => {
     if (isAuthLoading) {
@@ -17,19 +20,29 @@ export const ProtectedRoute: React.FC = () => {
     }
 
     if (!authUser) {
-      navigate(ROUTES_URL.LOGIN, { replace: true });
+      if (pathname !== ROUTES_URL.LOGIN) {
+        navigate(ROUTES_URL.LOGIN, { replace: true });
+      }
       return;
     }
 
     if (!authUser.emailVerified) {
-      navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+      if (!isVerificationRoute) {
+        navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+      }
       return;
     }
 
-    if (location.pathname === ROUTES_URL.ADMIN && role !== USER_ROLE.Owner) {
+    if (isVerificationRoute) {
+      const destination = role === USER_ROLE.OWNER ? ROUTES_URL.ADMIN : ROUTES_URL.HOME;
+      navigate(destination, { replace: true });
+      return;
+    }
+
+    if (isAdminRoute && role !== USER_ROLE.OWNER) {
       navigate(ROUTES_URL.HOME, { replace: true });
     }
-  }, [authUser, isAuthLoading, navigate, role, location]);
+  }, [authUser, isAdminRoute, isAuthLoading, isVerificationRoute, navigate, pathname, role]);
 
   if (isAuthLoading || !authUser) {
     return <AppLoader />;

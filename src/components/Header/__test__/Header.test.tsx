@@ -10,7 +10,7 @@ describe("Header", () => {
 
     render(
       <MemoryRouter>
-        <Header logout={logout} isAuthenticate={false} isAllowedPage />
+        <Header logout={logout} isAuthenticate={false} isAllowedPage userName={null} />
       </MemoryRouter>,
     );
 
@@ -24,7 +24,7 @@ describe("Header", () => {
 
     render(
       <MemoryRouter>
-        <Header logout={logout} isAuthenticate={false} isAllowedPage={false} />
+        <Header logout={logout} isAuthenticate={false} isAllowedPage={false} userName={null} />
       </MemoryRouter>,
     );
 
@@ -37,11 +37,11 @@ describe("Header", () => {
 
     render(
       <MemoryRouter>
-        <Header logout={logout} isAuthenticate isAllowedPage />
+        <Header logout={logout} isAuthenticate isAllowedPage userName="Test User" />
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Logout")).toBeVisible();
+    expect(screen.getByText("Test User")).toBeVisible();
     expect(screen.queryByText("Signup")).not.toBeInTheDocument();
     expect(screen.queryByText("Login")).not.toBeInTheDocument();
   });
@@ -52,11 +52,14 @@ describe("Header", () => {
 
     render(
       <MemoryRouter>
-        <Header logout={logout} isAuthenticate isAllowedPage />
+        <Header logout={logout} isAuthenticate isAllowedPage userName="Test User" />
       </MemoryRouter>,
     );
 
-    await user.click(screen.getByText("Logout"));
+    const userMenuButton = screen.getByRole("button", { name: /Test User/i });
+    await user.hover(userMenuButton);
+    const logoutAction = await screen.findByRole("menuitem", { name: "Logout" });
+    await user.click(logoutAction);
 
     expect(logout).toHaveBeenCalledTimes(1);
   });

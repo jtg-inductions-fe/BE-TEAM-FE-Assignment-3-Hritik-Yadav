@@ -10,10 +10,10 @@
     width: 100%;
     max-width: 40rem;
     background: $color-bg-surface;
-    border: 1px solid $color-border-light;
-    border-radius: 12px;
+    border: 0.06rem solid $color-border-light;
+    border-radius: 0.75rem;
     padding: 1.5rem;
-    box-shadow: 0 6px 18px $color-box-shadow;
+    box-shadow: 0 0.35rem 1.25rem $color-box-shadow;
   }
 
   &__result {

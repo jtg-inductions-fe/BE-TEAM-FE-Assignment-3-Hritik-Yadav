@@ -1,28 +1,33 @@
-import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
+import React, {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { useDispatch } from "react-redux";
 
 import { app } from "@/firebase/firebase";
 import { getUserDetails } from "@/services";
-import { clearUser, setUser } from "@store/actions/actions";
-import { isValidRole } from "@/utils/helper";
+import { normalizeRole } from "@/utils/helper";
 import type { Role } from "@services/service.type";
 import type { AuthContextType } from "./context.type";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
-  const dispatch = useDispatch();
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [role, setRole] = useState<Role | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
-  const clearUserData = () => {
+  const clearUserData = useCallback(() => {
     setAuthUser(null);
     setRole(null);
-    dispatch(clearUser());
+    setUserName(null);
     setIsAuthLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -50,8 +55,8 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
       // set role
       try {
         const tokenResult = await firebaseUser.getIdTokenResult();
-        const claimRole = tokenResult?.claims?.role;
-        if (isValidRole(claimRole)) {
+        const claimRole = normalizeRole(tokenResult?.claims?.role);
+        if (claimRole) {
           currentRole = claimRole;
         }
       } catch {
@@ -63,20 +68,22 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
         const token = await firebaseUser.getIdToken();
 
         if (!token) {
-          dispatch(clearUser());
+          setUserName(null);
         } else {
           const response = await getUserDetails(token);
           if (response?.data) {
-            dispatch(setUser(response.data));
-            if (isValidRole(response.data.role)) {
-              currentRole = response.data.role;
+            const normalizedResponseRole = normalizeRole(response.data.role);
+            setUserName(response.data.username);
+
+            if (normalizedResponseRole) {
+              currentRole = normalizedResponseRole;
             }
           } else {
-            dispatch(clearUser());
+            setUserName(null);
           }
         }
       } catch {
-        dispatch(clearUser());
+        setUserName(null);
       }
 
       setRole(currentRole);
@@ -84,12 +91,13 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
     });
 
     return unsubscribe;
-  }, [dispatch]);
+  }, [clearUserData]);
 
   const value: AuthContextType = {
     authUser,
     isAuthLoading,
     role,
+    userName,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
