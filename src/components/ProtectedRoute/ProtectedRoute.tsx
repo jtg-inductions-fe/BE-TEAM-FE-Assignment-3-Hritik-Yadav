@@ -4,7 +4,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { AppLoader } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
-import { USER_ROLE } from "@services/service.const";
+import { USER_ROLE } from "@/services/service.const";
 
 export const ProtectedRoute: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export const ProtectedRoute: React.FC = () => {
     }
   }, [authUser, isAuthLoading, navigate, role, location]);
 
-  if (isAuthLoading || !authUser || !authUser.emailVerified) {
+  if (isAuthLoading || !authUser) {
     return <AppLoader />;
   }
 

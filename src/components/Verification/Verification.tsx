@@ -13,12 +13,11 @@ export const Verification: React.FC<VerificationProps> = ({
   onRetry,
   onResend,
 }) => {
-  const message = "If you didn't receive an email, check your spam folder or try signing up again.";
-
   return (
-    <div className="confirmation-wrapper">
-      <div className="confirmation-card">
+    <div className="verification">
+      <div className="verification__card">
         <Result
+          className="verification__result"
           title={title}
           subTitle={subtitle}
           extra={
@@ -35,7 +34,9 @@ export const Verification: React.FC<VerificationProps> = ({
           }
         >
           <div>
-            <Paragraph className="confirmation-hint">{message}</Paragraph>
+            <Paragraph className="verification__hint">
+              If you didn&apos;t receive an email, check your spam folder or try signing up again.
+            </Paragraph>
           </div>
         </Result>
       </div>

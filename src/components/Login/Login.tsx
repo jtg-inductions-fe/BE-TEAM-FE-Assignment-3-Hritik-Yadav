@@ -6,7 +6,7 @@ import { Formik, Form as FormikForm, Field, FieldProps } from "formik";
 import { ROUTES_URL } from "@/routes/routes.const";
 
 import { INITIAL_LOGIN_VALUES } from "./Login.const";
-import { loginValidationSchema } from "./Login.validation";
+import { LOGIN_VALIDATION_SCHEMA } from "./Login.validation";
 import type { LoginProps } from "./Login.type";
 
 import "./login.style.scss";
@@ -20,7 +20,7 @@ export const Login: React.FC<LoginProps> = ({ onSubmit }) => {
         </Typography.Title>
         <Formik
           initialValues={INITIAL_LOGIN_VALUES}
-          validationSchema={loginValidationSchema}
+          validationSchema={LOGIN_VALIDATION_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
             onSubmit(values);
             setSubmitting(false);

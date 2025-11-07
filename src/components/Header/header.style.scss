@@ -11,7 +11,7 @@
     margin-top: 1rem;
     text-decoration: none;
 
-    a:focus-visible {
+    &:focus-within {
       outline: 2px solid $color-logo-focus;
       outline-offset: 3px;
     }

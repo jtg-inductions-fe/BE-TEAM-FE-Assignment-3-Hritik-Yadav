@@ -1,4 +1,4 @@
-import { CLEAR_USER, SET_USER } from "@store/reducers/user.const";
+import { CLEAR_USER, SET_USER } from "./actions.const";
 import type { UserData } from "@/services/service.type";
 
 export const setUser = (user: UserData | null) => ({

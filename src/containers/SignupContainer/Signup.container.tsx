@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { useDispatch } from "react-redux";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
+import axios from "axios";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { signup } from "@/services";
@@ -16,16 +17,15 @@ export const SignupContainer: React.FC = () => {
 
   const handleSubmit = async (values: SignupValues) => {
     try {
-      const resp = await signup({
+      const response = await signup({
         username: values.username,
         email: values.email,
         password: values.password,
         role: values.role,
       });
-
-      const customToken = resp?.data?.customToken;
+      const customToken = response?.data?.customToken;
       if (!customToken) {
-        message.error(resp?.message || "User not created. Try Again Later");
+        message.error("User not created. Try Again Later");
         return;
       }
       const auth = getAuth();
@@ -40,8 +40,11 @@ export const SignupContainer: React.FC = () => {
       );
       message.success("User created successfully. Please confirm your email.");
       navigate(ROUTES_URL.CONFIRMATION);
-    } catch {
-      message.error("User not created. Try Again Later");
+    } catch (error: unknown) {
+      const errMsg = axios.isAxiosError(error)
+        ? error.response?.data?.message
+        : "User Not created. Try Again Later.";
+      message.error(errMsg);
     }
   };
 

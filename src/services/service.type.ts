@@ -1,4 +1,8 @@
-export type Role = "Customer" | "Owner";
+export type Role = "customer" | "owner";
+
+export interface ApiUrlParams {
+  [key: string]: string | number | undefined;
+}
 
 export interface UserData {
   uid: string;
@@ -17,7 +21,7 @@ export interface SignupPayload {
 export interface BackendResponse<T = unknown> {
   data?: T;
   message: string;
-  errors?: Record<string, unknown> | string;
+  errors?: Record<string, string[]> | string;
   status_code: number;
 }
 

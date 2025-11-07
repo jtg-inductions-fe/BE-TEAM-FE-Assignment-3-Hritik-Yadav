@@ -1,1 +1,1 @@
-export { RootLayout } from "./RootLayout.component";
+export { RootLayout } from "./RootLayout";

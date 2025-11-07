@@ -24,9 +24,7 @@ export const LoginContainer: React.FC = () => {
         return;
       }
       const idTokenResult = await user.getIdTokenResult();
-      const roleFromClaims = (idTokenResult.claims as Record<string, unknown>)["role"] as
-        | USER_ROLE
-        | undefined;
+      const roleFromClaims = idTokenResult.claims["role"];
 
       message.success("Logged in successfully");
       if (!auth.currentUser?.emailVerified) {
