@@ -10,8 +10,10 @@ import {
   HomePage,
   RestaurantPage,
   RestaurantItemsPage,
+  ItemPage,
 } from "@/pages";
 import { ProtectedRoute, PublicRoute, RootLayout } from "@/components";
+import { UploadBox } from "@/components/UploadBox/UploadBox";
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -24,8 +26,15 @@ export const AppRoutes: React.FC = () => {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES_URL.RESTAURANT} element={<RestaurantPage />} />
-          <Route path="/restaurant/:id/mnu-items" element={<RestaurantItemsPage />} />
           <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
+          <Route 
+            path={`${ROUTES_URL.RESTAURANT}/:restaurantId/${ROUTES_URL.MENU}`}
+            element={<RestaurantItemsPage />}
+          />
+          <Route
+            path={`${ROUTES_URL.RESTAURANT}/:restaurantId/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/:menuItemId`}
+            element={<ItemPage />}
+          />
         </Route>
       </Route>
       <Route path={ROUTES_URL.ROUTE_NOT_FOUND} element={<NotFoundPage />} />

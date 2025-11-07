@@ -1,11 +1,15 @@
 import { combineReducers } from "redux";
 
+import { itemModalReducer } from "./itemModal.reducer";
+import { menuItemPaginationReducer } from "./menuItem.reducer";
+import { restaurantModalReducer } from "./restaurantModal.reducer";
 import { restaurantPaginationReducer } from "./restaurant.reducer";
-import { modalReducer } from "./modal.reducer";
 
 export const rootReducer = combineReducers({
   restaurantPagination: restaurantPaginationReducer,
-  modal: modalReducer,
+  restaurantModal: restaurantModalReducer,
+  itemModal: itemModalReducer,
+  menuItemPagination: menuItemPaginationReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

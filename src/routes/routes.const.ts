@@ -5,4 +5,6 @@ export enum ROUTES_URL {
   LOGIN = "/login",
   CONFIRMATION = "/confirm",
   RESTAURANT = "/restaurant",
+  MENU = "menu",
+  ITEM = "item",
 }

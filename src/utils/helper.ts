@@ -4,12 +4,16 @@ import type { ApiUrlParams, Role } from "@/services/service.type";
 export const buildApiUrl = (
   ENDPOINT: ENDPOINT,
   id?: number | string,
+  endpointNext?: ENDPOINT ,
   params?: ApiUrlParams,
 ): string => {
   let url = `${BASE_URL}/${ENDPOINT}`;
 
   if (id) {
     url += `/${id}`;
+  }
+  if (endpointNext){
+    url += `/${endpointNext}`;
   }
 
   if (params && Object.keys(params).length > 0) {
