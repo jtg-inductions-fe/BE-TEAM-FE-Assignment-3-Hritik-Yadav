@@ -9,6 +9,7 @@ import { Login } from "@/components";
 import { LoginValues } from "@components/Login";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { USER_ROLE } from "@services/service.const";
+import { normalizeRole } from "@/utils/helper";
 
 export const LoginContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -24,14 +25,14 @@ export const LoginContainer: React.FC = () => {
         return;
       }
       const idTokenResult = await user.getIdTokenResult();
-      const roleFromClaims = idTokenResult.claims["role"];
+      const roleFromClaims = normalizeRole(idTokenResult.claims["role"]);
 
       message.success("Logged in successfully");
       if (!auth.currentUser?.emailVerified) {
         navigate(ROUTES_URL.CONFIRMATION);
         return;
       }
-      const route = roleFromClaims === USER_ROLE.Owner ? ROUTES_URL.RESTAURANT : ROUTES_URL.HOME;
+      const route = roleFromClaims === USER_ROLE.OWNER ? ROUTES_URL.RESTAURANT : ROUTES_URL.HOME;
       navigate(route);
     } catch {
       message.error("Login Failed");

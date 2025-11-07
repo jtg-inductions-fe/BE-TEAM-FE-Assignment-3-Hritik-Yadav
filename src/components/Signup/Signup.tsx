@@ -35,7 +35,7 @@ export const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                     <label className="signup__label" htmlFor="username">
                       Name
                     </label>
-                    <Input id="username" placeholder="Your username" {...field} />
+                    <Input id="username" placeholder="Your Name" {...field} />
                     {(meta.touched || submitCount > 0) && meta.error && (
                       <div className="signup__error">{meta.error}</div>
                     )}
@@ -101,8 +101,8 @@ export const Signup: React.FC<SignupProps> = ({ onSubmit }) => {
                       onChange={(e) => form.setFieldValue(field.name, e.target.value)}
                       onBlur={() => form.setFieldTouched(field.name, true)}
                     >
-                      <Radio.Button value={USER_ROLE.Customer}>Customer</Radio.Button>
-                      <Radio.Button value={USER_ROLE.Owner}>Owner</Radio.Button>
+                      <Radio.Button value={USER_ROLE.CUSTOMER}>Customer</Radio.Button>
+                      <Radio.Button value={USER_ROLE.OWNER}>Owner</Radio.Button>
                     </Radio.Group>
                   </div>
                 )}

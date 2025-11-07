@@ -3,4 +3,5 @@ export interface HeaderProps {
   isAuthenticate: boolean;
   isAllowedPage: boolean;
   onCreateRestaurant: () => void;
+  userName: string | null;
 }

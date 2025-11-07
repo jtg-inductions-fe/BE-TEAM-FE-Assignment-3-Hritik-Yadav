@@ -5,20 +5,35 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 1.5rem;
-  border-bottom: 1px solid $color-border-light;
+  border-bottom: 0.06rem solid $color-border-light;
 
   &__title {
     margin-top: 1rem;
     text-decoration: none;
 
     &:focus-within {
-      outline: 2px solid $color-logo-focus;
-      outline-offset: 3px;
+      outline: 0.15rem solid $color-logo-focus;
+      outline-offset: 0.2rem;
     }
   }
 
   &__button {
     display: flex;
     gap: 0.75rem;
+  }
+
+  &__user-button {
+    font-weight: 600;
+    padding: 0 0.9rem;
+    background-color: $color-logo;
+    color: $color-bg-surface;
+    border-radius: 0.4rem;
+    border: none;
+
+    &:hover,
+    &:focus {
+      background-color: $color-logo-focus;
+      color: $color-bg-surface;
+    }
   }
 }

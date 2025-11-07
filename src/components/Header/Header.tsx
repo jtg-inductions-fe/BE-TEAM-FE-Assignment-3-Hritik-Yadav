@@ -1,6 +1,8 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Layout, Typography } from "antd";
+import { Button, Dropdown, Layout, Typography } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import type { MenuProps } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 
@@ -16,8 +18,22 @@ export const Header: React.FC<HeaderProps> = ({
   isAuthenticate,
   isAllowedPage,
   onCreateRestaurant,
+  userName,
 }) => {
   const navigate = useNavigate();
+
+  const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
+    if (key === "logout") {
+      logout();
+    }
+  };
+
+  const menuItems: MenuProps["items"] = [
+    {
+      key: "logout",
+      label: "Logout",
+    },
+  ];
 
   return (
     <AntHeader className="header">
@@ -31,9 +47,12 @@ export const Header: React.FC<HeaderProps> = ({
               Create Restaurant
             </Button>
           )}
-          <Button type="default" onClick={logout}>
-            Logout
+        <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }}>
+          <Button type="default" className="header__user-button">
+            <span className="header__user-label">{userName ?? "Account"}</span>
+            <DownOutlined />
           </Button>
+        </Dropdown>
         </div>
       ) : (
         isAllowedPage && (

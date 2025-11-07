@@ -16,6 +16,7 @@ describe("Header", () => {
           isAuthenticate={false}
           isAllowedPage
           onCreateRestaurant={onCreateRestaurant}
+          userName={null}
         />
       </MemoryRouter>,
     );
@@ -37,6 +38,7 @@ describe("Header", () => {
           isAuthenticate={false}
           isAllowedPage={false}
           onCreateRestaurant={onCreateRestaurant}
+          userName={null}
         />
       </MemoryRouter>,
     );
@@ -57,11 +59,12 @@ describe("Header", () => {
           isAuthenticate
           isAllowedPage
           onCreateRestaurant={onCreateRestaurant}
+          userName="Test User"
         />
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Logout")).toBeVisible();
+    expect(screen.getByText("Test User")).toBeVisible();
     expect(screen.getByText("Create Restaurant")).toBeVisible();
     expect(screen.queryByText("Signup")).not.toBeInTheDocument();
     expect(screen.queryByText("Login")).not.toBeInTheDocument();
@@ -79,11 +82,15 @@ describe("Header", () => {
           isAuthenticate
           isAllowedPage
           onCreateRestaurant={onCreateRestaurant}
+          userName="Test User"
         />
       </MemoryRouter>,
     );
 
-    await user.click(screen.getByText("Logout"));
+    const userMenuButton = screen.getByRole("button", { name: /Test User/i });
+    await user.hover(userMenuButton);
+    const logoutAction = await screen.findByRole("menuitem", { name: "Logout" });
+    await user.click(logoutAction);
 
     expect(logout).toHaveBeenCalledTimes(1);
   });
