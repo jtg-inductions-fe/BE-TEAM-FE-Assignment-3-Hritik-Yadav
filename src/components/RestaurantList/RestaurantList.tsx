@@ -3,20 +3,12 @@ import { Spin, Typography } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { RestaurantCard } from "@/components";
-import type { Restaurant } from "@/services/restaurant.type";
+
+import type { RestaurantListProps } from "./restaurantList.type";
+
 import "./restaurantList.style.scss";
 
 const { Text } = Typography;
-
-export interface RestaurantListProps {
-  items: Restaurant[];
-  loading: boolean;
-  loadingMore: boolean;
-  hasMore: boolean;
-  loadMore: () => void;
-  onUpdate: (restaurantItem: Restaurant) => void;
-  onDelete: (restaurantItem: Restaurant) => void;
-}
 
 export const RestaurantList: React.FC<RestaurantListProps> = ({
   items,

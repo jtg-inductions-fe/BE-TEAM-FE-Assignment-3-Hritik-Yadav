@@ -3,7 +3,12 @@ import axios from "axios";
 import { buildApiUrl } from "@/utils/helper";
 import { ENDPOINT } from "./service.const";
 import type { BackendResponse } from "./service.type";
-import type { ListRestaurantsResponseData, Restaurant, RestaurantPayload } from "./restaurant.type";
+import type {
+  ListRestaurantParams,
+  ListRestaurantsResponseData,
+  Restaurant,
+  RestaurantPayload,
+} from "./restaurant.type";
 
 export const createRestaurant = async (
   token: string,
@@ -59,11 +64,6 @@ export const deleteRestaurant = async (
   });
   return data;
 };
-
-interface ListRestaurantParams {
-  perPage?: number;
-  nextPageToken?: string | null;
-}
 
 export const listRestaurants = async (
   token: string,
