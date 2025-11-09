@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { message } from "antd";
-import { AxiosError } from "axios";
 import { getAuth } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { MenuItemList, MenuItemFormModal } from "@/components";
-import { createBackNavigationHandler } from "@/utils/navigation";
-import { createMenuItem, listMenuItems } from "@/services/menu.service";
+import { createMenuItem, listMenuItems } from "@services/menu.service";
 import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
@@ -19,12 +17,12 @@ import {
 } from "@/store/actions/actions";
 import { ListMenuItemsResponseData, MenuItem, MenuItemPayload } from "@/services/menu.type";
 import "./menuItemListContainer.style.scss";
+import { resolveAxiosErrorMessage } from "@/utils/helper";
 
 const PAGE_SIZE = 12;
 
 export const MenuItemListContainer: React.FC = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const nextPageToken = useSelector(selectMenuItemNextPageToken);
   const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
   const firebaseAuth = useMemo(() => getAuth(), []);
@@ -68,7 +66,6 @@ export const MenuItemListContainer: React.FC = () => {
       }
 
       if (!restaurantId) {
-        message.error("Restaurant context missing");
         setLoading(false);
         setLoadingMore(false);
         return;
@@ -88,7 +85,7 @@ export const MenuItemListContainer: React.FC = () => {
         dispatch(setMenuItemNextToken(nextToken));
         setHasMore(Boolean(nextToken));
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to load menu items";
+        const errorMessage = resolveAxiosErrorMessage(error, "Failed to load menu items");
         message.error(errorMessage);
         dispatch(setMenuItemNextToken(null));
       } finally {
@@ -101,7 +98,6 @@ export const MenuItemListContainer: React.FC = () => {
 
   useEffect(() => {
     if (!restaurantId) {
-      message.error("Restaurant context missing");
       return;
     }
 
@@ -156,17 +152,13 @@ export const MenuItemListContainer: React.FC = () => {
       await fetchPage(false, null);
       dispatch(closeMenuItemFormModal());
     } catch (error) {
-      const errorMessage =
-        error instanceof AxiosError
-          ? (error.response?.data?.message ?? "Failed to create menu item. Please try again.")
-          : error instanceof Error
-            ? error.message
-            : "Failed to create menu item. Please try again.";
+      const errorMessage = resolveAxiosErrorMessage(
+        error,
+        "Failed to create menu item. Please try again.",
+      );
       message.error(errorMessage);
     }
   };
-
-  const handleBack = useMemo(() => createBackNavigationHandler(navigate), [navigate]);
 
   return (
     <section className="menu-container">
@@ -177,7 +169,6 @@ export const MenuItemListContainer: React.FC = () => {
         hasMore={hasMore}
         loadMore={loadMore}
         restaurantId={restaurantId}
-        onBack={handleBack}
       />
 
       <MenuItemFormModal

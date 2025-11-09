@@ -4,7 +4,6 @@ export { MenuItemCard } from "./MenuItemCard";
 export { MenuItemFormModal } from "./MenuItemModal/MenuItemFormModal";
 export { MenuItemList } from "./MenuItemList";
 export { MenuItemDetail } from "./MenuItemDetail";
-export { BackToMenuButton } from "./MenuItemDetail";
 export { BackToButton } from "./BackToButton";
 export { Header } from "./Header";
 export { Login } from "./Login";

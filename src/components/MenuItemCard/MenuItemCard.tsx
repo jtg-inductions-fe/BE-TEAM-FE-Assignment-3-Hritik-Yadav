@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { CATEGORY_COLOR } from "./menuItemCard.const";
+import { getPriceLabel } from "@/utils/helper";
 
 import type { MenuItemCardProps } from "./menuItemCard.type";
 
 import "./menuItemCard.style.scss";
-import { getPriceLabel } from "@/utils/helper";
 
 const { Title, Text } = Typography;
 
@@ -60,7 +60,12 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, restaurantId }
           </div>
         </div>
         <div className="menu-item-card__actions">
-          <Button type="primary" block onClick={handleViewDetails}>
+          <Button
+            type="primary"
+            block
+            onClick={handleViewDetails}
+            className="menu-item-card__button"
+          >
             View Item
           </Button>
         </div>

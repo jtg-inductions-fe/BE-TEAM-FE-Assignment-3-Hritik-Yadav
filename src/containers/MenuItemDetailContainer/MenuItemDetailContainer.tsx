@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { message, Spin, Typography } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -7,12 +7,13 @@ import {
   MenuItemDetail,
   MenuItemFormModal,
   DeleteItemConfirmModal,
-  BackToMenuButton,
+  BackToButton,
 } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { createBackNavigationHandler } from "@/utils/navigation";
 import { deleteMenuItem, getMenuItem, updateMenuItem } from "@services/menu.service";
+
 import type { MenuItem, MenuItemPayload } from "@services/menu.type";
+import { resolveAxiosErrorMessage } from "@/utils/helper";
 
 const { Text } = Typography;
 
@@ -54,7 +55,7 @@ export const MenuItemDetailContainer: React.FC = () => {
       }
       setMenuItem(data);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to fetch menu item";
+      const errorMessage = resolveAxiosErrorMessage(error, "Failed to fetch menu item");
       message.error(errorMessage);
     } finally {
       setLoading(false);
@@ -64,8 +65,6 @@ export const MenuItemDetailContainer: React.FC = () => {
   useEffect(() => {
     void fetchMenuItem();
   }, [fetchMenuItem]);
-
-  const handleBack = useMemo(() => createBackNavigationHandler(navigate), [navigate]);
 
   const handleUpdateOpen = useCallback(() => {
     setIsUpdateModalOpen(true);
@@ -91,7 +90,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         }
         message.success("Menu item updated");
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Update failed";
+        const errorMessage = resolveAxiosErrorMessage(error, "Update failed");
         message.error(errorMessage);
       } finally {
         setIsUpdateModalOpen(false);
@@ -127,7 +126,7 @@ export const MenuItemDetailContainer: React.FC = () => {
       const restaurantMenuPath = `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}`;
       navigate(restaurantMenuPath, { replace: true });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Delete failed";
+      const errorMessage = resolveAxiosErrorMessage(error, "Delete failed");
       message.error(errorMessage);
     } finally {
       setDeleteLoading(false);
@@ -141,7 +140,7 @@ export const MenuItemDetailContainer: React.FC = () => {
   if (loading) {
     return (
       <div className="menu-item-detail__loader">
-        <BackToMenuButton onClick={handleBack} />
+        <BackToButton label="Back to Menu" />
         <Spin />
       </div>
     );
@@ -150,7 +149,7 @@ export const MenuItemDetailContainer: React.FC = () => {
   if (!menuItem) {
     return (
       <div className="menu-item-detail__loader">
-        <BackToMenuButton onClick={handleBack} />
+        <BackToButton label="Back to Menu" />
         <Text>No menu item to display.</Text>
       </div>
     );
@@ -160,7 +159,6 @@ export const MenuItemDetailContainer: React.FC = () => {
     <>
       <MenuItemDetail
         menuItem={menuItem}
-        onBack={handleBack}
         onUpdate={handleUpdateOpen}
         onDelete={handleDeleteOpen}
       />

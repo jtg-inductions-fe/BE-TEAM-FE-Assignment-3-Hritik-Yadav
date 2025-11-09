@@ -4,7 +4,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 import { CATEGORY_COLOR } from "../MenuItemCard/menuItemCard.const";
 import { getPriceLabel } from "@/utils/helper";
-import { BackToMenuButton } from "./BackToMenuButton";
+import { BackToButton } from "../BackToButton";
 
 import type { MenuItemDetailProps } from "./MenuItemDetail.type";
 
@@ -14,7 +14,6 @@ const { Title, Text } = Typography;
 
 export const MenuItemDetail: React.FC<MenuItemDetailProps> = ({
   menuItem,
-  onBack,
   onUpdate,
   onDelete,
 }) => {
@@ -24,7 +23,7 @@ export const MenuItemDetail: React.FC<MenuItemDetailProps> = ({
 
   return (
     <section className="menu-item-detail">
-      <BackToMenuButton onClick={onBack} />
+      <BackToButton label="Back to Menu" />
 
       <Card className="menu-item-detail__card" bodyStyle={{ padding: 0 }}>
         <div className="menu-item-detail__card-content">
@@ -63,10 +62,20 @@ export const MenuItemDetail: React.FC<MenuItemDetailProps> = ({
 
               <div className="menu-item-detail__actions">
                 <Space size="middle">
-                  <Button type="primary" icon={<EditOutlined />} onClick={onUpdate}>
+                  <Button
+                    className="menu-item-detail__button"
+                    type="primary"
+                    icon={<EditOutlined />}
+                    onClick={onUpdate}
+                  >
                     Update
                   </Button>
-                  <Button danger icon={<DeleteOutlined />} onClick={onDelete}>
+                  <Button
+                    className="menu-item-detail__delete-button"
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={onDelete}
+                  >
                     Delete
                   </Button>
                 </Space>

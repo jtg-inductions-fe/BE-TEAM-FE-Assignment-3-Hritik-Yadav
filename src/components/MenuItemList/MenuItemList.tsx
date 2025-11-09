@@ -1,24 +1,14 @@
 import React from "react";
-import { Button, Spin, Typography } from "antd";
+import { Spin, Typography } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { MenuItemCard } from "@/components";
-import type { MenuItem } from "@/services/menu.type";
+import { BackToButton, MenuItemCard } from "@/components";
+
+import type { MenuItemListProps } from "./menuItemList.type";
+
 import "./menuItemList.style.scss";
-import Title from "antd/lib/typography/Title";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 
-const { Text } = Typography;
-
-export interface MenuItemListProps {
-  items: MenuItem[];
-  loading: boolean;
-  loadingMore: boolean;
-  hasMore: boolean;
-  loadMore: () => void;
-  restaurantId?: string;
-  onBack: () => void;
-}
+const { Title, Text } = Typography;
 
 export const MenuItemList: React.FC<MenuItemListProps> = ({
   items,
@@ -27,7 +17,6 @@ export const MenuItemList: React.FC<MenuItemListProps> = ({
   hasMore,
   loadMore,
   restaurantId,
-  onBack,
 }) => {
   return (
     <div className="menu-item-list">
@@ -35,15 +24,8 @@ export const MenuItemList: React.FC<MenuItemListProps> = ({
         <Title level={2} className="menu-container__section-title">
           Your MenuItems
         </Title>
+        <BackToButton label="Back To Restaurant" />
       </header>
-      <Button
-        type="link"
-        icon={<ArrowLeftOutlined />}
-        onClick={onBack}
-        className="menu-item-detail__back"
-      >
-        Back to restaurants
-      </Button>
       {loading ? (
         <div className="menu-item-list__loader">
           <Spin />
