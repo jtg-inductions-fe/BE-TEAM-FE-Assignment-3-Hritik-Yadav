@@ -1,9 +1,10 @@
 import React from "react";
 import { Button, Card, Divider, Image, Rate, Space, Statistic, Tag, Typography } from "antd";
-import { ArrowLeftOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 import { CATEGORY_COLOR } from "../MenuItemCard/menuItemCard.const";
 import { getPriceLabel } from "@/utils/helper";
+import { BackToMenuButton } from "./BackToMenuButton";
 
 import type { MenuItemDetailProps } from "./MenuItemDetail.type";
 
@@ -23,14 +24,7 @@ export const MenuItemDetail: React.FC<MenuItemDetailProps> = ({
 
   return (
     <section className="menu-item-detail">
-      <Button
-        type="link"
-        icon={<ArrowLeftOutlined />}
-        onClick={onBack}
-        className="menu-item-detail__back"
-      >
-        Back to menu
-      </Button>
+      <BackToMenuButton onClick={onBack} />
 
       <Card className="menu-item-detail__card" bodyStyle={{ padding: 0 }}>
         <div className="menu-item-detail__card-content">

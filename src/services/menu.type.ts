@@ -43,3 +43,8 @@ export interface ListMenuItemsResponseData {
   items: MenuItem[];
   nextPageToken?: string | null;
 }
+
+export interface ListMenuItemsParams {
+  perPage?: number;
+  nextPageToken?: string | null;
+}

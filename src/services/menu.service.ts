@@ -4,15 +4,20 @@ import { buildMenuApiUrl } from "@/utils/helper";
 import { ENDPOINT } from "./service.const";
 
 import type { BackendResponse } from "./service.type";
-import type { ListMenuItemsResponseData, MenuItemPayload } from "./menu.type";
+import type {
+  ListMenuItemsParams,
+  ListMenuItemsResponseData,
+  MenuItem,
+  MenuItemPayload,
+} from "./menu.type";
 
 export const createMenuItem = async (
   token: string,
   restaurantId: string,
   payload: MenuItemPayload,
-): Promise<BackendResponse> => {
+): Promise<BackendResponse<MenuItem>> => {
   const url = buildMenuApiUrl(ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS);
-  const { data } = await axios.post<BackendResponse>(url, payload, {
+  const { data } = await axios.post<BackendResponse<MenuItem>>(url, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -25,10 +30,10 @@ export const getMenuItem = async (
   token: string,
   restaurantId: string,
   menuItemId: string,
-): Promise<BackendResponse> => {
+): Promise<BackendResponse<MenuItem>> => {
   const url = buildMenuApiUrl(ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId);
 
-  const { data } = await axios.get<BackendResponse>(url, {
+  const { data } = await axios.get<BackendResponse<MenuItem>>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -41,9 +46,9 @@ export const updateMenuItem = async (
   restaurantId: string,
   menuItemId: string,
   payload: MenuItemPayload,
-): Promise<BackendResponse> => {
+): Promise<BackendResponse<MenuItem>> => {
   const url = buildMenuApiUrl(ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId);
-  const { data } = await axios.put<BackendResponse>(url, payload, {
+  const { data } = await axios.put<BackendResponse<MenuItem>>(url, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -77,11 +82,6 @@ export const deleteMenuItem = async (
   });
   return data;
 };
-
-interface ListMenuItemsParams {
-  perPage?: number;
-  nextPageToken?: string | null;
-}
 
 export const listMenuItems = async (
   token: string,
