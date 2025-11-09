@@ -51,7 +51,6 @@ export const buildMenuApiUrl = (
   return url;
 };
 
-
 export const normalizeRole = (value: unknown): Role | null => {
   if (typeof value !== "string") {
     return null;
@@ -62,4 +61,11 @@ export const normalizeRole = (value: unknown): Role | null => {
   }
 
   return null;
+};
+
+export const getPriceLabel = (currency: string, price: number): string => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: currency,
+  }).format(price);
 };

@@ -1,0 +1,1 @@
+export { MenuItemDetailContainer } from "./MenuItemDetailContainer";

@@ -5,4 +5,4 @@ export { LoginPage } from "./LoginPage";
 export { HomePage } from "./HomePage";
 export { RestaurantPage } from "./RestaurantPage";
 export { RestaurantItemsPage } from "./RestaurantItemsPage";
-export { ItemPage } from "./ItemPage";
+export { MenuItemPage } from "./MenuItemPage";

@@ -86,7 +86,7 @@ export const listRestaurants = async (
     params.nextPageToken = nextPageToken;
   }
 
-  const url = buildApiUrl(ENDPOINT.RESTAURANT, undefined, undefined, params);
+  const url = buildApiUrl(ENDPOINT.RESTAURANT, undefined, params);
   const { data } = await axios.get<BackendResponse<ListRestaurantsResponseData>>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
