@@ -2,6 +2,7 @@ export interface HeaderProps {
   logout: () => void;
   isAuthenticate: boolean;
   isAllowedPage: boolean;
-  onCreateRestaurant: () => void;
+  primaryActionLabel?: string;
+  onPrimaryAction?: () => void;
   userName: string | null;
 }

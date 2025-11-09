@@ -7,7 +7,7 @@ import { Header } from "@/components";
 describe("Header", () => {
   test("shows signup and login buttons when user is not authenticated and page is allowed", () => {
     const logout = jest.fn();
-    const onCreateRestaurant = jest.fn();
+    const onPrimaryAction = jest.fn();
 
     render(
       <MemoryRouter>
@@ -15,7 +15,8 @@ describe("Header", () => {
           logout={logout}
           isAuthenticate={false}
           isAllowedPage
-          onCreateRestaurant={onCreateRestaurant}
+          primaryActionLabel="Create Restaurant"
+          onPrimaryAction={onPrimaryAction}
           userName={null}
         />
       </MemoryRouter>,
@@ -29,7 +30,7 @@ describe("Header", () => {
 
   test("hides auth actions when page is not allowed", () => {
     const logout = jest.fn();
-    const onCreateRestaurant = jest.fn();
+    const onPrimaryAction = jest.fn();
 
     render(
       <MemoryRouter>
@@ -37,7 +38,8 @@ describe("Header", () => {
           logout={logout}
           isAuthenticate={false}
           isAllowedPage={false}
-          onCreateRestaurant={onCreateRestaurant}
+          primaryActionLabel="Create Restaurant"
+          onPrimaryAction={onPrimaryAction}
           userName={null}
         />
       </MemoryRouter>,
@@ -50,7 +52,7 @@ describe("Header", () => {
 
   test("shows logout button when user is authenticated", () => {
     const logout = jest.fn();
-    const onCreateRestaurant = jest.fn();
+    const onPrimaryAction = jest.fn();
 
     render(
       <MemoryRouter>
@@ -58,7 +60,8 @@ describe("Header", () => {
           logout={logout}
           isAuthenticate
           isAllowedPage
-          onCreateRestaurant={onCreateRestaurant}
+          primaryActionLabel="Create Restaurant"
+          onPrimaryAction={onPrimaryAction}
           userName="Test User"
         />
       </MemoryRouter>,
@@ -73,7 +76,7 @@ describe("Header", () => {
   test("calls logout handler when logout button is clicked", async () => {
     const user = userEvent.setup();
     const logout = jest.fn();
-    const onCreateRestaurant = jest.fn();
+    const onPrimaryAction = jest.fn();
 
     render(
       <MemoryRouter>
@@ -81,7 +84,8 @@ describe("Header", () => {
           logout={logout}
           isAuthenticate
           isAllowedPage
-          onCreateRestaurant={onCreateRestaurant}
+          primaryActionLabel="Create Restaurant"
+          onPrimaryAction={onPrimaryAction}
           userName="Test User"
         />
       </MemoryRouter>,
@@ -98,7 +102,7 @@ describe("Header", () => {
   test("invokes create restaurant handler when button is clicked", async () => {
     const user = userEvent.setup();
     const logout = jest.fn();
-    const onCreateRestaurant = jest.fn();
+    const onPrimaryAction = jest.fn();
 
     render(
       <MemoryRouter>
@@ -106,14 +110,16 @@ describe("Header", () => {
           logout={logout}
           isAuthenticate
           isAllowedPage
-          onCreateRestaurant={onCreateRestaurant}
+          primaryActionLabel="Create Restaurant"
+          onPrimaryAction={onPrimaryAction}
+          userName={null}
         />
       </MemoryRouter>,
     );
 
     await user.click(screen.getByText("Create Restaurant"));
 
-    expect(onCreateRestaurant).toHaveBeenCalledTimes(1);
+    expect(onPrimaryAction).toHaveBeenCalledTimes(1);
     expect(logout).not.toHaveBeenCalled();
   });
 });

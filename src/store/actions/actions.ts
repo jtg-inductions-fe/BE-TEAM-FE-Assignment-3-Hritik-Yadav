@@ -1,14 +1,14 @@
 import {
   CLEAR_RESTAURANT_PAGINATION,
   SET_RESTAURANT_NEXT_TOKEN,
-} from "@store/reducers/restaurant.const";
-import { CLEAR_MENU_ITEM_PAGINATION, SET_MENU_ITEM_NEXT_TOKEN } from "../reducers/menuItem.const";
+} from "../reducers/restaurant.const";
 import {
   CLOSE_MENU_ITEM_FORM_MODAL,
   CLOSE_RESTAURANT_FORM_MODAL,
   OPEN_MENU_ITEM_FORM_MODAL,
   OPEN_RESTAURANT_FORM_MODAL,
-} from "../reducers/restaurantModal.const";
+} from "./modal.actions.const";
+import { CLEAR_MENU_ITEM_PAGINATION, SET_MENU_ITEM_NEXT_TOKEN } from "./menuItems.action.const";
 
 export const setRestaurantNextToken = (token: string | null) => ({
   type: SET_RESTAURANT_NEXT_TOKEN,

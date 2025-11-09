@@ -8,4 +8,4 @@ export const selectIsRestaurantFormModalOpen = (state: RootState) =>
 export const selectMenuItemNextPageToken = (state: RootState) =>
   state.menuItemPagination.nextPageToken;
 export const selectIsMenuItemFormModalOpen = (state: RootState) =>
-  state.restaurantModal.isRestaurantFormModalOpen;
+  state.menuItemModal.isMenuItemFormModalOpen;
