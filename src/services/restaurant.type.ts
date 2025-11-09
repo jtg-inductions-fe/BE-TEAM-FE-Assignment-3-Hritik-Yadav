@@ -13,10 +13,10 @@ export interface Restaurant {
 
 export interface RestaurantPayload {
   name: string;
-  openingTime: string; // HH:mm (24h)
-  closingTime: string; // HH:mm (24h)
+  openingTime: string;
+  closingTime: string;
   status: RestaurantStatus;
-  ownerId?: string; // required for create, optional in update
+  ownerId?: string;
 }
 
 export interface RestaurantFormValues {
@@ -26,26 +26,7 @@ export interface RestaurantFormValues {
   status: RestaurantStatus;
 }
 
-export interface CreateRestaurantResponseData {
-  restaurant: Restaurant;
-}
-
-export interface GetRestaurantResponseData {
-  restaurant: Restaurant;
-}
-
-export interface UpdateRestaurantResponseData {
-  restaurant: Restaurant;
-}
-
-export interface DeleteRestaurantResponseData {
-  id: string;
-}
-
 export interface ListRestaurantsResponseData {
   items: Restaurant[];
-  perpage?: number;
-  hasMore?: boolean;
   nextPageToken?: string | null;
-  total?: number;
 }

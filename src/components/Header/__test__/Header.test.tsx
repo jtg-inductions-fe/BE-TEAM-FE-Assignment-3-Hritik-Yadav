@@ -107,6 +107,7 @@ describe("Header", () => {
           isAuthenticate
           isAllowedPage
           onCreateRestaurant={onCreateRestaurant}
+          userName={""}
         />
       </MemoryRouter>,
     );

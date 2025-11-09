@@ -2,12 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
-import { AxiosError } from "axios";
 import { FirebaseError } from "firebase/app";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { signup } from "@/services";
 import { Signup } from "@/components";
+import { resolveAxiosErrorMessage } from "@/utils/helper";
 import type { SignupValues } from "@components/Signup";
 
 export const SignupContainer: React.FC = () => {
@@ -32,21 +32,7 @@ export const SignupContainer: React.FC = () => {
       navigate(ROUTES_URL.CONFIRMATION);
     } catch (error: unknown) {
       const genericError = "User not created. Try again later.";
-      let errMsg = genericError;
-
-      if (error instanceof AxiosError) {
-        const status = error.response?.status;
-
-        if (status && status >= 400 && status < 500) {
-          errMsg = error.response?.data?.message ?? genericError;
-        } else if (status && status >= 500) {
-          errMsg = "Server error. Please try again shortly.";
-        } else if (!status && error.request) {
-          errMsg = "Network error. Check your connection.";
-        } else if (error.message) {
-          errMsg = error.message;
-        }
-      }
+      let errMsg = resolveAxiosErrorMessage(error, genericError);
       if (error instanceof FirebaseError) {
         errMsg = "User Created, Login failed: Please Try Login Again";
       }

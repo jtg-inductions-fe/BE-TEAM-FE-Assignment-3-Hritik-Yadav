@@ -38,11 +38,24 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({
           </Text>
         </div>
         <div className="restaurant-card__actions">
-          <Button onClick={() => navigate(`/restaurant/${id}/mnu-items`)}>View Items</Button>
-          <Button type="default" onClick={() => onUpdate(restaurant)}>
+          <Button
+            className="restaurant-card__button"
+            onClick={() => navigate(`/restaurant/${id}/mnu-items`)}
+          >
+            View Items
+          </Button>
+          <Button
+            className="restaurant-card__button"
+            type="default"
+            onClick={() => onUpdate(restaurant)}
+          >
             Update
           </Button>
-          <Button danger onClick={() => onDelete(restaurant)}>
+          <Button
+            danger
+            onClick={() => onDelete(restaurant)}
+            className="restaurant-card__delete-button"
+          >
             Delete
           </Button>
         </div>

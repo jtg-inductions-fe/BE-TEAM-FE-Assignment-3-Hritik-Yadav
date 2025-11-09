@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Typography, message } from "antd";
-import { getAuth } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 
+import { useAuthContext } from "@/context/AuthContext";
 import { RestaurantList, RestaurantFormModal, DeleteConfirmModal, AppLoader } from "@/components";
-import { getUserDetails } from "@services/user.service";
 import {
   createRestaurant,
   deleteRestaurant,
@@ -14,25 +13,25 @@ import {
 import {
   selectIsRestaurantFormModalOpen,
   selectRestaurantNextPageToken,
-  selectUser,
 } from "@store/selectors/selector";
 import {
   clearRestaurantPagination,
   closeRestaurantFormModal,
   setRestaurantNextToken,
-  setUser,
-} from "@/store/actions/actions";
+} from "@store/actions/actions";
+
 import type { Restaurant, RestaurantPayload } from "@/services/restaurant.type";
+
 import "./restaurantContainer.style.scss";
+import { resolveAxiosErrorMessage } from "@/utils/helper";
 
 const { Title } = Typography;
 const PAGE_SIZE = 12;
 
 export const RestaurantContainer: React.FC = () => {
   const dispatch = useDispatch();
-  const storedUser = useSelector(selectUser);
   const nextPageToken = useSelector(selectRestaurantNextPageToken);
-  const firebaseAuth = useMemo(() => getAuth(), []);
+  const { authUser, isAuthLoading } = useAuthContext();
 
   const [items, setItems] = useState<Restaurant[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -45,71 +44,24 @@ export const RestaurantContainer: React.FC = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Restaurant | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [isUserReady, setIsUserReady] = useState(false);
-  const [userLoading, setUserLoading] = useState(true);
   const isCreateModalOpen = useSelector(selectIsRestaurantFormModalOpen);
-
-  useEffect(
-    () => () => {
-      dispatch(closeRestaurantFormModal());
-    },
-    [dispatch],
-  );
-
-  // works during mounting and refresh and user change
-  useEffect(() => {
-    const loadUser = async () => {
-      if (storedUser) {
-        setIsUserReady(true);
-        setUserLoading(false);
-        return;
-      }
-      setUserLoading(true);
-
-      const currentUser = firebaseAuth.currentUser;
-      if (!currentUser) {
-        setIsUserReady(false);
-        setUserLoading(false);
-        return;
-      }
-
-      try {
-        const token = await currentUser.getIdToken();
-        const userResponse = await getUserDetails(token);
-
-        if (userResponse.data) {
-          dispatch(setUser(userResponse.data));
-        }
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Unable to resolve user information";
-        message.error(errorMessage);
-        setIsUserReady(false);
-      } finally {
-        setUserLoading(false);
-      }
-    };
-
-    void loadUser();
-  }, [dispatch, firebaseAuth, storedUser]);
 
   // to provide consistent token to all functions
   const getAuthToken = useCallback(async (): Promise<string | null> => {
-    const currentUser = firebaseAuth.currentUser;
-    if (!currentUser) {
+    if (!authUser) {
       message.error("Authentication required");
       return null;
     }
 
     try {
-      return await currentUser.getIdToken();
+      return await authUser.getIdToken();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unable to resolve authentication token";
       message.error(errorMessage);
       return null;
     }
-  }, [firebaseAuth]);
+  }, [authUser]);
 
   // restaurant list function to fetch list
   const fetchPage = useCallback(
@@ -132,16 +84,14 @@ export const RestaurantContainer: React.FC = () => {
           perPage: PAGE_SIZE,
           nextPageToken: cursorId ?? null,
         });
-        const responseData = response.data;
-        const fetchedItems = responseData?.items ?? [];
-
+        const fetchedItems = response.data?.items ?? [];
         setItems((previousItems) => (append ? [...previousItems, ...fetchedItems] : fetchedItems));
 
-        const nextToken = responseData?.nextPageToken ?? null;
+        const nextToken = response.data?.nextPageToken ?? null;
         dispatch(setRestaurantNextToken(nextToken));
-        setHasMore(Boolean(nextToken));
+        setHasMore(!!nextToken);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to load restaurants";
+        const errorMessage = resolveAxiosErrorMessage(error, "Failed to load restaurants");
         message.error(errorMessage);
       } finally {
         setLoading(false);
@@ -152,21 +102,24 @@ export const RestaurantContainer: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!isUserReady) {
+    if (!authUser) {
+      setItems([]);
+      dispatch(clearRestaurantPagination());
+      setHasMore(true);
       return;
     }
 
     setItems([]);
     dispatch(clearRestaurantPagination());
     setHasMore(true);
+
     fetchPage(false, null);
-  }, [dispatch, fetchPage, isUserReady]);
+  }, [authUser, dispatch, fetchPage]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loadingMore || loading) {
       return;
     }
-
     fetchPage(true, nextPageToken);
   }, [fetchPage, hasMore, loading, loadingMore, nextPageToken]);
 
@@ -174,10 +127,11 @@ export const RestaurantContainer: React.FC = () => {
   const handleCreate = async (values: RestaurantPayload) => {
     const token = await getAuthToken();
     if (!token) {
+      message.error("Auth Token Not found");
       return;
     }
 
-    const ownerId = storedUser?.uid ?? firebaseAuth.currentUser?.uid;
+    const ownerId = authUser?.uid;
     if (!ownerId) {
       message.error("Missing owner id");
       return;
@@ -188,14 +142,14 @@ export const RestaurantContainer: React.FC = () => {
         ...values,
         ownerId,
       });
-      const createdRestaurant = response.data?.restaurant;
+      const createdRestaurant = response.data;
       if (createdRestaurant) {
         setItems((previousItems) => [createdRestaurant, ...previousItems]);
       }
       message.success("Restaurant created");
       dispatch(closeRestaurantFormModal());
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Create failed";
+      const errorMessage = resolveAxiosErrorMessage(error, "Create failed");
       message.error(errorMessage);
     }
   };
@@ -208,12 +162,13 @@ export const RestaurantContainer: React.FC = () => {
 
     const token = await getAuthToken();
     if (!token) {
+      message.error("Auth Token Not found");
       return;
     }
 
     try {
       const response = await updateRestaurant(token, editTarget.id, values);
-      const updatedRestaurant = response.data?.restaurant;
+      const updatedRestaurant = response.data;
       if (updatedRestaurant) {
         setItems((previousItems) =>
           previousItems.map((restaurantItem) =>
@@ -225,7 +180,7 @@ export const RestaurantContainer: React.FC = () => {
       setEditOpen(false);
       setEditTarget(null);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Update failed";
+      const errorMessage = resolveAxiosErrorMessage(error, "Update failed");
       message.error(errorMessage);
     }
   };
@@ -244,24 +199,21 @@ export const RestaurantContainer: React.FC = () => {
     try {
       setDeleteLoading(true);
       await deleteRestaurant(token, deleteTarget.id);
-      const deletedId = deleteTarget.id;
       setItems((previousItems) =>
-        previousItems.filter((restaurantItem) => restaurantItem.id !== deletedId),
+        previousItems.filter((restaurantItem) => restaurantItem.id !== deleteTarget.id),
       );
       message.success("Restaurant deleted");
       setDeleteOpen(false);
       setDeleteTarget(null);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Delete failed";
+      const errorMessage = resolveAxiosErrorMessage(error, "Delete failed");
       message.error(errorMessage);
     } finally {
       setDeleteLoading(false);
     }
   };
 
-  const greetingName = storedUser?.username ?? firebaseAuth.currentUser?.displayName ?? "Owner";
-
-  if (userLoading) {
+  if (isAuthLoading) {
     return <AppLoader />;
   }
 
@@ -269,15 +221,9 @@ export const RestaurantContainer: React.FC = () => {
     <section className="restaurant-container">
       <header className="restaurant-container__heading">
         <Title level={2} className="restaurant-container__heading-title">
-          Hi, {greetingName}
-        </Title>
-      </header>
-      <div className="restaurant-container__section">
-        <Title level={3} className="restaurant-container__section-title">
           Your Restaurants
         </Title>
-      </div>
-
+      </header>
       <RestaurantList
         items={items}
         loading={loading}

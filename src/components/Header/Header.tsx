@@ -43,16 +43,16 @@ export const Header: React.FC<HeaderProps> = ({
       {isAuthenticate ? (
         <div className="header__button">
           {onCreateRestaurant && (
-            <Button type="primary" onClick={onCreateRestaurant}>
+            <Button type="primary" onClick={onCreateRestaurant} className="header__create-button">
               Create Restaurant
             </Button>
           )}
-        <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }}>
-          <Button type="default" className="header__user-button">
-            <span className="header__user-label">{userName ?? "Account"}</span>
-            <DownOutlined />
-          </Button>
-        </Dropdown>
+          <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }}>
+            <Button type="default" className="header__user-button">
+              <span className="header__user-label">{userName ?? "Account"}</span>
+              <DownOutlined />
+            </Button>
+          </Dropdown>
         </div>
       ) : (
         isAllowedPage && (

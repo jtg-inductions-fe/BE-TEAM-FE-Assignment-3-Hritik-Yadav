@@ -1,6 +1,7 @@
+export { AppLoader } from "./AppLoader";
+export { BackToButton } from "./BackToButton";
 export { Header } from "./Header";
 export { Login } from "./Login";
-export { AppLoader } from "./AppLoader";
 export { PublicRoute } from "./PublicRoute";
 export { ProtectedRoute } from "./ProtectedRoute";
 export { RestaurantCard } from "./RestaurantCard";
