@@ -1,11 +1,5 @@
-import {
-  CLEAR_RESTAURANT_PAGINATION,
-  SET_RESTAURANT_NEXT_TOKEN,
-} from "@store/reducers/restaurant.const";
-import {
-  CLOSE_RESTAURANT_FORM_MODAL,
-  OPEN_RESTAURANT_FORM_MODAL,
-} from "@store/reducers/modal.const";
+import { CLOSE_RESTAURANT_FORM_MODAL, OPEN_RESTAURANT_FORM_MODAL } from "./modal.actions.const";
+import { CLEAR_RESTAURANT_PAGINATION, SET_RESTAURANT_NEXT_TOKEN } from "./restaurant.actions.const";
 
 export const setRestaurantNextToken = (token: string | null) => ({
   type: SET_RESTAURANT_NEXT_TOKEN,

@@ -12,7 +12,7 @@ export const ProtectedRoute: React.FC = () => {
   const { authUser, isAuthLoading, role } = useAuthContext();
   const { pathname } = location;
   const isVerificationRoute = pathname === ROUTES_URL.CONFIRMATION;
-  const isAdminRoute = pathname === ROUTES_URL.ADMIN;
+  const isOwnerRoute = pathname === ROUTES_URL.RESTAURANT;
 
   useEffect(() => {
     if (isAuthLoading) {
@@ -39,10 +39,10 @@ export const ProtectedRoute: React.FC = () => {
       return;
     }
 
-    if (isAdminRoute && role !== USER_ROLE.OWNER) {
+    if (isOwnerRoute && role !== USER_ROLE.OWNER) {
       navigate(ROUTES_URL.HOME, { replace: true });
     }
-  }, [authUser, isAdminRoute, isAuthLoading, isVerificationRoute, navigate, pathname, role]);
+  }, [authUser, isOwnerRoute, isAuthLoading, isVerificationRoute, navigate, pathname, role]);
 
   if (isAuthLoading || !authUser) {
     return <AppLoader />;
