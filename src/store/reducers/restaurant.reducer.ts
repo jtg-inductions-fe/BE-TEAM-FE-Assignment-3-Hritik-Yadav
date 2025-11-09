@@ -1,5 +1,9 @@
-import { CLEAR_RESTAURANT_PAGINATION, SET_RESTAURANT_NEXT_TOKEN } from "./restaurant.const";
-import type { RestaurantPaginationAction, RestaurantPaginationState } from "./restaurant.type";
+import {
+  CLEAR_RESTAURANT_PAGINATION,
+  SET_RESTAURANT_NEXT_TOKEN,
+} from "../actions/restaurant.actions.const";
+import type { RestaurantPaginationAction } from "../actions/restaurant.action.type";
+import type { RestaurantPaginationState } from "./restaurant.type";
 
 const initialState: RestaurantPaginationState = {
   nextPageToken: null,

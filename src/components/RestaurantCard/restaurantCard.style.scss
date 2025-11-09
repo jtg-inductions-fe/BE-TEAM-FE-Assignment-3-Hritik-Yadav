@@ -1,3 +1,5 @@
+@use "@styles/variables/colors" as *;
+
 .restaurant-card {
   display: flex;
   flex-direction: column;
@@ -6,7 +8,7 @@
   &__content {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0.75rem;
     height: 100%;
   }
 
@@ -14,7 +16,7 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    gap: 0.75rem;
   }
 
   &__title {
@@ -27,17 +29,29 @@
 
   &__meta {
     display: grid;
-    gap: 4px;
+    gap: 0.25rem;
   }
 
   &__timings {
-    color: rgba(0, 0, 0, 0.45);
+    color: $color-text-muted;
   }
 
   &__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 0.5rem;
     margin-top: auto;
+  }
+
+  &__button {
+    &:focus-visible {
+      box-shadow: 0 0 0 0.2rem rgba($color-link, 0.45);
+    }
+  }
+
+  &__delete-button {
+    &:focus-visible {
+      box-shadow: 0 0 0 0.2rem rgba($color-error, 0.45);
+    }
   }
 }

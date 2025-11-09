@@ -1,9 +1,10 @@
 import {
-  OPEN_RESTAURANT_FORM_MODAL,
   CLOSE_RESTAURANT_FORM_MODAL,
+  OPEN_RESTAURANT_FORM_MODAL,
 } from "../actions/modal.actions.const";
+
 import type { RestaurantModalState } from "./restaurantModal.type";
-import type { RestaurantModalAction } from "../actions/modal.action.type";
+import type { RestaurantModalAction } from "../actions/modal.actions.type";
 
 const initialState: RestaurantModalState = {
   isRestaurantFormModalOpen: false,

@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
       {isAuthenticate ? (
         <div className="header__button">
           {primaryActionLabel && onPrimaryAction && (
-            <Button type="primary" onClick={onPrimaryAction}>
+            <Button type="primary" onClick={onPrimaryAction} className="header__create-button">
               {primaryActionLabel}
             </Button>
           )}

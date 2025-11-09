@@ -2,22 +2,15 @@ import axios from "axios";
 
 import { buildApiUrl } from "@/utils/helper";
 import { ENDPOINT } from "./service.const";
-import { BackendResponse } from "./service.type";
-import {
-  CreateRestaurantResponseData,
-  DeleteRestaurantResponseData,
-  GetRestaurantResponseData,
-  ListRestaurantsResponseData,
-  RestaurantPayload,
-  UpdateRestaurantResponseData,
-} from "./restaurant.type";
+import type { BackendResponse } from "./service.type";
+import type { ListRestaurantsResponseData, Restaurant, RestaurantPayload } from "./restaurant.type";
 
 export const createRestaurant = async (
   token: string,
   payload: RestaurantPayload,
-): Promise<BackendResponse<CreateRestaurantResponseData>> => {
+): Promise<BackendResponse<Restaurant>> => {
   const url = buildApiUrl(ENDPOINT.RESTAURANT);
-  const { data } = await axios.post<BackendResponse<CreateRestaurantResponseData>>(url, payload, {
+  const { data } = await axios.post<BackendResponse<Restaurant>>(url, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -29,9 +22,9 @@ export const createRestaurant = async (
 export const getRestaurant = async (
   token: string,
   restaurantId: string,
-): Promise<BackendResponse<GetRestaurantResponseData>> => {
+): Promise<BackendResponse<Restaurant>> => {
   const url = buildApiUrl(ENDPOINT.RESTAURANT, restaurantId);
-  const { data } = await axios.get<BackendResponse<GetRestaurantResponseData>>(url, {
+  const { data } = await axios.get<BackendResponse<Restaurant>>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -43,9 +36,9 @@ export const updateRestaurant = async (
   token: string,
   restaurantId: string,
   payload: RestaurantPayload,
-): Promise<BackendResponse<UpdateRestaurantResponseData>> => {
+): Promise<BackendResponse<Restaurant>> => {
   const url = buildApiUrl(ENDPOINT.RESTAURANT, restaurantId);
-  const { data } = await axios.put<BackendResponse<UpdateRestaurantResponseData>>(url, payload, {
+  const { data } = await axios.put<BackendResponse<Restaurant>>(url, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -57,9 +50,9 @@ export const updateRestaurant = async (
 export const deleteRestaurant = async (
   token: string,
   restaurantId: string,
-): Promise<BackendResponse<DeleteRestaurantResponseData>> => {
+): Promise<BackendResponse> => {
   const url = buildApiUrl(ENDPOINT.RESTAURANT, restaurantId);
-  const { data } = await axios.delete<BackendResponse<DeleteRestaurantResponseData>>(url, {
+  const { data } = await axios.delete<BackendResponse>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

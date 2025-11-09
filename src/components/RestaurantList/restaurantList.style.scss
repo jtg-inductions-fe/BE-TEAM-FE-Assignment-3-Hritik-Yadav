@@ -1,3 +1,5 @@
+@use "@styles/variables/colors" as *;
+
 .restaurant-list {
   margin: 0 auto;
   max-width: 1024px;
@@ -22,18 +24,9 @@
   &__empty,
   &__loader,
   &__end {
-    color: rgba(0, 0, 0, 0.45);
+    color: $color-text-muted;
     font-size: 16px;
     padding: 32px;
     text-align: center;
-  }
-}
-
-@media (max-width: 640px) {
-  .restaurant-list {
-    &__grid {
-      gap: 16px;
-      grid-template-columns: 1fr;
-    }
   }
 }
