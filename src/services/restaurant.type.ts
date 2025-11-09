@@ -30,3 +30,8 @@ export interface ListRestaurantsResponseData {
   items: Restaurant[];
   nextPageToken?: string | null;
 }
+
+export interface ListRestaurantParams {
+  perPage?: number;
+  nextPageToken?: string | null;
+}
