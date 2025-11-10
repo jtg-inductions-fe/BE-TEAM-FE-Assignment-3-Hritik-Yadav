@@ -11,18 +11,18 @@ import {
   RestaurantPage,
   RestaurantItemsPage,
 } from "@/pages";
-import { ProtectedRoute, PublicRoute, RootLayout } from "@/components";
+import { ProtectedRouteComponent, PublicRouteComponent, RootLayoutComponent } from "@/components";
 
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path={ROUTES_URL.HOME} element={<RootLayout />}>
-        <Route element={<PublicRoute />}>
+      <Route path={ROUTES_URL.HOME} element={<RootLayoutComponent />}>
+        <Route element={<PublicRouteComponent />}>
           <Route index element={<HomePage />} />
           <Route path={ROUTES_URL.SIGNUP} element={<SignupPage />} />
           <Route path={ROUTES_URL.LOGIN} element={<LoginPage />} />
         </Route>
-        <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRouteComponent />}>
           <Route path={ROUTES_URL.RESTAURANT} element={<RestaurantPage />} />
           <Route path="/restaurant/:id/mnu-items" element={<RestaurantItemsPage />} />
           <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
