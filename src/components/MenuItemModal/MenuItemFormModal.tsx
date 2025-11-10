@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Radio, InputNumber, Select, Space } from "antd";
+import { Modal, Form, Input, Radio, InputNumber, Select, Space, Upload, Button, message } from "antd";
 import { Formik, Field } from "formik";
 import TextArea from "antd/lib/input/TextArea";
+import { UploadOutlined } from "@ant-design/icons";
 import type { FieldProps } from "formik";
+import type { UploadChangeParam } from "antd/es/upload";
+import type { UploadFile } from "antd/es/upload/interface";
 
-import { UploadBox } from "../UploadBox";
 import { menuItemFormValidationSchema } from "./MenuItemFormModal.validation";
 import {
   getMenuItemFormInitialValues,
   MENU_ITEM_CURRENCY_OPTIONS,
 } from "./MenuItemFormModal.const";
 import type { MenuItemFormModalProps } from "./MenuItemModal.type";
-import type {
-  Currency,
-  ItemCategory,
-  MenuItemFormValues,
-  MenuItemPayload,
-} from "@services/menu.type";
+import type { Currency, ItemCategory, MenuItemFormValues } from "@services/menu.type";
 
 export const MenuItemFormModal: React.FC<MenuItemFormModalProps> = ({
   open,
@@ -27,35 +24,58 @@ export const MenuItemFormModal: React.FC<MenuItemFormModalProps> = ({
   showUpload = true,
 }) => {
   const [imageName, setImageName] = useState(initial?.imageName ?? "");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     setImageName(initial?.imageName ?? "");
+    setSelectedFile(null);
+    setFileList([]);
   }, [initial?.imageName]);
 
   const initialValues: MenuItemFormValues = getMenuItemFormInitialValues(initial);
+
+  const uploadProps = {
+    beforeUpload: () => false,
+    onChange: (info: UploadChangeParam<UploadFile>) => {
+      const latestFileList = info.fileList.slice(-1);
+      setFileList(latestFileList);
+      const latestFile = latestFileList[0]?.originFileObj ?? null;
+      setSelectedFile(latestFile);
+
+      if (!latestFile) {
+        setImageName(initial?.imageName ?? "");
+      } else {
+        setImageName(latestFile.name);
+      }
+    },
+    maxCount: 1,
+    fileList,
+    accept: "image/*",
+    onRemove: () => {
+      setSelectedFile(null);
+      setImageName(initial?.imageName ?? "");
+    },
+  };
 
   return (
     <Formik<MenuItemFormValues>
       initialValues={initialValues}
       validationSchema={menuItemFormValidationSchema}
       onSubmit={async (values, helpers) => {
+        if (showUpload && !selectedFile) {
+          message.error("Please upload an image before submitting.");
+          helpers.setSubmitting(false);
+          return;
+        }
+
         try {
-          const payload: MenuItemPayload = {
-            name: values.name,
-            description: values.description,
-            amount: {
-              currency: values.amount.currency,
-              price: values.amount.price,
-            },
-            imageName: showUpload ? imageName : (initial?.imageName ?? ""),
-            category: values.category,
-            rating: values.rating,
-            quantity: values.quantity,
-          };
-          await onSubmit(payload);
+          await onSubmit(values, showUpload ? selectedFile ?? undefined : undefined);
           if (mode === "create") {
             helpers.resetForm();
             setImageName(initial?.imageName ?? "");
+            setSelectedFile(null);
+            setFileList([]);
           }
         } finally {
           helpers.setSubmitting(false);
@@ -169,7 +189,14 @@ export const MenuItemFormModal: React.FC<MenuItemFormModalProps> = ({
             </Field>
             {showUpload ? (
               <Form.Item label="Item Image">
-                <UploadBox setImageName={setImageName} />
+                <Upload {...uploadProps}>
+                  <Button icon={<UploadOutlined />}>Select Image</Button>
+                </Upload>
+                {imageName ? (
+                  <div className="menu-item-form__image-name">
+                    {mode === "create" ? "Selected image" : "Current image"}: {imageName}
+                  </div>
+                ) : null}
               </Form.Item>
             ) : null}
           </Form>

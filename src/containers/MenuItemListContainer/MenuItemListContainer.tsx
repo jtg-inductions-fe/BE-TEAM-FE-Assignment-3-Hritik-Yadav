@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { message } from "antd";
-import { getAuth } from "firebase/auth";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+
 import { MenuItemList, MenuItemFormModal } from "@/components";
+import { getSignedUrl } from "@services/upload.service";
 import { createMenuItem, listMenuItems } from "@services/menu.service";
 import {
   selectIsMenuItemFormModalOpen,
@@ -15,17 +17,18 @@ import {
   closeMenuItemFormModal,
   setMenuItemNextToken,
 } from "@/store/actions/actions";
-import { ListMenuItemsResponseData, MenuItem, MenuItemPayload } from "@/services/menu.type";
+import { ListMenuItemsResponseData, MenuItem, MenuItemFormValues, MenuItemPayload } from "@/services/menu.type";
 import "./menuItemListContainer.style.scss";
 import { resolveAxiosErrorMessage } from "@/utils/helper";
+import { useAuthContext } from "@/context/AuthContext";
 
 const PAGE_SIZE = 12;
 
 export const MenuItemListContainer: React.FC = () => {
+  const { authUser } = useAuthContext();
   const dispatch = useDispatch();
   const nextPageToken = useSelector(selectMenuItemNextPageToken);
   const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
-  const firebaseAuth = useMemo(() => getAuth(), []);
   const { restaurantId } = useParams<{ restaurantId?: string }>();
 
   const [items, setItems] = useState<MenuItem[]>([]);
@@ -34,21 +37,20 @@ export const MenuItemListContainer: React.FC = () => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const getAuthToken = useCallback(async (): Promise<string | null> => {
-    const currentUser = firebaseAuth.currentUser;
-    if (!currentUser) {
+    if (!authUser) {
       message.error("Authentication required");
       return null;
     }
 
     try {
-      return await currentUser.getIdToken();
+      return await authUser.getIdToken();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unable to resolve authentication token";
       message.error(errorMessage);
       return null;
     }
-  }, [firebaseAuth]);
+  }, [authUser]);
 
   const fetchPage = useCallback(
     async (append: boolean, cursorId: string | null) => {
@@ -123,14 +125,13 @@ export const MenuItemListContainer: React.FC = () => {
 
     fetchPage(true, nextPageToken);
   }, [fetchPage, hasMore, loading, loadingMore, nextPageToken]);
-
-  const handleCreate = async (values: MenuItemPayload) => {
+  const handleCreate = async (values: MenuItemFormValues, file?: File) => {
     const token = await getAuthToken();
     if (!token) {
       return;
     }
 
-    const ownerId = firebaseAuth.currentUser?.uid;
+    const ownerId = authUser?.uid;
     if (!ownerId) {
       message.error("Missing owner id");
       return;
@@ -141,12 +142,62 @@ export const MenuItemListContainer: React.FC = () => {
       return;
     }
 
+    if (!file) {
+      message.error("Image upload failed. Please try again.");
+      return;
+    }
+
+    const contentType = file.type || "application/octet-stream";
+
+    let uploadedImageName: string | null = null;
+
     try {
-      await createMenuItem(token, restaurantId, {
-        ...values,
-        ownerId,
-        restaurantId,
+      const signedUrlResponse = await getSignedUrl(token, file.name, contentType);
+      const { uploadUrl, imageName } = signedUrlResponse?.data ?? signedUrlResponse ?? {};
+
+      if (!uploadUrl || !imageName) {
+        message.error("Unable to resolve upload destination.");
+        return;
+      }
+
+      await axios.put(uploadUrl, file, {
+        headers: {
+          "Content-Type": contentType,
+        },
       });
+
+      uploadedImageName = imageName;
+    } catch (error) {
+      const errorMessage = resolveAxiosErrorMessage(
+        error,
+        "Image upload failed. Please try again.",
+      );
+      message.error(errorMessage);
+      return;
+    }
+
+    if (!uploadedImageName) {
+      message.error("Image upload failed. Please try again.");
+      return;
+    }
+
+    const payload: MenuItemPayload = {
+      name: values.name,
+      description: values.description,
+      amount: {
+        currency: values.amount.currency,
+        price: values.amount.price,
+      },
+      imageName: uploadedImageName,
+      category: values.category,
+      rating: values.rating,
+      quantity: values.quantity,
+      ownerId,
+      restaurantId,
+    };
+
+    try {
+      await createMenuItem(token, restaurantId, payload);
       message.success("Menu item created");
       dispatch(clearMenuItemPagination());
       await fetchPage(false, null);

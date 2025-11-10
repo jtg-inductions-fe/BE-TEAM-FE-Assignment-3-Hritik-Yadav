@@ -12,7 +12,7 @@ import {
 import { ROUTES_URL } from "@/routes/routes.const";
 import { deleteMenuItem, getMenuItem, updateMenuItem } from "@services/menu.service";
 
-import type { MenuItem, MenuItemPayload } from "@services/menu.type";
+import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
 import { resolveAxiosErrorMessage } from "@/utils/helper";
 
 const { Text } = Typography;
@@ -71,7 +71,7 @@ export const MenuItemDetailContainer: React.FC = () => {
   }, []);
 
   const handleUpdateSubmit = useCallback(
-    async (values: MenuItemPayload) => {
+    async (values: MenuItemFormValues) => {
       if (!restaurantId || !menuItemId) {
         return;
       }
@@ -83,7 +83,18 @@ export const MenuItemDetailContainer: React.FC = () => {
       }
 
       try {
-        const response = await updateMenuItem(token, restaurantId, menuItemId, values);
+        const payload: MenuItemPayload = {
+          name: values.name,
+          description: values.description,
+          amount: {
+            currency: values.amount.currency,
+            price: values.amount.price,
+          },
+          category: values.category,
+          rating: values.rating,
+          quantity: values.quantity,
+        };
+        const response = await updateMenuItem(token, restaurantId, menuItemId, payload);
         const updatedItem = response.data;
         if (updatedItem) {
           setMenuItem(updatedItem);

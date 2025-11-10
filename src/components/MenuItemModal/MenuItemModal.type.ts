@@ -1,11 +1,11 @@
-import { MenuItem, MenuItemPayload } from "@/services/menu.type";
+import { MenuItem, MenuItemFormValues } from "@/services/menu.type";
 
 export interface MenuItemFormModalProps {
   open: boolean;
   mode: "create" | "update";
   initial?: Partial<MenuItem>;
   onCancel: () => void;
-  onSubmit: (values: MenuItemPayload) => Promise<void> | void;
+  onSubmit: (values: MenuItemFormValues, file?: File) => Promise<void> | void;
   showUpload?: boolean;
 }
 

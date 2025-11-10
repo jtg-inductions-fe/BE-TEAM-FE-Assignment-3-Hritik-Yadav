@@ -22,7 +22,7 @@ export interface MenuItemPayload {
   name: string;
   description: string;
   amount: Amount;
-  imageName: string;
+  imageName?: string;
   rating: number;
   category: ItemCategory;
   quantity: number;
