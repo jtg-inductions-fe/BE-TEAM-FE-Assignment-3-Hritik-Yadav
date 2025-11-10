@@ -7,8 +7,8 @@ import { FirebaseError } from "firebase/app";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { signup } from "@/services";
-import { Signup } from "@/components";
-import type { SignupValues } from "@components/Signup";
+import { SignupComponent } from "@/components";
+import type { SignupValues } from "@/components/SignupComponent";
 
 export const SignupContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -54,5 +54,5 @@ export const SignupContainer: React.FC = () => {
     }
   };
 
-  return <Signup onSubmit={handleSubmit} />;
+  return <SignupComponent onSubmit={handleSubmit} />;
 };

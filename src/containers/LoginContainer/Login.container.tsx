@@ -5,8 +5,8 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import { app } from "@/firebase/firebase";
 
-import { Login } from "@/components";
-import { LoginValues } from "@components/Login";
+import { LoginComponent } from "@/components";
+import { LoginValues } from "@/components/LoginComponent";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { USER_ROLE } from "@services/service.const";
 import { normalizeRole } from "@/utils/helper";
@@ -39,5 +39,5 @@ export const LoginContainer: React.FC = () => {
     }
   };
 
-  return <Login onSubmit={handleSubmit} />;
+  return <LoginComponent onSubmit={handleSubmit} />;
 };

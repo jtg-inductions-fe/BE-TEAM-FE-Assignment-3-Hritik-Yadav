@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { sendEmailVerification } from "firebase/auth";
 import { message } from "antd";
 
-import { Verification } from "@/components";
+import { VerificationComponent } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { USER_ROLE } from "@services/service.const";
 import { useAuthContext } from "@/context/AuthContext";
@@ -49,7 +49,7 @@ export const VerificationContainer: React.FC = () => {
   }, [authUser, navigate]);
 
   return (
-    <Verification
+    <VerificationComponent
       title={title}
       subtitle={subtitle}
       onRetry={checkVerified}
