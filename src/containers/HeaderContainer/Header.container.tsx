@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 import { useDispatch } from "react-redux";
 
 import { app } from "@/firebase/firebase";
-import { Header } from "@/components";
+import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { openMenuItemFormModal, openRestaurantFormModal } from "@store/actions/actions";
@@ -56,7 +56,7 @@ export const HeaderContainer: React.FC = () => {
       : "";
 
   return (
-    <Header
+    <HeaderComponent
       logout={logout}
       isAllowedPage={isAllowedPage}
       isAuthenticate={isAuthenticate}

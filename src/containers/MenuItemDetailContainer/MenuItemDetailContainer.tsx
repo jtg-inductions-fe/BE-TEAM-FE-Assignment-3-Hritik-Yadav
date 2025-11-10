@@ -4,10 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useAuthContext } from "@/context/AuthContext";
 import {
-  MenuItemDetail,
-  MenuItemFormModal,
-  DeleteItemConfirmModal,
-  BackToButton,
+  MenuItemDetailComponent,
+  MenuItemFormModalComponent,
+  DeleteItemConfirmModalComponent,
+  BackToButtonComponent,
 } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { deleteMenuItem, getMenuItem, updateMenuItem } from "@services/menu.service";
@@ -151,7 +151,7 @@ export const MenuItemDetailContainer: React.FC = () => {
   if (loading) {
     return (
       <div className="menu-item-detail__loader">
-        <BackToButton label="Back to Menu" />
+        <BackToButtonComponent label="Back to Menu" />
         <Spin />
       </div>
     );
@@ -160,7 +160,7 @@ export const MenuItemDetailContainer: React.FC = () => {
   if (!menuItem) {
     return (
       <div className="menu-item-detail__loader">
-        <BackToButton label="Back to Menu" />
+        <BackToButtonComponent label="Back to Menu" />
         <Text>No menu item to display.</Text>
       </div>
     );
@@ -168,13 +168,9 @@ export const MenuItemDetailContainer: React.FC = () => {
 
   return (
     <>
-      <MenuItemDetail
-        menuItem={menuItem}
-        onUpdate={handleUpdateOpen}
-        onDelete={handleDeleteOpen}
-      />
+      <MenuItemDetailComponent menuItem={menuItem} onUpdate={handleUpdateOpen} onDelete={handleDeleteOpen} />
 
-      <MenuItemFormModal
+      <MenuItemFormModalComponent
         open={isUpdateModalOpen}
         mode="update"
         initial={menuItem}
@@ -183,7 +179,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         showUpload={false}
       />
 
-      <DeleteItemConfirmModal
+      <DeleteItemConfirmModalComponent
         open={isDeleteModalOpen}
         menuItem={menuItem}
         onCancel={handleDeleteCancel}

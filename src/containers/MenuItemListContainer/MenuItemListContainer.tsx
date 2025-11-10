@@ -4,8 +4,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-
-import { MenuItemList, MenuItemFormModal } from "@/components";
+import { MenuItemListComponent, MenuItemFormModalComponent } from "@/components";
 import { getSignedUrl } from "@services/upload.service";
 import { createMenuItem, listMenuItems } from "@services/menu.service";
 import {
@@ -17,7 +16,12 @@ import {
   closeMenuItemFormModal,
   setMenuItemNextToken,
 } from "@/store/actions/actions";
-import { ListMenuItemsResponseData, MenuItem, MenuItemFormValues, MenuItemPayload } from "@/services/menu.type";
+import {
+  ListMenuItemsResponseData,
+  MenuItem,
+  MenuItemFormValues,
+  MenuItemPayload,
+} from "@/services/menu.type";
 import "./menuItemListContainer.style.scss";
 import { resolveAxiosErrorMessage } from "@/utils/helper";
 import { useAuthContext } from "@/context/AuthContext";
@@ -213,7 +217,7 @@ export const MenuItemListContainer: React.FC = () => {
 
   return (
     <section className="menu-container">
-      <MenuItemList
+      <MenuItemListComponent
         items={items}
         loading={loading}
         loadingMore={loadingMore}
@@ -222,7 +226,7 @@ export const MenuItemListContainer: React.FC = () => {
         restaurantId={restaurantId}
       />
 
-      <MenuItemFormModal
+      <MenuItemFormModalComponent
         open={isCreateModalOpen}
         mode="create"
         onCancel={() => dispatch(closeMenuItemFormModal())}

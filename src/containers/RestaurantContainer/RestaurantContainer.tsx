@@ -3,7 +3,6 @@ import { Typography, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useAuthContext } from "@/context/AuthContext";
-import { RestaurantList, RestaurantFormModal, DeleteConfirmModal, AppLoader } from "@/components";
 import {
   createRestaurant,
   deleteRestaurant,
@@ -15,15 +14,21 @@ import {
   selectRestaurantNextPageToken,
 } from "@store/selectors/selector";
 import {
+  AppLoaderComponent,
+  DeleteConfirmModalComponent,
+  RestaurantFormModalComponent,
+  RestaurantListComponent,
+} from "@/components";
+import {
   clearRestaurantPagination,
   closeRestaurantFormModal,
   setRestaurantNextToken,
 } from "@store/actions/actions";
+import { resolveAxiosErrorMessage } from "@/utils/helper";
 
 import type { Restaurant, RestaurantPayload } from "@/services/restaurant.type";
 
 import "./restaurantContainer.style.scss";
-import { resolveAxiosErrorMessage } from "@/utils/helper";
 
 const { Title } = Typography;
 const PAGE_SIZE = 12;
@@ -214,7 +219,7 @@ export const RestaurantContainer: React.FC = () => {
   };
 
   if (isAuthLoading) {
-    return <AppLoader />;
+    return <AppLoaderComponent />;
   }
 
   return (
@@ -224,7 +229,7 @@ export const RestaurantContainer: React.FC = () => {
           Your Restaurants
         </Title>
       </header>
-      <RestaurantList
+      <RestaurantListComponent
         items={items}
         loading={loading}
         loadingMore={loadingMore}
@@ -240,14 +245,14 @@ export const RestaurantContainer: React.FC = () => {
         }}
       />
 
-      <RestaurantFormModal
+      <RestaurantFormModalComponent
         open={isCreateModalOpen}
         mode="create"
         onCancel={() => dispatch(closeRestaurantFormModal())}
         onSubmit={handleCreate}
       />
 
-      <RestaurantFormModal
+      <RestaurantFormModalComponent
         open={editOpen}
         mode="update"
         initial={editTarget ?? undefined}
@@ -258,7 +263,7 @@ export const RestaurantContainer: React.FC = () => {
         onSubmit={handleUpdate}
       />
 
-      <DeleteConfirmModal
+      <DeleteConfirmModalComponent
         open={deleteOpen}
         restaurant={deleteTarget ?? undefined}
         onCancel={() => setDeleteOpen(false)}
