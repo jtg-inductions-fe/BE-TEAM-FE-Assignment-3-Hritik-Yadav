@@ -20,8 +20,7 @@ export const VerificationContainer: React.FC = () => {
     }
     await authUser.reload();
     if (authUser.emailVerified) {
-      const route = role == USER_ROLE.OWNER ? ROUTES_URL.RESTAURANT : ROUTES_URL.HOME;
-      navigate(route, { replace: true });
+      navigate(-1);
       return;
     }
     setTitle("Email not verified yet");

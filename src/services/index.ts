@@ -5,4 +5,6 @@ export {
   getRestaurant,
   updateRestaurant,
   deleteRestaurant,
+  listPublicRestaurants,
 } from "./restaurant.service";
+export { listPublicMenuItems } from "./menu.service";

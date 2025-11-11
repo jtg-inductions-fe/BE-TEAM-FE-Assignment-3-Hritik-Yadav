@@ -16,6 +16,7 @@ export const RestaurantListComponent: React.FC<RestaurantListProps> = ({
   loadingMore,
   hasMore,
   loadMore,
+  onView,
   onUpdate,
   onDelete,
 }) => {
@@ -46,6 +47,7 @@ export const RestaurantListComponent: React.FC<RestaurantListProps> = ({
               <div key={restaurantItem.id} className="restaurant-list__item">
                 <RestaurantCardComponent
                   restaurant={restaurantItem}
+                  onView={onView}
                   onUpdate={onUpdate}
                   onDelete={onDelete}
                 />

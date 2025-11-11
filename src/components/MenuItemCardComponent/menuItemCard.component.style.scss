@@ -68,10 +68,12 @@
 
   &__actions {
     display: flex;
+    gap: 0.5rem;
     margin-top: auto;
   }
 
   &__button {
+    flex: 1;
     &:focus-visible {
       box-shadow: 0 0 0 0.2rem rgba($color-link, 0.45);
     }

@@ -9,6 +9,7 @@ import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { openMenuItemFormModal, openRestaurantFormModal } from "@store/actions/actions";
+import { USER_ROLE } from "@/services/service.const";
 
 export const HeaderContainer: React.FC = () => {
   const auth = getAuth(app);
@@ -19,10 +20,10 @@ export const HeaderContainer: React.FC = () => {
   const isLoginPage = location.pathname === ROUTES_URL.LOGIN;
   const isVerificationPage = location.pathname === ROUTES_URL.CONFIRMATION;
   const isAllowedPage = !isSignupPage && !isLoginPage && !isVerificationPage;
-  const { authUser, isAuthLoading, userName } = useAuthContext();
+  const { authUser, isAuthLoading, userName, role } = useAuthContext();
   const isAuthenticate = !!authUser && !isAuthLoading;
   const isMenuRoute = location.pathname.endsWith(ROUTES_URL.MENU);
-  const isRestaurantRoute = location.pathname === ROUTES_URL.RESTAURANT;
+  const isRestaurantRoute = role === USER_ROLE.OWNER
 
   const logout = async () => {
     try {

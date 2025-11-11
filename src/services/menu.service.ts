@@ -84,7 +84,7 @@ export const deleteMenuItem = async (
 };
 
 export const listMenuItems = async (
-  token: string,
+  token: string | null,
   restaurantId: string,
   { perPage = 10, nextPageToken }: ListMenuItemsParams = {},
 ): Promise<BackendResponse<ListMenuItemsResponseData>> => {
@@ -110,5 +110,30 @@ export const listMenuItems = async (
       Authorization: `Bearer ${token}`,
     },
   });
+  return data;
+};
+
+export const listPublicMenuItems = async (
+  restaurantId: string,
+  { perPage = 10, nextPageToken }: ListMenuItemsParams = {},
+): Promise<BackendResponse<ListMenuItemsResponseData>> => {
+  const params: Record<string, string | number> = {};
+
+  if (perPage) {
+    params.perPage = perPage;
+  }
+
+  if (nextPageToken) {
+    params.nextPageToken = nextPageToken;
+  }
+
+  const url = buildMenuApiUrl(
+    ENDPOINT.RESTAURANT,
+    restaurantId,
+    ENDPOINT.MENU_ITEMS,
+    ENDPOINT.LIST,
+    params,
+  );
+  const { data } = await axios.get<BackendResponse<ListMenuItemsResponseData>>(url);
   return data;
 };

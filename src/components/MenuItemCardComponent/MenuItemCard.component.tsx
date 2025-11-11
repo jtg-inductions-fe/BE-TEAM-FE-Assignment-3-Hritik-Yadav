@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { CATEGORY_COLOR } from "./menuItemCard.component.const";
 import { getPriceLabel } from "@/utils/helper";
+import { AddToCartButton } from "@components/AddToCartButton";
 
 import type { MenuItemCardProps } from "./menuItemCard.component.type";
 
@@ -13,23 +14,26 @@ import "./menuItemCard.component.style.scss";
 
 const { Title, Text } = Typography;
 
-export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, restaurantId }) => {
-  const navigate = useNavigate();
+export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({
+  item,
+  restaurantId,
+  onView,
+  onAddToCart,
+}) => {
   const { id, name, amount, rating, category, quantity, imageUrl } = item;
   const categoryColor = CATEGORY_COLOR[category];
   const priceLabel = getPriceLabel(amount.currency, amount.price);
   const availabilityLabel = quantity > 0 ? `${quantity} available` : "Out of stock";
 
   const handleViewDetails = () => {
-    if (!restaurantId) {
+    if (onView) {
+      onView(id);
       return;
     }
-    const detailsPage = `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`;
-    navigate(detailsPage);
   };
 
   return (
-    <Card className="menu-item-card" hoverable>
+    <Card className="menu-item-card">
       <div className="menu-item-card__content">
         <div className="menu-item-card__header">
           <Title level={4} className="menu-item-card__title">
@@ -62,12 +66,17 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, resta
         <div className="menu-item-card__actions">
           <Button
             type="primary"
-            block
             onClick={handleViewDetails}
             className="menu-item-card__button"
           >
             View Item
           </Button>
+          {onAddToCart && (
+            <AddToCartButton
+              disabled={quantity <= 0}
+              onClick={() => onAddToCart(item)}
+            />
+          )}
         </div>
       </div>
     </Card>
