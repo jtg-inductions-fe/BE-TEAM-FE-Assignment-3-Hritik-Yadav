@@ -10,23 +10,40 @@ import {
   BackToButtonComponent,
 } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { deleteMenuItem, getMenuItem, updateMenuItem } from "@services/menu.service";
+import { deleteMenuItem, getMenuItem, getPublicMenuItem, updateMenuItem } from "@services/menu.service";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
 import { resolveAxiosErrorMessage } from "@/utils/helper";
+import { USER_ROLE } from "@/services/service.const";
 
 const { Text } = Typography;
 
 export const MenuItemDetailContainer: React.FC = () => {
   const navigate = useNavigate();
   const { restaurantId, menuItemId } = useParams<{ restaurantId: string; menuItemId: string }>();
-  const { authUser, isAuthLoading } = useAuthContext();
+  const { authUser, isAuthLoading, role } = useAuthContext();
+  const isOwnerView = role === USER_ROLE.OWNER;
 
   const [menuItem, setMenuItem] = useState<MenuItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const resolveAuthToken = useCallback(async () => {
+    if (!authUser) {
+      return null;
+    }
+
+    try {
+      const token = await authUser.getIdToken();
+      return token ?? null;
+    } catch (error) {
+      const errorMessage = resolveAxiosErrorMessage(error, "Unable to fetch auth token");
+      message.error(errorMessage);
+      return null;
+    }
+  }, [authUser]);
 
   const fetchMenuItem = useCallback(async () => {
     if (isAuthLoading) {
@@ -37,17 +54,23 @@ export const MenuItemDetailContainer: React.FC = () => {
       return;
     }
 
-    const token = await authUser?.getIdToken();
-    if (!token) {
-      message.warn("Auth Token Missing");
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
-      const response = await getMenuItem(token, restaurantId, menuItemId);
-      const data = response.data;
+      let data: MenuItem | null | undefined;
+
+      if (isOwnerView) {
+        const token = await resolveAuthToken();
+        if (!token) {
+          message.warn("Auth Token Missing");
+          return;
+        }
+        const response = await getMenuItem(token, restaurantId, menuItemId);
+        data = response?.data;
+      } else {
+        const response = await getPublicMenuItem(restaurantId, menuItemId);
+        data = response?.data;
+      }
+
       if (!data) {
         setMenuItem(null);
         message.warning("Menu item not found");
@@ -60,7 +83,7 @@ export const MenuItemDetailContainer: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [authUser, isAuthLoading, menuItemId, restaurantId]);
+  }, [isAuthLoading, isOwnerView, menuItemId, resolveAuthToken, restaurantId]);
 
   useEffect(() => {
     void fetchMenuItem();
@@ -76,7 +99,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         return;
       }
 
-      const token = await authUser?.getIdToken();
+      const token = await resolveAuthToken();
       if (!token) {
         message.warn("Auth Token Missing");
         return;
@@ -107,7 +130,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         setIsUpdateModalOpen(false);
       }
     },
-    [authUser, menuItemId, restaurantId],
+    [menuItemId, resolveAuthToken, restaurantId],
   );
 
   const handleDeleteOpen = useCallback(() => {
@@ -123,7 +146,7 @@ export const MenuItemDetailContainer: React.FC = () => {
       return;
     }
 
-    const token = await authUser?.getIdToken();
+    const token = await resolveAuthToken();
     if (!token) {
       message.warn("Auth Token Missing");
       return;
@@ -142,10 +165,19 @@ export const MenuItemDetailContainer: React.FC = () => {
     } finally {
       setDeleteLoading(false);
     }
-  }, [authUser, menuItem, menuItemId, navigate, restaurantId]);
+  }, [menuItem, menuItemId, navigate, resolveAuthToken, restaurantId]);
 
   const handleDeleteCancel = useCallback(() => {
     setIsDeleteModalOpen(false);
+  }, []);
+
+  const handleAddToCart = useCallback((item: MenuItem) => {
+    if (item.quantity <= 0) {
+      message.info("Item currently out of stock");
+      return;
+    }
+
+    message.success("Item added to cart");
   }, []);
 
   if (loading) {
@@ -168,24 +200,34 @@ export const MenuItemDetailContainer: React.FC = () => {
 
   return (
     <>
-      <MenuItemDetailComponent menuItem={menuItem} onUpdate={handleUpdateOpen} onDelete={handleDeleteOpen} />
-
-      <MenuItemFormModalComponent
-        open={isUpdateModalOpen}
-        mode="update"
-        initial={menuItem}
-        onCancel={() => setIsUpdateModalOpen(false)}
-        onSubmit={handleUpdateSubmit}
-        showUpload={false}
-      />
-
-      <DeleteItemConfirmModalComponent
-        open={isDeleteModalOpen}
+      <MenuItemDetailComponent
         menuItem={menuItem}
-        onCancel={handleDeleteCancel}
-        onConfirm={handleDeleteConfirm}
-        loading={deleteLoading}
+        isOwnerView={isOwnerView}
+        onUpdate={isOwnerView ? handleUpdateOpen : undefined}
+        onDelete={isOwnerView ? handleDeleteOpen : undefined}
+        onAddToCart={!isOwnerView ? handleAddToCart : undefined}
       />
+
+      {isOwnerView && (
+        <>
+          <MenuItemFormModalComponent
+            open={isUpdateModalOpen}
+            mode="update"
+            initial={menuItem}
+            onCancel={() => setIsUpdateModalOpen(false)}
+            onSubmit={handleUpdateSubmit}
+            showUpload={false}
+          />
+
+          <DeleteItemConfirmModalComponent
+            open={isDeleteModalOpen}
+            menuItem={menuItem}
+            onCancel={handleDeleteCancel}
+            onConfirm={handleDeleteConfirm}
+            loading={deleteLoading}
+          />
+        </>
+      )}
     </>
   );
 };

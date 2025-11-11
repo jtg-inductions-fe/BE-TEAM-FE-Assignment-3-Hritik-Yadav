@@ -42,10 +42,11 @@ export const MenuItemListContainer: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const isOwner = role === USER_ROLE.OWNER;
 
   const getAuthToken = useCallback(async (): Promise<string | null> => {
     if (!authUser) {
-      if (role === USER_ROLE.OWNER) message.error("Authentication required");
+      if (isOwner) message.error("Authentication required");
       return null;
     }
 
@@ -82,16 +83,15 @@ export const MenuItemListContainer: React.FC = () => {
       }
 
       try {
-        const response =
-          role == USER_ROLE.OWNER
-            ? await listMenuItems(token, restaurantId, {
-                perPage: PAGE_SIZE,
-                nextPageToken: cursorId ?? undefined,
-              })
-            : await listPublicMenuItems(restaurantId, {
-                perPage: PAGE_SIZE,
-                nextPageToken: cursorId ?? undefined,
-              });
+        const response = isOwner
+          ? await listMenuItems(token, restaurantId, {
+              perPage: PAGE_SIZE,
+              nextPageToken: cursorId ?? undefined,
+            })
+          : await listPublicMenuItems(restaurantId, {
+              perPage: PAGE_SIZE,
+              nextPageToken: cursorId ?? undefined,
+            });
 
         const fetchedItems = response.data?.items ?? [];
 
@@ -224,16 +224,18 @@ export const MenuItemListContainer: React.FC = () => {
 
   const handleMenuItemView = useCallback(
     (id: string) => {
-      navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${id}`);
+      console.log("called with", id)
+      navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`);
     },
     [navigate],
   );
 
   const handleAddToCart = useCallback(
-    ()=>{
-
-    }
-    ,[role])
+    (menuItem: MenuItem) => {
+      console.log("Add: ", menuItem);
+    },
+    [role],
+  );
 
   return (
     <section className="menu-container">
@@ -245,7 +247,7 @@ export const MenuItemListContainer: React.FC = () => {
         loadMore={loadMore}
         restaurantId={restaurantId}
         onView={handleMenuItemView}
-        onAddToCart={handleAddToCart}
+        onAddToCart={isOwner ? undefined : handleAddToCart}
       />
 
       <MenuItemFormModalComponent

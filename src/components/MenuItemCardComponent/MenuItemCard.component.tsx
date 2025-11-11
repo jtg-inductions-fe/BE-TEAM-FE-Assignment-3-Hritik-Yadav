@@ -16,7 +16,6 @@ const { Title, Text } = Typography;
 
 export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({
   item,
-  restaurantId,
   onView,
   onAddToCart,
 }) => {
@@ -24,13 +23,6 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({
   const categoryColor = CATEGORY_COLOR[category];
   const priceLabel = getPriceLabel(amount.currency, amount.price);
   const availabilityLabel = quantity > 0 ? `${quantity} available` : "Out of stock";
-
-  const handleViewDetails = () => {
-    if (onView) {
-      onView(id);
-      return;
-    }
-  };
 
   return (
     <Card className="menu-item-card">
@@ -66,7 +58,7 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({
         <div className="menu-item-card__actions">
           <Button
             type="primary"
-            onClick={handleViewDetails}
+            onClick={()=>onView(id)}
             className="menu-item-card__button"
           >
             View Item

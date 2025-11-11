@@ -8,5 +8,5 @@ export interface MenuItemListProps {
   loadMore: () => void;
   restaurantId?: string;
   onView: (id: string) => void;
-  onAddToCart: () => void;
+  onAddToCart?: (menuItem: MenuItem) => void;
 }

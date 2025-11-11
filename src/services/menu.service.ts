@@ -41,6 +41,16 @@ export const getMenuItem = async (
   return data;
 };
 
+export const getPublicMenuItem = async (
+  restaurantId: string,
+  menuItemId: string,
+): Promise<BackendResponse<MenuItem>> => {
+  const url = buildMenuApiUrl(ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId);
+
+  const { data } = await axios.get<BackendResponse<MenuItem>>(url);
+  return data;
+};
+
 export const updateMenuItem = async (
   token: string,
   restaurantId: string,

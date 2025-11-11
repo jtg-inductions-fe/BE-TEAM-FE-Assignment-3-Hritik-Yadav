@@ -23,7 +23,7 @@ export const HeaderContainer: React.FC = () => {
   const { authUser, isAuthLoading, userName, role } = useAuthContext();
   const isAuthenticate = !!authUser && !isAuthLoading;
   const isMenuRoute = location.pathname.endsWith(ROUTES_URL.MENU);
-  const isRestaurantRoute = role === USER_ROLE.OWNER
+  const isRestaurantRoute = location.pathname === ROUTES_URL.HOME && role === USER_ROLE.OWNER
 
   const logout = async () => {
     try {

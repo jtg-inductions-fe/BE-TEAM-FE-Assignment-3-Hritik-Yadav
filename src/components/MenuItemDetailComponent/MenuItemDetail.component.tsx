@@ -5,6 +5,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { CATEGORY_COLOR } from "../MenuItemCardComponent/menuItemCard.component.const";
 import { getPriceLabel } from "@/utils/helper";
 import { BackToButtonComponent } from "../BackToButtonComponent";
+import { AddToCartButton } from "@components/AddToCartButton";
 
 import type { MenuItemDetailProps } from "./MenuItemDetail.component.type";
 
@@ -14,8 +15,10 @@ const { Title, Text } = Typography;
 
 export const MenuItemDetailComponent: React.FC<MenuItemDetailProps> = ({
   menuItem,
+  isOwnerView,
   onUpdate,
   onDelete,
+  onAddToCart,
 }) => {
   const { name, imageUrl, description, category, amount, quantity, rating } = menuItem;
   const categoryColor = CATEGORY_COLOR[category];
@@ -61,24 +64,35 @@ export const MenuItemDetailComponent: React.FC<MenuItemDetailProps> = ({
               <Divider className="menu-item-detail__divider" />
 
               <div className="menu-item-detail__actions">
-                <Space size="middle">
-                  <Button
-                    className="menu-item-detail__button"
-                    type="primary"
-                    icon={<EditOutlined />}
-                    onClick={onUpdate}
-                  >
-                    Update
-                  </Button>
-                  <Button
-                    className="menu-item-detail__delete-button"
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={onDelete}
-                  >
-                    Delete
-                  </Button>
-                </Space>
+                {isOwnerView ? (
+                  <Space size="middle">
+                    <Button
+                      className="menu-item-detail__button"
+                      type="primary"
+                      icon={<EditOutlined />}
+                      onClick={() => onUpdate?.()}
+                      disabled={!onUpdate}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      className="menu-item-detail__delete-button"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => onDelete?.()}
+                      disabled={!onDelete}
+                    >
+                      Delete
+                    </Button>
+                  </Space>
+                ) : (
+                  onAddToCart && (
+                    <AddToCartButton
+                      disabled={quantity <= 0}
+                      onClick={() => onAddToCart(menuItem)}
+                    />
+                  )
+                )}
               </div>
             </Space>
           </div>

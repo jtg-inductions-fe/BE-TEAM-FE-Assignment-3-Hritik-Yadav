@@ -2,6 +2,8 @@ import type { MenuItem } from "@/services/menu.type";
 
 export interface MenuItemDetailProps {
   menuItem: MenuItem;
-  onUpdate: () => void;
-  onDelete: () => void;
+  isOwnerView: boolean;
+  onUpdate?: () => void;
+  onDelete?: () => void;
+  onAddToCart?: (menuItem: MenuItem) => void;
 }
