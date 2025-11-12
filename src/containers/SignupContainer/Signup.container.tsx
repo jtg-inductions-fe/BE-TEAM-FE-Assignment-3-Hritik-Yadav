@@ -8,6 +8,9 @@ import { FirebaseError } from "firebase/app";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { signup } from "@/services";
 import { SignupComponent } from "@/components";
+import { resolveAxiosError, resolveFirebaseError } from "@/utils/errorHandlers";
+import { ERROR_MESSAGE } from "@services/service.const";
+
 import type { SignupValues } from "@/components/SignupComponent";
 
 export const SignupContainer: React.FC = () => {
@@ -27,30 +30,22 @@ export const SignupContainer: React.FC = () => {
       }
       const auth = getAuth();
       await signInWithCustomToken(auth, customToken);
-
       message.success("User created successfully. Please confirm your email.");
       navigate(ROUTES_URL.CONFIRMATION);
     } catch (error: unknown) {
-      const genericError = "User not created. Try again later.";
-      let errMsg = genericError;
-
+      let errorMessage = ERROR_MESSAGE;
+      // have not called resolveError() here - because i have to give different message
+      // when backend call failed - axios error - user was not created in this scenerio
+      // and firebase error when i was not able to login, but the user was created.
       if (error instanceof AxiosError) {
-        const status = error.response?.status;
-
-        if (status && status >= 400 && status < 500) {
-          errMsg = error.response?.data?.message ?? genericError;
-        } else if (status && status >= 500) {
-          errMsg = "Server error. Please try again shortly.";
-        } else if (!status && error.request) {
-          errMsg = "Network error. Check your connection.";
-        } else if (error.message) {
-          errMsg = error.message;
-        }
+        errorMessage = resolveAxiosError(error, "User not created. Try again later.");
+      } else if (error instanceof FirebaseError) {
+        errorMessage = resolveFirebaseError(
+          error,
+          "User Created, Login failed: Please Try Login Again",
+        );
       }
-      if (error instanceof FirebaseError) {
-        errMsg = "User Created, Login failed: Please Try Login Again";
-      }
-      message.error(errMsg);
+      message.error(errorMessage);
     }
   };
 

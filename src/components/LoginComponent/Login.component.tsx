@@ -5,11 +5,11 @@ import { Formik, Form as FormikForm, Field, FieldProps } from "formik";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 
-import { INITIAL_LOGIN_VALUES } from "./Login.component.const";
+import { INITIAL_LOGIN_VALUES } from "./Login.const";
 import { LOGIN_VALIDATION_SCHEMA } from "./Login.validation";
-import type { LoginProps } from "./Login.component.type";
+import type { LoginProps } from "./Login.type";
 
-import "./login.component.style.scss";
+import "./login.style.scss";
 
 export const LoginComponent: React.FC<LoginProps> = ({ onSubmit }) => {
   return (

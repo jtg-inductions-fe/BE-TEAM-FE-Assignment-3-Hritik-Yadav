@@ -6,9 +6,9 @@ import type { MenuProps } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 
-import type { HeaderProps } from "./header.component.type";
+import type { HeaderProps } from "./header.type";
 
-import "./header.component.style.scss";
+import "./header.style.scss";
 
 const { Header: AntHeader } = Layout;
 const { Title } = Typography;
@@ -22,15 +22,14 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
-    if (key === "logout") {
+    if (key === LOGOUT) {
       logout();
     }
   };
-
   const menuItems: MenuProps["items"] = [
     {
-      key: "logout",
-      label: "Logout",
+      key: LOGOUT,
+      label: LOGOUT,
     },
   ];
 

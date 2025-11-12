@@ -1,7 +1,7 @@
 import React from "react";
 import { Spin } from "antd";
 
-import "./appLoader.component.style.scss";
+import "./appLoader.style.scss";
 
 export const AppLoaderComponent: React.FC = () => {
   return (

@@ -7,6 +7,7 @@ import { app } from "@/firebase/firebase";
 import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
+import { resolveError } from "@/utils/errorHandlers";
 
 export const HeaderContainer: React.FC = () => {
   const auth = getAuth(app);
@@ -24,8 +25,9 @@ export const HeaderContainer: React.FC = () => {
       await auth.signOut();
       message.success("Logout Successfully");
       navigate(ROUTES_URL.LOGIN);
-    } catch {
-      message.error("Logout failed");
+    } catch (error){
+      const errorMessage = resolveError(error, "Logout Failed");
+      message.error(errorMessage);
     }
   };
 

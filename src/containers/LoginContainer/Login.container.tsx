@@ -10,6 +10,7 @@ import { LoginValues } from "@/components/LoginComponent";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { USER_ROLE } from "@services/service.const";
 import { normalizeRole } from "@/utils/helper";
+import { resolveError } from "@/utils/errorHandlers";
 
 export const LoginContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -34,8 +35,9 @@ export const LoginContainer: React.FC = () => {
       }
       const route = roleFromClaims === USER_ROLE.OWNER ? ROUTES_URL.ADMIN : ROUTES_URL.HOME;
       navigate(route);
-    } catch {
-      message.error("Login Failed");
+    } catch (error) {
+      const errorMessage = resolveError(error, "Login Failed");
+      message.error(errorMessage);
     }
   };
 

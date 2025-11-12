@@ -7,10 +7,10 @@ import { ROUTES_URL } from "@/routes/routes.const";
 import { USER_ROLE } from "@services/service.const";
 
 import { SIGNUP_VALIDATION_SCHEMA } from "./Signup.validation";
-import { INITIAL_SIGNUP_VALUES } from "./Signup.component.const";
-import type { SignupProps, SignupValues } from "./Signup.component.type";
+import { INITIAL_SIGNUP_VALUES } from "./Signup.const";
+import type { SignupProps, SignupValues } from "./Signup.type";
 
-import "./signup.component.style.scss";
+import "./signup.style.scss";
 
 export const SignupComponent: React.FC<SignupProps> = ({ onSubmit }) => {
   return (
