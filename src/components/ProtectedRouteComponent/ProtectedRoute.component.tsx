@@ -4,7 +4,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { AppLoaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
-import { USER_ROLE } from "@/services/service.const";
+import { USER_ROLE } from "@services/service.const";
 
 export const ProtectedRouteComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export const ProtectedRouteComponent: React.FC = () => {
 
     if (!authUser.emailVerified) {
       if (!isVerificationRoute) {
-        navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+        navigate(ROUTES_URL.VERIFICATION, { replace: true });
       }
       return;
     }
