@@ -5,6 +5,7 @@ import { DownOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
+import { LOGOUT } from "./header.const";
 
 import type { HeaderProps } from "./header.type";
 

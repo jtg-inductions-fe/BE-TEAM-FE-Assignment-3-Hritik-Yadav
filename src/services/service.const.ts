@@ -13,4 +13,3 @@ export enum USER_ROLE {
 }
 
 export const USER_ROLE_VALUES: Role[] = [USER_ROLE.CUSTOMER, USER_ROLE.OWNER];
-

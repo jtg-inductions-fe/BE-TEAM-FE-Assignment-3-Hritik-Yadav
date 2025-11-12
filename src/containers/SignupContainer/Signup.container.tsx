@@ -11,7 +11,7 @@ import { SignupComponent } from "@/components";
 import { resolveAxiosError, resolveFirebaseError } from "@/utils/errorHandlers";
 import { ERROR_MESSAGE } from "@services/service.const";
 
-import type { SignupValues } from "@/components/SignupComponent";
+import type { SignupValues } from "@components/SignupComponent";
 
 export const SignupContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export const SignupContainer: React.FC = () => {
       const auth = getAuth();
       await signInWithCustomToken(auth, customToken);
       message.success("User created successfully. Please confirm your email.");
-      navigate(ROUTES_URL.CONFIRMATION);
+      navigate(ROUTES_URL.VERIFICATION);
     } catch (error: unknown) {
       let errorMessage = ERROR_MESSAGE;
       // have not called resolveError() here - because i have to give different message

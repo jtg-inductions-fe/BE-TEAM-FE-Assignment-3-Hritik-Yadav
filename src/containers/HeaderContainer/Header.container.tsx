@@ -15,7 +15,7 @@ export const HeaderContainer: React.FC = () => {
   const location = useLocation();
   const isSignupPage = location.pathname === ROUTES_URL.SIGNUP;
   const isLoginPage = location.pathname === ROUTES_URL.LOGIN;
-  const isVerificationPage = location.pathname === ROUTES_URL.CONFIRMATION;
+  const isVerificationPage = location.pathname === ROUTES_URL.VERIFICATION;
   const isAllowedPage = !isSignupPage && !isLoginPage && !isVerificationPage;
   const { authUser, isAuthLoading, userName } = useAuthContext();
   const isAuthenticate = !!authUser && !isAuthLoading;
@@ -25,7 +25,7 @@ export const HeaderContainer: React.FC = () => {
       await auth.signOut();
       message.success("Logout Successfully");
       navigate(ROUTES_URL.LOGIN);
-    } catch (error){
+    } catch (error) {
       const errorMessage = resolveError(error, "Logout Failed");
       message.error(errorMessage);
     }

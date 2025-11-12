@@ -22,7 +22,7 @@ export const AppRoutes: React.FC = () => {
           <Route path={ROUTES_URL.LOGIN} element={<LoginPage />} />
         </Route>
         <Route element={<ProtectedRouteComponent />}>
-          <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
+          <Route path={ROUTES_URL.VERIFICATION} element={<VerificationPage />} />
           <Route path={ROUTES_URL.ADMIN} element={<AdminPage />} />
         </Route>
       </Route>
