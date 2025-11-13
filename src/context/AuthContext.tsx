@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
           currentRole = claimRole;
         }
       } catch (error: unknown) {
-        const errorMessage = resolveError(error, ERROR_MESSAGE);
+        const errorMessage = resolveError(error);
         message.error(errorMessage);
         clearUserData();
         currentRole = null;
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
           }
         }
       } catch (error: unknown) {
-        const errorMessage = resolveError(error, ERROR_MESSAGE);
+        const errorMessage = resolveError(error);
         message.error(errorMessage);
         setUserName(null);
       }

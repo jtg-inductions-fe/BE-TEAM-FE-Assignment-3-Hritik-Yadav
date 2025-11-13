@@ -1,6 +1,7 @@
 // have added this file to provide helper fucntions for handling
 // the errors related to firebase and axios
 
+import { ERROR_MESSAGE } from "@/services/service.const";
 import { AxiosError } from "axios";
 import { FirebaseError } from "firebase/app";
 
@@ -38,12 +39,16 @@ export const resolveAxiosError = (
   return errorMessage;
 };
 
-export const resolveError = (error: unknown, defaultMessage: string): string => {
-  let message = defaultMessage;
+export const resolveError = (
+  error: unknown,
+  defaultFirebaseError: string = ERROR_MESSAGE,
+  defaultAxiosMessage: string = ERROR_MESSAGE,
+): string => {
+  let message = ERROR_MESSAGE;
   if (error instanceof FirebaseError) {
-    message = resolveFirebaseError(error, defaultMessage);
+    message = resolveFirebaseError(error, defaultFirebaseError);
   } else if (error instanceof AxiosError) {
-    message = resolveAxiosError(error, defaultMessage);
+    message = resolveAxiosError(error, defaultAxiosMessage);
   }
   return message;
 };
