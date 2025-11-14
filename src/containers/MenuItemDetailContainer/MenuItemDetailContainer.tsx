@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { message, Spin, Typography } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { FormikHelpers } from "formik";
+import type { FormikHelpers } from "formik";
 
 import { useAuthContext } from "@/context/AuthContext";
 import {
@@ -17,6 +17,22 @@ import { resolveError } from "@/utils/errorHandlers";
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
 
 const { Text } = Typography;
+
+const mapFormValuesToPayload = (
+  values: MenuItemFormValues,
+  overrides: Partial<MenuItemPayload> = {},
+): MenuItemPayload => ({
+  name: values.name,
+  description: values.description,
+  amount: {
+    currency: values.amount.currency,
+    price: values.amount.price,
+  },
+  rating: values.rating,
+  category: values.category,
+  quantity: values.quantity,
+  ...overrides,
+});
 
 export const MenuItemDetailContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -66,12 +82,15 @@ export const MenuItemDetailContainer: React.FC = () => {
       }
       setMenuItem(data);
     } catch (error) {
-      const errorMessage = resolveError({ error, defaultAxiosError: "Failed to fetch menu item" });
+      const errorMessage = resolveError({
+        error,
+        defaultAxiosError: "Failed to fetch menu item",
+      });
       message.error(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, [authUser, isAuthLoading, menuItemId, restaurantId]);
+  }, [getAuthToken, isAuthLoading, menuItemId, restaurantId]);
 
   useEffect(() => {
     void fetchMenuItem();
@@ -85,39 +104,26 @@ export const MenuItemDetailContainer: React.FC = () => {
     async (values: MenuItemFormValues, helpers: FormikHelpers<MenuItemFormValues>) => {
       helpers.setSubmitting(true);
       const token = await getAuthToken();
-      if (!token) {
-        helpers.setSubmitting(false);
-        return;
-      }
 
       try {
-        const payload: MenuItemPayload = {
-          name: values.name,
-          description: values.description,
-          amount: {
-            currency: values.amount.currency,
-            price: values.amount.price,
-          },
-          // imageName: "", // fix
-          category: values.category,
-          rating: values.rating,
-          quantity: values.quantity,
-        };
-        const response = await updateMenuItem(token, restaurantId!, menuItemId!, payload);
+        const payload: MenuItemPayload = mapFormValuesToPayload(values, {
+          imageName: menuItem!.imageName,
+        });
+        const response = await updateMenuItem(token!, restaurantId!, menuItemId!, payload);
         const updatedItem = response.data;
         if (updatedItem) {
           setMenuItem(updatedItem);
         }
         message.success("Menu item updated");
+        setIsUpdateModalOpen(false);
       } catch (error) {
         const errorMessage = resolveError({ error, defaultAxiosError: "Update failed" });
         message.error(errorMessage);
       } finally {
         helpers.setSubmitting(false);
-        setIsUpdateModalOpen(false);
       }
     },
-    [authUser, menuItemId, restaurantId],
+    [getAuthToken, menuItem, menuItemId, restaurantId],
   );
 
   const handleDeleteOpen = useCallback(() => {
@@ -126,13 +132,10 @@ export const MenuItemDetailContainer: React.FC = () => {
 
   const handleDeleteConfirm = useCallback(async () => {
     const token = await getAuthToken();
-    if (!token) {
-      return;
-    }
 
     try {
       setDeleteLoading(true);
-      await deleteMenuItem(token, restaurantId!, menuItemId!, menuItem!.imageName); //need menu image to delete - fix
+      await deleteMenuItem(token!, restaurantId!, menuItemId!, menuItem!.imageName ?? "");
       message.success("Menu item deleted");
       setIsDeleteModalOpen(false);
       navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}`, { replace: true });
@@ -142,7 +145,7 @@ export const MenuItemDetailContainer: React.FC = () => {
     } finally {
       setDeleteLoading(false);
     }
-  }, [authUser, menuItem, menuItemId, navigate, restaurantId]);
+  }, [getAuthToken, menuItem, menuItemId, navigate, restaurantId]);
 
   const handleDeleteCancel = useCallback(() => {
     setIsDeleteModalOpen(false);

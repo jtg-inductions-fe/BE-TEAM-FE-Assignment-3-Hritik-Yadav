@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Form,
@@ -9,11 +9,11 @@ import {
   Space,
   Upload,
   Button,
-  message,
+  Typography,
 } from "antd";
 import { Formik, Field } from "formik";
 import TextArea from "antd/lib/input/TextArea";
-import { UploadOutlined } from "@ant-design/icons";
+import { CloseCircleFilled, UploadOutlined } from "@ant-design/icons";
 import type { FieldProps } from "formik";
 import type { UploadFile } from "antd/es/upload/interface";
 
@@ -21,8 +21,12 @@ import { menuItemFormValidationSchema } from "./MenuItemFormModal.validation";
 import { MENU_ITEM_CURRENCY_OPTIONS } from "./MenuItemFormModal.const";
 import { getMenuItemFormInitialValues, getUploadProps } from "./menuItemFormModal.helper";
 
+import "./menuItemFormModal.style.scss";
+
 import type { MenuItemFormModalProps } from "./MenuItemModal.type";
 import type { Currency, ItemCategory, MenuItemFormValues } from "@services/menu.type";
+
+const { Title } = Typography;
 
 export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
   open,
@@ -32,46 +36,59 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
   onSubmit,
   showUpload = true,
 }) => {
-  const [imageName, setImageName] = useState(initial?.imageName ?? "");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    setImageName(initial?.imageName ?? "");
-    setSelectedFile(null);
-    setFileList([]);
-  }, [initial?.imageName]);
 
   const initialValues: MenuItemFormValues = getMenuItemFormInitialValues(initial);
+
+  const handleCancel = () => {
+    setFileList([]);
+    onCancel();
+  };
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={menuItemFormValidationSchema}
       onSubmit={async (values, helpers) => {
-        if (showUpload && !selectedFile) {
-          message.error("Please upload an image before submitting.");
+        const file = showUpload
+          ? (fileList[0]?.originFileObj as File | undefined)
+          : undefined;
+
+        if (showUpload && !file) {
           helpers.setSubmitting(false);
           return;
         }
-        try {
-          await onSubmit(values, helpers, showUpload ? (selectedFile ?? undefined) : undefined);
-          if (mode === "create") {
-            setFileList([]);
-          }
-        } finally {
-          helpers.setSubmitting(false);
+
+        await onSubmit(
+          values,
+          helpers,
+          file,
+        );
+        if (mode === "create") {
+          setFileList([]);
         }
       }}
       enableReinitialize
     >
-      {({ submitForm, isSubmitting }) => (
-        <Modal
+      {({ submitForm, isSubmitting, submitCount }) => {
+        const showImageError = showUpload && submitCount > 0 && fileList.length === 0;
+
+        return (
+          <Modal
           open={open}
-          title={mode === "create" ? "Add Menu Item" : "Update Menu Item"}
-          onCancel={onCancel}
+          title={
+            <Title className="menu-item-modal__title" level={4}>
+              {mode === "create" ? "Add Menu Item" : "Update Menu Item"}
+            </Title>
+          }
+          onCancel={handleCancel}
           onOk={submitForm}
-          okButtonProps={{ loading: isSubmitting }}
+          okButtonProps={{
+            loading: isSubmitting,
+            className: "menu-item-modal__ok-button",
+          }}
+          className="menu-item-modal"
+          closeIcon={<CloseCircleFilled />}
           destroyOnClose
         >
           <Form layout="vertical">
@@ -170,24 +187,20 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
               )}
             </Field>
             {showUpload ? (
-              <Form.Item label="Item Image">
-                <Upload
-                  {...getUploadProps(
-                    imageName,
-                    fileList,
-                    setFileList,
-                    setImageName,
-                    setSelectedFile,
-                  )}
-                >
+              <Form.Item
+                label="Item Image"
+                validateStatus={showImageError ? "error" : ""}
+                help={showImageError ? "Please select an image before submitting." : undefined}
+              >
+                <Upload {...getUploadProps(fileList, setFileList)}>
                   <Button icon={<UploadOutlined />}>Select Image</Button>
                 </Upload>
-                {imageName ? <div>Selected image {imageName}</div> : null}
               </Form.Item>
             ) : null}
           </Form>
-        </Modal>
-      )}
+          </Modal>
+        );
+      }}
     </Formik>
   );
 };

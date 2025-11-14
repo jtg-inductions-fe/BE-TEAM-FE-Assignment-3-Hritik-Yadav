@@ -1,4 +1,3 @@
-import type { UploadChangeParam } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
 
 import { MENU_ITEM_CREATE_DEFAULTS } from "./MenuItemFormModal.const";
@@ -17,32 +16,17 @@ export const getMenuItemFormInitialValues = (initial?: Partial<MenuItem>): MenuI
 });
 
 export const getUploadProps = (
-  imageName: string,
   fileList: UploadFile[],
-  setFileList: (fileList: UploadFile[]) => void,
-  setImageName: (imageName: string) => void,
-  setSelectedFile: (file: File | null) => void,
-) => {
-  return {
-    beforeUpload: () => false,
-    onChange: (info: UploadChangeParam<UploadFile>) => {
-      const latestFileList = info.fileList.slice(-1);
-      setFileList(latestFileList);
-      const latestFile = latestFileList[0]?.originFileObj ?? null;
-      setSelectedFile(latestFile);
-
-      if (!latestFile) {
-        setImageName(imageName ?? "");
-      } else {
-        setImageName(latestFile.name);
-      }
-    },
-    maxCount: 1,
-    fileList,
-    accept: "image/*",
-    onRemove: () => {
-      setSelectedFile(null);
-      setImageName(imageName ?? "");
-    },
-  };
-};
+  setFileList: (next: UploadFile[]) => void,
+) => ({
+  beforeUpload: () => false,
+  onChange: (info: { fileList: UploadFile[] }) => {
+    setFileList(info.fileList.slice(-1));
+  },
+  maxCount: 1,
+  fileList,
+  accept: "image/*",
+  onRemove: () => {
+    setFileList([]);
+  },
+});

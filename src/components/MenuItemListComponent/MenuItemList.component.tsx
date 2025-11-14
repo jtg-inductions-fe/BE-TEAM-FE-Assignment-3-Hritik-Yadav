@@ -26,12 +26,14 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
         loader={
           <div className="menu-item-list__loader">
             <Spin size="small" />
-          </div> 
+          </div>
         }
         endMessage={
+          !loading ? (
             <Text className="menu-item-list__end">
               {items.length === 0 ? "No Menu Item found" : "No more results to show"}
             </Text>
+          ) : undefined
         }
       >
         <div className="menu-item-list__grid">
