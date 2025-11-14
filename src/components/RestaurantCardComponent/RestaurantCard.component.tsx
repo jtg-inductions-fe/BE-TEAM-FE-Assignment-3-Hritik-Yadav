@@ -2,9 +2,11 @@ import React from "react";
 import { Card, Tag, Button, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
-import { STATUS_TAG_COLOR } from "./RestaurantCard.component.const";
-import type { RestaurantCardProps } from "./RestaurantCard.component.type";
-import "./restaurantCard.component.style.scss";
+import { STATUS_TAG_COLOR } from "./RestaurantCard.const";
+
+import type { RestaurantCardProps } from "./RestaurantCard.type";
+
+import "./restaurantCard.style.scss";
 
 const { Text, Title } = Typography;
 

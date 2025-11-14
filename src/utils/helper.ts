@@ -35,30 +35,3 @@ export const normalizeRole = (value: unknown): Role | null => {
 
   return null;
 };
-
-export const resolveAxiosErrorMessage = (error: unknown, defaultMessage: string): string => {
-  if (!(error instanceof AxiosError)) {
-    return defaultMessage;
-  }
-
-  const status = error.response?.status;
-
-  if (status && status >= 500) {
-    return "Server error. Please try again shortly.";
-  }
-
-  if (status && status >= 400) {
-    const responseMessage = error.response?.data?.message;
-    return responseMessage ?? defaultMessage;
-  }
-
-  if (!status && error.request) {
-    return "Network error. Check your connection.";
-  }
-
-  if (error.message) {
-    return error.message;
-  }
-
-  return defaultMessage;
-};

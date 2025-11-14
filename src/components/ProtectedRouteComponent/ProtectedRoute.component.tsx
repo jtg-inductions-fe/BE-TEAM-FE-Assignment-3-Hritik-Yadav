@@ -11,7 +11,7 @@ export const ProtectedRouteComponent: React.FC = () => {
   const location = useLocation();
   const { authUser, isAuthLoading, role } = useAuthContext();
   const { pathname } = location;
-  const isVerificationRoute = pathname === ROUTES_URL.CONFIRMATION;
+  const isVerificationRoute = pathname === ROUTES_URL.VERIFICATION;
   const isOwnerRoute = pathname === ROUTES_URL.RESTAURANT;
 
   useEffect(() => {

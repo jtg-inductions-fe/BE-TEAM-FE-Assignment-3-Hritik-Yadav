@@ -1,1 +1,1 @@
-export { RestaurantContainer } from "./RestaurantContainer";
+export { RestaurantContainer } from "./Restaurant.container";
