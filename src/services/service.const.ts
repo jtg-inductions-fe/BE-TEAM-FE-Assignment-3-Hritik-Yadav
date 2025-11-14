@@ -5,6 +5,7 @@ export const ERROR_MESSAGE = "Something Went Wrong";
 export enum ENDPOINT {
   SIGNUP = "auth/signup",
   USER = "users/me",
+  RESTAURANT = "restaurants",
 }
 
 export enum USER_ROLE {
