@@ -8,7 +8,7 @@ import { app } from "@/firebase/firebase";
 import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { openRestaurantFormModal } from "@store/actions/actions";
+import { openRestaurantFormModal } from "@store/actions/modal.actions";
 import { resolveError } from "@/utils/errorHandlers";
 
 export const HeaderContainer: React.FC = () => {

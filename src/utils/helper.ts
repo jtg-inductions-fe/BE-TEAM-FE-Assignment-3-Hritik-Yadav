@@ -1,7 +1,6 @@
-import { AxiosError } from "axios";
-
 import { BASE_URL, ENDPOINT, USER_ROLE } from "@services/service.const";
-import type { ApiUrlParams, Role } from "@/services/service.type";
+
+import type { ApiUrlParams, Role } from "@services/service.type";
 
 export const buildApiUrl = (
   ENDPOINT: ENDPOINT,

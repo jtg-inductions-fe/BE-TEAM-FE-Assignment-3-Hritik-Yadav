@@ -30,11 +30,11 @@ export const RestaurantListComponent: React.FC<RestaurantListProps> = ({
           </div>
         }
         endMessage={
-          !loading && items.length === 0 ? (
-            <Text className="restaurant-list__end">No restaurant found</Text>
-          ) : (
-            <div className="restaurant-list__end">No more results to show</div>
-          )
+          !loading ? (
+            <Text className="restaurant-list__end">
+              {items.length === 0 ? "No restaurant found" : "No more results to show"}
+            </Text>
+          ) : undefined
         }
       >
         <div className="restaurant-list__grid">

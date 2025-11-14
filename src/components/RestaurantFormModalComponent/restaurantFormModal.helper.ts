@@ -1,10 +1,10 @@
 import moment from "moment";
 
-import { Restaurant, RestaurantFormValues, RestaurantStatus } from "@services/restaurant.type";
 import {
   RESTAURANT_CREATE_DEFAULTS,
   RESTAURANT_MODAL_TIME_FORMAT,
 } from "./RestaurantFormModal.const";
+import type { Restaurant, RestaurantFormValues, RestaurantStatus } from "@services/restaurant.type";
 
 export const getRestaurantFormInitialValues = (
   initial?: Partial<Restaurant>,

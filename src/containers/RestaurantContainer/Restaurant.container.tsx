@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Typography, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+
 import type { FormikHelpers } from "formik";
 
 import { useAuthContext } from "@/context/AuthContext";
@@ -14,6 +15,7 @@ import {
   selectIsRestaurantFormModalOpen,
   selectRestaurantNextPageToken,
 } from "@store/selectors/selector";
+import { closeRestaurantFormModal } from "@/store/actions/modal.actions";
 import {
   AppLoaderComponent,
   DeleteConfirmModalComponent,
@@ -22,21 +24,19 @@ import {
 } from "@/components";
 import {
   clearRestaurantPagination,
-  closeRestaurantFormModal,
   setRestaurantNextToken,
-} from "@store/actions/actions";
+} from "@/store/actions/restaurant.actions";
 import { RESTAURANT_MODAL_TIME_FORMAT } from "@components/RestaurantFormModalComponent/RestaurantFormModal.const";
+import { PAGE_SIZE } from "./restaurantContainer.const";
+import { resolveError } from "@/utils/errorHandlers";
 
 import type {
   Restaurant,
   RestaurantFormValues,
   RestaurantPayload,
-} from "@/services/restaurant.type";
+} from "@services/restaurant.type";
 
 import "./restaurantContainer.style.scss";
-import { PAGE_SIZE } from "./restaurantContainer.const";
-import { resolveError } from "@/utils/errorHandlers";
-import { ERROR_MESSAGE } from "@/services/service.const";
 
 const { Title } = Typography;
 

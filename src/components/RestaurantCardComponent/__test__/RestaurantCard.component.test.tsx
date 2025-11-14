@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { Restaurant } from "@/services/restaurant.type";
 import { RestaurantCardComponent } from "../RestaurantCard.component";
+
+import type { Restaurant } from "@/services/restaurant.type";
 
 const mockNavigate = jest.fn();
 
