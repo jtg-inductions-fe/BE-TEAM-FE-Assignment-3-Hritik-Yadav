@@ -4,7 +4,7 @@ import { Layout } from "antd";
 
 import { HeaderContainer } from "@/containers";
 
-import "./rootLayout.component.style.scss";
+import "./rootLayout.style.scss";
 
 const { Content } = Layout;
 

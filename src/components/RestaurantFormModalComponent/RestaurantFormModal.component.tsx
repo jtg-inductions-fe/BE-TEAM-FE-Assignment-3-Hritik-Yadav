@@ -1,18 +1,20 @@
 import React from "react";
-import { Modal, Form, Input, Radio, Space, TimePicker } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
 import { Formik, Field } from "formik";
+import { Modal, Form, Input, Radio, Space, TimePicker, Typography } from "antd";
+import { CloseCircleFilled } from "@ant-design/icons";
+
 import type { FieldProps } from "formik";
 
-import {
-  RESTAURANT_MODAL_TIME_FORMAT,
-  getRestaurantFormInitialValues,
-} from "./RestaurantFormModal,component.const";
+import { RESTAURANT_MODAL_TIME_FORMAT } from "./RestaurantFormModal.const";
 import { restaurantFormValidationSchema } from "./RestaurantFormModal.validation";
-import "./restaurantModal.component.style.scss";
+import { getRestaurantFormInitialValues } from "./restaurantFormModal.helper";
 
-import type { RestaurantFormValues, RestaurantPayload } from "@services/restaurant.type";
-import type { RestaurantFormModalProps } from "./RestaurantModal.component.type";
+import type { RestaurantFormValues } from "@services/restaurant.type";
+import type { RestaurantFormModalProps } from "./RestaurantFormModal.type";
+
+import "./restaurantFormModal.style.scss";
+
+const { Title } = Typography;
 
 export const RestaurantFormModalComponent: React.FC<RestaurantFormModalProps> = ({
   open,
@@ -28,45 +30,22 @@ export const RestaurantFormModalComponent: React.FC<RestaurantFormModalProps> = 
     <Formik
       initialValues={initialValues}
       validationSchema={restaurantFormValidationSchema}
-      onSubmit={async (values, helpers) => {
-        try {
-          const payload: RestaurantPayload = {
-            name: values.name,
-            openingTime: values.openingTime.format(RESTAURANT_MODAL_TIME_FORMAT),
-            closingTime: values.closingTime.format(RESTAURANT_MODAL_TIME_FORMAT),
-            status: values.status,
-          };
-          await onSubmit(payload);
-          if (mode === "create") {
-            helpers.resetForm();
-          }
-        } finally {
-          helpers.setSubmitting(false);
-        }
-      }}
+      onSubmit={(values, helpers) => onSubmit(values, helpers)}
       enableReinitialize
     >
       {({ submitForm, isSubmitting }) => (
         <Modal
           open={open}
           title={
-            <div className="restaurant-modal__header">
-              <span className="restaurant-modal__title">{titleText}</span>
-              <button
-                type="button"
-                onClick={onCancel}
-                className="restaurant-modal__close-button"
-                aria-label="Close"
-              >
-                <CloseOutlined aria-hidden />
-              </button>
-            </div>
+            <Title className="restaurant-modal__title" level={4}>
+              {titleText}
+            </Title>
           }
           onCancel={onCancel}
           onOk={submitForm}
           okButtonProps={{ loading: isSubmitting, className: "restaurant-modal__ok-button" }}
           className="restaurant-modal"
-          closable={false}
+          closeIcon={<CloseCircleFilled />}
           destroyOnClose
         >
           <Form layout="vertical">

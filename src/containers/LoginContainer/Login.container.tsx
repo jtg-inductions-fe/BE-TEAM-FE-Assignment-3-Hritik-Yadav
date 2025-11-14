@@ -4,12 +4,12 @@ import { message } from "antd";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import { app } from "@/firebase/firebase";
-
 import { LoginComponent } from "@/components";
-import { LoginValues } from "@/components/LoginComponent";
+import { LoginValues } from "@components/LoginComponent";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { USER_ROLE } from "@services/service.const";
 import { normalizeRole } from "@/utils/helper";
+import { resolveError } from "@/utils/errorHandlers";
 
 export const LoginContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -29,13 +29,14 @@ export const LoginContainer: React.FC = () => {
 
       message.success("Logged in successfully");
       if (!auth.currentUser?.emailVerified) {
-        navigate(ROUTES_URL.CONFIRMATION);
+        navigate(ROUTES_URL.VERIFICATION);
         return;
       }
       const route = roleFromClaims === USER_ROLE.OWNER ? ROUTES_URL.RESTAURANT : ROUTES_URL.HOME;
       navigate(route);
-    } catch {
-      message.error("Login Failed");
+    } catch (error) {
+      const errorMessage = resolveError({ error, defaultFirebaseError: "Login Failed" });
+      message.error(errorMessage);
     }
   };
 

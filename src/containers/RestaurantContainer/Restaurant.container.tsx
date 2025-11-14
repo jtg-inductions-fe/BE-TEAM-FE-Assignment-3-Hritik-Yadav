@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Typography, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+
+import type { FormikHelpers } from "formik";
 
 import { useAuthContext } from "@/context/AuthContext";
 import {
@@ -13,6 +15,7 @@ import {
   selectIsRestaurantFormModalOpen,
   selectRestaurantNextPageToken,
 } from "@store/selectors/selector";
+import { closeRestaurantFormModal } from "@/store/actions/modal.actions";
 import {
   AppLoaderComponent,
   DeleteConfirmModalComponent,
@@ -21,17 +24,28 @@ import {
 } from "@/components";
 import {
   clearRestaurantPagination,
-  closeRestaurantFormModal,
   setRestaurantNextToken,
-} from "@store/actions/actions";
-import { resolveAxiosErrorMessage } from "@/utils/helper";
+} from "@/store/actions/restaurant.actions";
+import { RESTAURANT_MODAL_TIME_FORMAT } from "@components/RestaurantFormModalComponent/RestaurantFormModal.const";
+import { PAGE_SIZE } from "./restaurantContainer.const";
+import { resolveError } from "@/utils/errorHandlers";
 
-import type { Restaurant, RestaurantPayload } from "@/services/restaurant.type";
+import type {
+  Restaurant,
+  RestaurantFormValues,
+  RestaurantPayload,
+} from "@services/restaurant.type";
 
 import "./restaurantContainer.style.scss";
 
 const { Title } = Typography;
-const PAGE_SIZE = 12;
+
+const mapFormValuesToPayload = (values: RestaurantFormValues): RestaurantPayload => ({
+  name: values.name,
+  openingTime: values.openingTime.format(RESTAURANT_MODAL_TIME_FORMAT),
+  closingTime: values.closingTime.format(RESTAURANT_MODAL_TIME_FORMAT),
+  status: values.status,
+});
 
 export const RestaurantContainer: React.FC = () => {
   const dispatch = useDispatch();
@@ -41,7 +55,6 @@ export const RestaurantContainer: React.FC = () => {
   const [items, setItems] = useState<Restaurant[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
 
   const [editOpen, setEditOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Restaurant | null>(null);
@@ -50,6 +63,8 @@ export const RestaurantContainer: React.FC = () => {
   const [deleteTarget, setDeleteTarget] = useState<Restaurant | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const isCreateModalOpen = useSelector(selectIsRestaurantFormModalOpen);
+  // Guard against StrictMode double-running effects in development.
+  const lastFetchAuthKeyRef = useRef<string | null | undefined>(undefined);
 
   // to provide consistent token to all functions
   const getAuthToken = useCallback(async (): Promise<string | null> => {
@@ -61,8 +76,7 @@ export const RestaurantContainer: React.FC = () => {
     try {
       return await authUser.getIdToken();
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unable to resolve authentication token";
+      const errorMessage = resolveError({ error });
       message.error(errorMessage);
       return null;
     }
@@ -71,16 +85,11 @@ export const RestaurantContainer: React.FC = () => {
   // restaurant list function to fetch list
   const fetchPage = useCallback(
     async (append: boolean, cursorId?: string | null) => {
-      if (append) {
-        setLoadingMore(true);
-      } else {
-        setLoading(true);
-      }
+      setLoading(true);
 
       const token = await getAuthToken();
       if (!token) {
         setLoading(false);
-        setLoadingMore(false);
         return;
       }
 
@@ -96,56 +105,81 @@ export const RestaurantContainer: React.FC = () => {
         dispatch(setRestaurantNextToken(nextToken));
         setHasMore(!!nextToken);
       } catch (error) {
-        const errorMessage = resolveAxiosErrorMessage(error, "Failed to load restaurants");
+        const errorMessage = resolveError({
+          error,
+          defaultAxiosError: "Failed to load restaurants",
+        });
         message.error(errorMessage);
       } finally {
         setLoading(false);
-        setLoadingMore(false);
       }
     },
     [dispatch, getAuthToken],
   );
 
-  useEffect(() => {
-    if (!authUser) {
-      setItems([]);
-      dispatch(clearRestaurantPagination());
-      setHasMore(true);
-      return;
-    }
-
+  const resetRestaurants = () => {
     setItems([]);
     dispatch(clearRestaurantPagination());
-    setHasMore(true);
+    setHasMore(false);
+  };
+
+  useEffect(() => {
+    const authKey = authUser?.uid ?? null;
+    if (lastFetchAuthKeyRef.current === authKey) {
+      return;
+    }
+    lastFetchAuthKeyRef.current = authKey;
+
+    if (!authUser) {
+      resetRestaurants();
+      return;
+    }
+    resetRestaurants();
 
     fetchPage(false, null);
   }, [authUser, dispatch, fetchPage]);
 
   const loadMore = useCallback(() => {
-    if (!hasMore || loadingMore || loading) {
+    if (!hasMore || loading) {
       return;
     }
     fetchPage(true, nextPageToken);
-  }, [fetchPage, hasMore, loading, loadingMore, nextPageToken]);
+  }, [fetchPage, hasMore, loading, nextPageToken]);
+
+  const handleFormModalCancel = useCallback(() => {
+    if (editOpen) {
+      setEditOpen(false);
+      setEditTarget(null);
+    } else {
+      dispatch(closeRestaurantFormModal());
+    }
+  }, [dispatch, editOpen]);
 
   // handles creation of restaurant
-  const handleCreate = async (values: RestaurantPayload) => {
+  const handleCreate = async (
+    values: RestaurantFormValues,
+    helpers: FormikHelpers<RestaurantFormValues>,
+  ) => {
     const token = await getAuthToken();
     if (!token) {
-      message.error("Auth Token Not found");
+      helpers.setSubmitting(false);
       return;
     }
 
     const ownerId = authUser?.uid;
     if (!ownerId) {
-      message.error("Missing owner id");
+      message.error("Unable to resolve owner details. Please sign in again.");
+      helpers.setSubmitting(false);
       return;
     }
 
     try {
-      const response = await createRestaurant(token, {
-        ...values,
+      const payload = {
+        ...mapFormValuesToPayload(values),
         ownerId,
+      };
+      const response = await createRestaurant(token, {
+        ...payload,
       });
       const createdRestaurant = response.data;
       if (createdRestaurant) {
@@ -153,26 +187,34 @@ export const RestaurantContainer: React.FC = () => {
       }
       message.success("Restaurant created");
       dispatch(closeRestaurantFormModal());
+      helpers.resetForm();
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(error, "Create failed");
+      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Creation failed" });
       message.error(errorMessage);
+    } finally {
+      helpers.setSubmitting(false);
     }
   };
 
   // handles updation of restaurant
-  const handleUpdate = async (values: RestaurantPayload) => {
+  const handleUpdate = async (
+    values: RestaurantFormValues,
+    helpers: FormikHelpers<RestaurantFormValues>,
+  ) => {
     if (!editTarget) {
+      helpers.setSubmitting(false);
       return;
     }
 
     const token = await getAuthToken();
     if (!token) {
-      message.error("Auth Token Not found");
+      helpers.setSubmitting(false);
       return;
     }
 
     try {
-      const response = await updateRestaurant(token, editTarget.id, values);
+      const payload = mapFormValuesToPayload(values);
+      const response = await updateRestaurant(token, editTarget.id, payload);
       const updatedRestaurant = response.data;
       if (updatedRestaurant) {
         setItems((previousItems) =>
@@ -185,8 +227,10 @@ export const RestaurantContainer: React.FC = () => {
       setEditOpen(false);
       setEditTarget(null);
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(error, "Update failed");
+      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Updation failed" });
       message.error(errorMessage);
+    } finally {
+      helpers.setSubmitting(false);
     }
   };
 
@@ -211,7 +255,7 @@ export const RestaurantContainer: React.FC = () => {
       setDeleteOpen(false);
       setDeleteTarget(null);
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(error, "Delete failed");
+      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Deletion failed" });
       message.error(errorMessage);
     } finally {
       setDeleteLoading(false);
@@ -232,7 +276,6 @@ export const RestaurantContainer: React.FC = () => {
       <RestaurantListComponent
         items={items}
         loading={loading}
-        loadingMore={loadingMore}
         hasMore={hasMore}
         loadMore={loadMore}
         onUpdate={(restaurantItem) => {
@@ -246,21 +289,11 @@ export const RestaurantContainer: React.FC = () => {
       />
 
       <RestaurantFormModalComponent
-        open={isCreateModalOpen}
-        mode="create"
-        onCancel={() => dispatch(closeRestaurantFormModal())}
-        onSubmit={handleCreate}
-      />
-
-      <RestaurantFormModalComponent
-        open={editOpen}
-        mode="update"
-        initial={editTarget ?? undefined}
-        onCancel={() => {
-          setEditOpen(false);
-          setEditTarget(null);
-        }}
-        onSubmit={handleUpdate}
+        open={isCreateModalOpen || editOpen}
+        mode={editOpen ? "update" : "create"}
+        initial={editOpen ? (editTarget ?? undefined) : undefined}
+        onCancel={handleFormModalCancel}
+        onSubmit={editOpen ? handleUpdate : handleCreate}
       />
 
       <DeleteConfirmModalComponent

@@ -1,20 +1,10 @@
 import moment from "moment";
 
+import {
+  RESTAURANT_CREATE_DEFAULTS,
+  RESTAURANT_MODAL_TIME_FORMAT,
+} from "./RestaurantFormModal.const";
 import type { Restaurant, RestaurantFormValues, RestaurantStatus } from "@services/restaurant.type";
-
-export const RESTAURANT_MODAL_TIME_FORMAT = "HH:mm";
-
-export const RESTAURANT_CREATE_DEFAULTS: {
-  name: string;
-  openingTime: string;
-  closingTime: string;
-  status: RestaurantStatus;
-} = {
-  name: "",
-  openingTime: "08:00",
-  closingTime: "22:00",
-  status: "active",
-};
 
 export const getRestaurantFormInitialValues = (
   initial?: Partial<Restaurant>,

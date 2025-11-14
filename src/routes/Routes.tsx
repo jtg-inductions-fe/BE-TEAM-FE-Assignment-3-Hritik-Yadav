@@ -25,7 +25,7 @@ export const AppRoutes: React.FC = () => {
         </Route>
         <Route element={<ProtectedRouteComponent />}>
           <Route path={ROUTES_URL.RESTAURANT} element={<RestaurantPage />} />
-          <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
+          <Route path={ROUTES_URL.VERIFICATION} element={<VerificationPage />} />
           <Route
             path={`${ROUTES_URL.RESTAURANT}/:restaurantId/${ROUTES_URL.MENU}`}
             element={<RestaurantItemsPage />}

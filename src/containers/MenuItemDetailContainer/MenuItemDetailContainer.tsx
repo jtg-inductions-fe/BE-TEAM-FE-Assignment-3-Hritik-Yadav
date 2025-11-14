@@ -11,9 +11,9 @@ import {
 } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { deleteMenuItem, getMenuItem, updateMenuItem } from "@services/menu.service";
+import { resolveError } from "@/utils/errorHandlers";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
-import { resolveAxiosErrorMessage } from "@/utils/helper";
 
 const { Text } = Typography;
 
@@ -55,7 +55,7 @@ export const MenuItemDetailContainer: React.FC = () => {
       }
       setMenuItem(data);
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(error, "Failed to fetch menu item");
+      const errorMessage = resolveError({ error, defaultAxiosError: "Failed to fetch menu item" });
       message.error(errorMessage);
     } finally {
       setLoading(false);
@@ -101,7 +101,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         }
         message.success("Menu item updated");
       } catch (error) {
-        const errorMessage = resolveAxiosErrorMessage(error, "Update failed");
+        const errorMessage = resolveError({ error, defaultAxiosError: "Update failed" });
         message.error(errorMessage);
       } finally {
         setIsUpdateModalOpen(false);
@@ -137,7 +137,7 @@ export const MenuItemDetailContainer: React.FC = () => {
       const restaurantMenuPath = `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}`;
       navigate(restaurantMenuPath, { replace: true });
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(error, "Delete failed");
+      const errorMessage = resolveError({ error, defaultAxiosError: "Delete failed" });
       message.error(errorMessage);
     } finally {
       setDeleteLoading(false);
@@ -168,7 +168,11 @@ export const MenuItemDetailContainer: React.FC = () => {
 
   return (
     <>
-      <MenuItemDetailComponent menuItem={menuItem} onUpdate={handleUpdateOpen} onDelete={handleDeleteOpen} />
+      <MenuItemDetailComponent
+        menuItem={menuItem}
+        onUpdate={handleUpdateOpen}
+        onDelete={handleDeleteOpen}
+      />
 
       <MenuItemFormModalComponent
         open={isUpdateModalOpen}

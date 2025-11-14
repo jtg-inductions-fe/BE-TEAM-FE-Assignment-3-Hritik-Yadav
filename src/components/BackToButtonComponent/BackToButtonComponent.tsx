@@ -3,9 +3,9 @@ import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-import type { BackToMenuButtonProps } from "./backToButton.component.type";
+import type { BackToMenuButtonProps } from "./backToButton.type";
 
-import "./backToButton.component.style.scss";
+import "./backToButton.style.scss";
 
 export const BackToButtonComponent: React.FC<BackToMenuButtonProps> = ({ label = "Go Back" }) => {
   const navigate = useNavigate();

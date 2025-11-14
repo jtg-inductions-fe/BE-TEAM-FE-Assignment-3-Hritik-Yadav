@@ -11,20 +11,21 @@ import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
 } from "@store/selectors/selector";
-import {
-  clearMenuItemPagination,
-  closeMenuItemFormModal,
-  setMenuItemNextToken,
-} from "@/store/actions/actions";
-import {
+
+import { closeMenuItemFormModal } from "@store/actions/modal.actions";
+
+import { useAuthContext } from "@/context/AuthContext";
+import { clearMenuItemPagination, setMenuItemNextToken } from "@store/actions/menuItems.actions";
+import { resolveError } from "@/utils/errorHandlers";
+
+import type {
   ListMenuItemsResponseData,
   MenuItem,
   MenuItemFormValues,
   MenuItemPayload,
-} from "@/services/menu.type";
+} from "@services/menu.type";
+
 import "./menuItemListContainer.style.scss";
-import { resolveAxiosErrorMessage } from "@/utils/helper";
-import { useAuthContext } from "@/context/AuthContext";
 
 const PAGE_SIZE = 12;
 
@@ -91,7 +92,10 @@ export const MenuItemListContainer: React.FC = () => {
         dispatch(setMenuItemNextToken(nextToken));
         setHasMore(Boolean(nextToken));
       } catch (error) {
-        const errorMessage = resolveAxiosErrorMessage(error, "Failed to load menu items");
+        const errorMessage = resolveError({
+          error,
+          defaultAxiosError: "Failed to load menu items",
+        });
         message.error(errorMessage);
         dispatch(setMenuItemNextToken(null));
       } finally {
@@ -103,10 +107,6 @@ export const MenuItemListContainer: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!restaurantId) {
-      return;
-    }
-
     setItems([]);
     setHasMore(true);
     dispatch(clearMenuItemPagination());
@@ -116,7 +116,7 @@ export const MenuItemListContainer: React.FC = () => {
       dispatch(closeMenuItemFormModal());
       dispatch(clearMenuItemPagination());
     };
-  }, [dispatch, fetchPage, restaurantId]);
+  }, [dispatch, fetchPage]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loadingMore || loading) {
@@ -172,10 +172,10 @@ export const MenuItemListContainer: React.FC = () => {
 
       uploadedImageName = imageName;
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(
+      const errorMessage = resolveError({
         error,
-        "Image upload failed. Please try again.",
-      );
+        defaultFirebaseError: "Image upload failed. Please try again.",
+      });
       message.error(errorMessage);
       return;
     }
@@ -207,10 +207,10 @@ export const MenuItemListContainer: React.FC = () => {
       await fetchPage(false, null);
       dispatch(closeMenuItemFormModal());
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(
+      const errorMessage = resolveError({
         error,
-        "Failed to create menu item. Please try again.",
-      );
+        defaultAxiosError: "Failed to create menu item. Please try again.",
+      });
       message.error(errorMessage);
     }
   };

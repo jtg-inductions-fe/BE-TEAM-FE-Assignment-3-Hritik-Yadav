@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, Typography, Result, Space } from "antd";
 
-import type { VerificationProps } from "./Verification.component.type";
+import type { VerificationProps } from "./Verification.type";
 
-import "./verification.component.style.scss";
+import "./verification.style.scss";
 
 const { Paragraph } = Typography;
 
