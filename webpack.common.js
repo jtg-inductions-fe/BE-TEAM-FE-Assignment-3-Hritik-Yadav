@@ -15,13 +15,13 @@ const commonConfig = {
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx"],
     alias: {
+      "@": path.resolve(__dirname, "src"),
       "@components": path.resolve(__dirname, "src/components"),
-      "@styles": path.resolve(__dirname, "src/styles"),
+      "@containers": path.resolve(__dirname, "src/containers"),
+      "@pages": path.resolve(__dirname, "src/pages"),
       "@services": path.resolve(__dirname, "src/services"),
       "@store": path.resolve(__dirname, "src/store"),
-      "@pages": path.resolve(__dirname, "src/pages"),
-      "@containers": path.resolve(__dirname, "src/containers"),
-      "@": path.resolve(__dirname, "src"),
+      "@styles": path.resolve(__dirname, "src/styles"),
     },
   },
   module: {

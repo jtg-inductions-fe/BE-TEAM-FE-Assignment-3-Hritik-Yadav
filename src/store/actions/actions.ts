@@ -1,1 +1,1 @@
-//this file will contain redux actions
+// Will contain future Redux actions.
