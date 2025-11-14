@@ -76,7 +76,7 @@ export const RestaurantContainer: React.FC = () => {
     try {
       return await authUser.getIdToken();
     } catch (error) {
-      const errorMessage = resolveError(error, ERROR_MESSAGE);
+      const errorMessage = resolveError({ error });
       message.error(errorMessage);
       return null;
     }
@@ -105,7 +105,10 @@ export const RestaurantContainer: React.FC = () => {
         dispatch(setRestaurantNextToken(nextToken));
         setHasMore(!!nextToken);
       } catch (error) {
-        const errorMessage = resolveError(error, "Failed to load restaurants");
+        const errorMessage = resolveError({
+          error,
+          defaultAxiosError: "Failed to load restaurants",
+        });
         message.error(errorMessage);
       } finally {
         setLoading(false);
@@ -186,7 +189,7 @@ export const RestaurantContainer: React.FC = () => {
       dispatch(closeRestaurantFormModal());
       helpers.resetForm();
     } catch (error) {
-      const errorMessage = resolveError(error, "Restaurant Creation failed");
+      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Creation failed" });
       message.error(errorMessage);
     } finally {
       helpers.setSubmitting(false);
@@ -224,7 +227,7 @@ export const RestaurantContainer: React.FC = () => {
       setEditOpen(false);
       setEditTarget(null);
     } catch (error) {
-      const errorMessage = resolveError(error, "Restaurant Updation failed");
+      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Updation failed" });
       message.error(errorMessage);
     } finally {
       helpers.setSubmitting(false);
@@ -252,7 +255,7 @@ export const RestaurantContainer: React.FC = () => {
       setDeleteOpen(false);
       setDeleteTarget(null);
     } catch (error) {
-      const errorMessage = resolveError(error, "Restaurant Deletion failed");
+      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Deletion failed" });
       message.error(errorMessage);
     } finally {
       setDeleteLoading(false);
