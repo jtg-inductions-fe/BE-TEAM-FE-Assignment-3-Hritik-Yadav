@@ -27,11 +27,11 @@ export const SignupContainer: React.FC = () => {
       message.success("User created successfully. Please confirm your email.");
       navigate(ROUTES_URL.VERIFICATION);
     } catch (error: unknown) {
-      const errorMessage = resolveError(
+      const errorMessage = resolveError({
         error,
-        "User Created, Login failed: Please Try Login Again", //firebase error
-        "User not created. Try again later.", //axios error
-      );
+        defaultFirebaseError: "User Created, Login failed: Please Try Login Again",
+        defaultAxiosError: "User not created. Try again later.",
+      });
       message.error(errorMessage);
     }
   };
