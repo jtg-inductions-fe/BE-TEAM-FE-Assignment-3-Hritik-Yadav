@@ -21,7 +21,7 @@ export const SignupContainer: React.FC = () => {
         password: values.password,
         role: values.role,
       });
-      const customToken = response?.data?.customToken!;
+      const customToken = response.data!.customToken;
       const auth = getAuth();
       await signInWithCustomToken(auth, customToken);
       message.success("User created successfully. Please confirm your email.");
