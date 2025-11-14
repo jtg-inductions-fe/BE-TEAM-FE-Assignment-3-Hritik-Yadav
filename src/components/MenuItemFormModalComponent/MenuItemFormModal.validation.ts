@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { MENU_ITEM_CURRENCY_OPTIONS } from "./MenuItemFormModal.component.const";
+import { MENU_ITEM_CURRENCY_OPTIONS } from "./MenuItemFormModal.const";
 
 export const menuItemFormValidationSchema = Yup.object({
   name: Yup.string()
@@ -14,7 +14,7 @@ export const menuItemFormValidationSchema = Yup.object({
     currency: Yup.string().oneOf(MENU_ITEM_CURRENCY_OPTIONS, "Invalid currency"),
     price: Yup.number().min(0.1, "Price must be added and positive").required("Price is required"),
   }),
-  category: Yup.string().oneOf(["VEG", "NONVEG"]),
+  category: Yup.string().oneOf(["VEG", "NONVEG"], "Select a valid catrgory"),
   quantity: Yup.number()
     .required("Quantity is required")
     .min(0, "Quantity cannot be negative")

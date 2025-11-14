@@ -11,6 +11,7 @@ const { Title } = Typography;
 export const DeleteConfirmModalComponent: React.FC<DeleteConfirmModalProps> = ({
   open,
   restaurant,
+  menuItem,
   onCancel,
   onConfirm,
   loading,
@@ -20,7 +21,7 @@ export const DeleteConfirmModalComponent: React.FC<DeleteConfirmModalProps> = ({
       open={open}
       title={
         <Title level={3} className="delete-confirm-modal__title">
-          Delete Restaurant
+          Delete {restaurant ? "Restaurant" : "Menu Item"}
         </Title>
       }
       onCancel={onCancel}
@@ -31,7 +32,7 @@ export const DeleteConfirmModalComponent: React.FC<DeleteConfirmModalProps> = ({
       closeIcon={<CloseCircleFilled />}
       destroyOnClose
     >
-      Are you sure you want to delete {restaurant?.name} This action cannot be undone.
+      Are you sure you want to delete {restaurant?.name ?? menuItem?.name} This action cannot be undone.
     </Modal>
   );
 };

@@ -4,12 +4,12 @@ import { StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { CATEGORY_COLOR } from "./menuItemCard.component.const";
+import { CATEGORY_COLOR } from "./menuItemCard.const";
 import { getPriceLabel } from "@/utils/helper";
 
-import type { MenuItemCardProps } from "./menuItemCard.component.type";
+import type { MenuItemCardProps } from "./menuItemCard.type";
 
-import "./menuItemCard.component.style.scss";
+import "./menuItemCard.style.scss";
 
 const { Title, Text } = Typography;
 
@@ -21,9 +21,6 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, resta
   const availabilityLabel = quantity > 0 ? `${quantity} available` : "Out of stock";
 
   const handleViewDetails = () => {
-    if (!restaurantId) {
-      return;
-    }
     const detailsPage = `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`;
     navigate(detailsPage);
   };

@@ -1,9 +1,9 @@
 import {
   SET_MENU_ITEM_NEXT_TOKEN,
   CLEAR_MENU_ITEM_PAGINATION,
-} from "../actions/menuItems.action.const";
+} from "../actions/menuItems.actions.const";
 import type { MenuItemPaginationState } from "./menuItem.type";
-import type { MenuItemPaginationAction } from "../actions/menuItems.action.type";
+import type { MenuItemPaginationAction } from "../actions/menuItems.actions.type";
 
 const initialState: MenuItemPaginationState = {
   nextPageToken: null,

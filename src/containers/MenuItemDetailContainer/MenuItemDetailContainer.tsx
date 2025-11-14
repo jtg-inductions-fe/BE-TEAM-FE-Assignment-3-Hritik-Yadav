@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { message, Spin, Typography } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
+import { FormikHelpers } from "formik";
 
 import { useAuthContext } from "@/context/AuthContext";
 import {
   MenuItemDetailComponent,
   MenuItemFormModalComponent,
-  DeleteItemConfirmModalComponent,
+  DeleteConfirmModalComponent,
   BackToButtonComponent,
 } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
@@ -28,29 +29,39 @@ export const MenuItemDetailContainer: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const getAuthToken = useCallback(async (): Promise<string | null> => {
+    if (!authUser) {
+      message.error("Authentication required");
+      return null;
+    }
+
+    try {
+      return await authUser.getIdToken();
+    } catch (error) {
+      const errorMessage = resolveError({ error });
+      message.error(errorMessage);
+      return null;
+    }
+  }, [authUser]);
+
   const fetchMenuItem = useCallback(async () => {
     if (isAuthLoading) {
       return;
     }
 
-    if (!restaurantId || !menuItemId) {
-      return;
-    }
-
-    const token = await authUser?.getIdToken();
+    const token = await getAuthToken();
     if (!token) {
-      message.warn("Auth Token Missing");
       setLoading(false);
       return;
     }
 
     try {
       setLoading(true);
-      const response = await getMenuItem(token, restaurantId, menuItemId);
+      const response = await getMenuItem(token, restaurantId!, menuItemId!);
       const data = response.data;
       if (!data) {
         setMenuItem(null);
-        message.warning("Menu item not found");
+        message.error("Menu item not found");
         return;
       }
       setMenuItem(data);
@@ -71,14 +82,11 @@ export const MenuItemDetailContainer: React.FC = () => {
   }, []);
 
   const handleUpdateSubmit = useCallback(
-    async (values: MenuItemFormValues) => {
-      if (!restaurantId || !menuItemId) {
-        return;
-      }
-
-      const token = await authUser?.getIdToken();
+    async (values: MenuItemFormValues, helpers: FormikHelpers<MenuItemFormValues>) => {
+      helpers.setSubmitting(true);
+      const token = await getAuthToken();
       if (!token) {
-        message.warn("Auth Token Missing");
+        helpers.setSubmitting(false);
         return;
       }
 
@@ -90,11 +98,12 @@ export const MenuItemDetailContainer: React.FC = () => {
             currency: values.amount.currency,
             price: values.amount.price,
           },
+          // imageName: "", // fix
           category: values.category,
           rating: values.rating,
           quantity: values.quantity,
         };
-        const response = await updateMenuItem(token, restaurantId, menuItemId, payload);
+        const response = await updateMenuItem(token, restaurantId!, menuItemId!, payload);
         const updatedItem = response.data;
         if (updatedItem) {
           setMenuItem(updatedItem);
@@ -104,6 +113,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         const errorMessage = resolveError({ error, defaultAxiosError: "Update failed" });
         message.error(errorMessage);
       } finally {
+        helpers.setSubmitting(false);
         setIsUpdateModalOpen(false);
       }
     },
@@ -115,27 +125,17 @@ export const MenuItemDetailContainer: React.FC = () => {
   }, []);
 
   const handleDeleteConfirm = useCallback(async () => {
-    if (!restaurantId || !menuItemId) {
-      return;
-    }
-
-    if (!menuItem) {
-      return;
-    }
-
-    const token = await authUser?.getIdToken();
+    const token = await getAuthToken();
     if (!token) {
-      message.warn("Auth Token Missing");
       return;
     }
 
     try {
       setDeleteLoading(true);
-      await deleteMenuItem(token, restaurantId, menuItemId, menuItem.imageName);
+      await deleteMenuItem(token, restaurantId!, menuItemId!, menuItem!.imageName); //need menu image to delete - fix
       message.success("Menu item deleted");
       setIsDeleteModalOpen(false);
-      const restaurantMenuPath = `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}`;
-      navigate(restaurantMenuPath, { replace: true });
+      navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}`, { replace: true });
     } catch (error) {
       const errorMessage = resolveError({ error, defaultAxiosError: "Delete failed" });
       message.error(errorMessage);
@@ -183,7 +183,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         showUpload={false}
       />
 
-      <DeleteItemConfirmModalComponent
+      <DeleteConfirmModalComponent
         open={isDeleteModalOpen}
         menuItem={menuItem}
         onCancel={handleDeleteCancel}

@@ -3,7 +3,7 @@ import {
   CLOSE_MENU_ITEM_FORM_MODAL,
 } from "../actions/modal.actions.const";
 import type { MenuItemModalState } from "./menuItemModal.type";
-import type { MenuItemModalAction } from "../actions/modal.action.type";
+import type { MenuItemModalAction } from "../actions/modal.actions.type";
 
 const initialState: MenuItemModalState = {
   isMenuItemFormModalOpen: false,

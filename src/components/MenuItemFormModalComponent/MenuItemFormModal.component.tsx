@@ -15,15 +15,13 @@ import { Formik, Field } from "formik";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadOutlined } from "@ant-design/icons";
 import type { FieldProps } from "formik";
-import type { UploadChangeParam } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
 
 import { menuItemFormValidationSchema } from "./MenuItemFormModal.validation";
-import {
-  getMenuItemFormInitialValues,
-  MENU_ITEM_CURRENCY_OPTIONS,
-} from "./MenuItemFormModal.component.const";
-import type { MenuItemFormModalProps } from "./MenuItemModal.component.type";
+import { MENU_ITEM_CURRENCY_OPTIONS } from "./MenuItemFormModal.const";
+import { getMenuItemFormInitialValues, getUploadProps } from "./menuItemFormModal.helper";
+
+import type { MenuItemFormModalProps } from "./MenuItemModal.type";
 import type { Currency, ItemCategory, MenuItemFormValues } from "@services/menu.type";
 
 export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
@@ -46,31 +44,8 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
 
   const initialValues: MenuItemFormValues = getMenuItemFormInitialValues(initial);
 
-  const uploadProps = {
-    beforeUpload: () => false,
-    onChange: (info: UploadChangeParam<UploadFile>) => {
-      const latestFileList = info.fileList.slice(-1);
-      setFileList(latestFileList);
-      const latestFile = latestFileList[0]?.originFileObj ?? null;
-      setSelectedFile(latestFile);
-
-      if (!latestFile) {
-        setImageName(initial?.imageName ?? "");
-      } else {
-        setImageName(latestFile.name);
-      }
-    },
-    maxCount: 1,
-    fileList,
-    accept: "image/*",
-    onRemove: () => {
-      setSelectedFile(null);
-      setImageName(initial?.imageName ?? "");
-    },
-  };
-
   return (
-    <Formik<MenuItemFormValues>
+    <Formik
       initialValues={initialValues}
       validationSchema={menuItemFormValidationSchema}
       onSubmit={async (values, helpers) => {
@@ -79,13 +54,9 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
           helpers.setSubmitting(false);
           return;
         }
-
         try {
-          await onSubmit(values, showUpload ? (selectedFile ?? undefined) : undefined);
+          await onSubmit(values, helpers, showUpload ? (selectedFile ?? undefined) : undefined);
           if (mode === "create") {
-            helpers.resetForm();
-            setImageName(initial?.imageName ?? "");
-            setSelectedFile(null);
             setFileList([]);
           }
         } finally {
@@ -200,14 +171,18 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
             </Field>
             {showUpload ? (
               <Form.Item label="Item Image">
-                <Upload {...uploadProps}>
+                <Upload
+                  {...getUploadProps(
+                    imageName,
+                    fileList,
+                    setFileList,
+                    setImageName,
+                    setSelectedFile,
+                  )}
+                >
                   <Button icon={<UploadOutlined />}>Select Image</Button>
                 </Upload>
-                {imageName ? (
-                  <div className="menu-item-form__image-name">
-                    {mode === "create" ? "Selected image" : "Current image"}: {imageName}
-                  </div>
-                ) : null}
+                {imageName ? <div>Selected image {imageName}</div> : null}
               </Form.Item>
             ) : null}
           </Form>

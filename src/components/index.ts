@@ -1,6 +1,5 @@
-export { DeleteItemConfirmModalComponent } from "./MenuItemModalComponent/DeleteItemConfirmModal.component";
 export { MenuItemCardComponent } from "./MenuItemCardComponent";
-export { MenuItemFormModalComponent } from "./MenuItemModalComponent/MenuItemFormModal.component";
+export { MenuItemFormModalComponent } from "./MenuItemFormModalComponent";
 export { MenuItemListComponent } from "./MenuItemListComponent";
 export { MenuItemDetailComponent } from "./MenuItemDetailComponent";
 export { BackToButtonComponent } from "./BackToButtonComponent";

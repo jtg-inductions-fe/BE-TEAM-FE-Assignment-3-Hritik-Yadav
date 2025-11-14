@@ -1,4 +1,4 @@
-import { SET_MENU_ITEM_NEXT_TOKEN, CLEAR_MENU_ITEM_PAGINATION } from "./menuItems.action.const";
+import { SET_MENU_ITEM_NEXT_TOKEN, CLEAR_MENU_ITEM_PAGINATION } from "./menuItems.actions.const";
 
 interface SetNextTokenAction {
   type: typeof SET_MENU_ITEM_NEXT_TOKEN;
