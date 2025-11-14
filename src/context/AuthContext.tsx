@@ -13,7 +13,6 @@ import { app } from "@/firebase/firebase";
 import { getUserDetails } from "@/services";
 import { normalizeRole } from "@/utils/helper";
 import { resolveError } from "@/utils/errorHandlers";
-import { ERROR_MESSAGE } from "@services/service.const";
 
 import type { Role } from "@services/service.type";
 import type { AuthContextType } from "./authContext.type";
@@ -57,7 +56,7 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
           currentRole = claimRole;
         }
       } catch (error: unknown) {
-        const errorMessage = resolveError(error);
+        const errorMessage = resolveError({ error });
         message.error(errorMessage);
         clearUserData();
         currentRole = null;
@@ -83,7 +82,7 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
           }
         }
       } catch (error: unknown) {
-        const errorMessage = resolveError(error);
+        const errorMessage = resolveError({ error });
         message.error(errorMessage);
         setUserName(null);
       }

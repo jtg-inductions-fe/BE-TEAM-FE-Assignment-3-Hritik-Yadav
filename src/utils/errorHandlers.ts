@@ -1,14 +1,14 @@
 // have added this file to provide helper fucntions for handling
 // the errors related to firebase and axios
 
-import { ERROR_MESSAGE } from "@/services/service.const";
 import { AxiosError } from "axios";
 import { FirebaseError } from "firebase/app";
 
-export const resolveFirebaseError = (
-  error: FirebaseError,
-  defaultMessage: string = "Firebase Error",
-): string => {
+import { ERROR_MESSAGE } from "@/services/service.const";
+
+import type { resolveErrorTypes } from "./erroHandler.types";
+
+export const resolveFirebaseError = (error: FirebaseError, defaultMessage: string): string => {
   let errorMessage = defaultMessage;
   if (error.code === "auth/network-request-failed") {
     errorMessage = "Network error: Check your internet connection.";
@@ -18,10 +18,7 @@ export const resolveFirebaseError = (
   return errorMessage;
 };
 
-export const resolveAxiosError = (
-  error: unknown,
-  defaultMessage: string = "Request Failed",
-): string => {
+export const resolveAxiosError = (error: unknown, defaultMessage: string): string => {
   let errorMessage = defaultMessage;
 
   if (error instanceof AxiosError) {
@@ -39,16 +36,16 @@ export const resolveAxiosError = (
   return errorMessage;
 };
 
-export const resolveError = (
-  error: unknown,
-  defaultFirebaseError: string = ERROR_MESSAGE,
-  defaultAxiosMessage: string = ERROR_MESSAGE,
-): string => {
+export const resolveError = ({
+  error,
+  defaultFirebaseError = "Firebase Error",
+  defaultAxiosError = "Request Failed",
+}: resolveErrorTypes): string => {
   let message = ERROR_MESSAGE;
   if (error instanceof FirebaseError) {
     message = resolveFirebaseError(error, defaultFirebaseError);
   } else if (error instanceof AxiosError) {
-    message = resolveAxiosError(error, defaultAxiosMessage);
+    message = resolveAxiosError(error, defaultAxiosError);
   }
   return message;
 };

@@ -26,7 +26,7 @@ export const HeaderContainer: React.FC = () => {
       message.success("Logout Successfully");
       navigate(ROUTES_URL.LOGIN);
     } catch (error) {
-      const errorMessage = resolveError(error, "Logout Failed");
+      const errorMessage = resolveError({ error, defaultFirebaseError: "Logout Failed" });
       message.error(errorMessage);
     }
   };
