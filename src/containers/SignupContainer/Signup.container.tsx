@@ -2,14 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
-import { FirebaseError } from "firebase/app";
-import { AxiosError } from "axios";
 
 import { ROUTES_URL } from "@/routes/routes.const";
 import { signup } from "@/services";
 import { SignupComponent } from "@/components";
-import { resolveAxiosError, resolveFirebaseError } from "@/utils/errorHandlers";
-import { ERROR_MESSAGE } from "@services/service.const";
+import { resolveError } from "@/utils/errorHandlers";
 
 import type { SignupValues } from "@components/SignupComponent";
 
@@ -24,25 +21,17 @@ export const SignupContainer: React.FC = () => {
         password: values.password,
         role: values.role,
       });
-      const customToken = response?.data?.customToken;
-      if (!customToken) {
-        return;
-      }
+      const customToken = response.data!.customToken;
       const auth = getAuth();
       await signInWithCustomToken(auth, customToken);
       message.success("User created successfully. Please confirm your email.");
       navigate(ROUTES_URL.VERIFICATION);
     } catch (error: unknown) {
-      let errorMessage = ERROR_MESSAGE;
-
-      if (error instanceof AxiosError) {
-        errorMessage = resolveAxiosError(error, "User not created. Try again later.");
-      } else if (error instanceof FirebaseError) {
-        errorMessage = resolveFirebaseError(
-          error,
-          "User Created, Login failed: Please Try Login Again",
-        );
-      }
+      const errorMessage = resolveError(
+        error,
+        "User Created, Login failed: Please Try Login Again", //firebase error
+        "User not created. Try again later.", //axios error
+      );
       message.error(errorMessage);
     }
   };
