@@ -10,7 +10,7 @@ export const ProtectedRouteComponent: React.FC = () => {
   const location = useLocation();
   const { authUser, isAuthLoading, role } = useAuthContext();
   const { pathname } = location;
-  const isVerificationRoute = pathname === ROUTES_URL.CONFIRMATION;
+  const isVerificationRoute = pathname === ROUTES_URL.VERIFICATION;
 
   useEffect(() => {
     if (isAuthLoading) {
@@ -26,7 +26,7 @@ export const ProtectedRouteComponent: React.FC = () => {
 
     if (!authUser.emailVerified) {
       if (!isVerificationRoute) {
-        navigate(ROUTES_URL.CONFIRMATION, { replace: true });
+        navigate(ROUTES_URL.VERIFICATION, { replace: true });
       }
       return;
     }

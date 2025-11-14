@@ -4,13 +4,13 @@ import { StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { CATEGORY_COLOR } from "./menuItemCard.component.const";
+import { CATEGORY_COLOR } from "./menuItemCard.const";
 import { getPriceLabel } from "@/utils/helper";
 import { AddToCartButton } from "@components/AddToCartButton";
 
-import type { MenuItemCardProps } from "./menuItemCard.component.type";
+import type { MenuItemCardProps } from "./menuItemCard.type";
 
-import "./menuItemCard.component.style.scss";
+import "./menuItemCard.style.scss";
 
 const { Title, Text } = Typography;
 

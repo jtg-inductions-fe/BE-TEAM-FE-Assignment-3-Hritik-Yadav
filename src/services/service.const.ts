@@ -1,6 +1,7 @@
 import { Role } from "./service.type";
 
 export const BASE_URL = process.env.BASE_URL || "https://zomato-lite-be-708746112981.asia-south1.run.app/";
+export const ERROR_MESSAGE = "Something Went Wrong";
 export enum ENDPOINT {
   SIGNUP = "auth/signup",
   USER = "users/me",
@@ -16,7 +17,3 @@ export enum USER_ROLE {
 }
 
 export const USER_ROLE_VALUES: Role[] = [USER_ROLE.CUSTOMER, USER_ROLE.OWNER];
-
-export interface ApiUrlParams {
-  [key: string]: string | number | undefined;
-}

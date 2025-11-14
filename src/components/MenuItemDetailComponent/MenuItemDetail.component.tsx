@@ -2,14 +2,14 @@ import React from "react";
 import { Button, Card, Divider, Image, Rate, Space, Statistic, Tag, Typography } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-import { CATEGORY_COLOR } from "../MenuItemCardComponent/menuItemCard.component.const";
+import { CATEGORY_COLOR } from "../MenuItemCardComponent/menuItemCard.const";
 import { getPriceLabel } from "@/utils/helper";
 import { BackToButtonComponent } from "../BackToButtonComponent";
 import { AddToCartButton } from "@components/AddToCartButton";
 
-import type { MenuItemDetailProps } from "./MenuItemDetail.component.type";
+import type { MenuItemDetailProps } from "./MenuItemDetail.type";
 
-import "./menuItemDetail.component.style.scss";
+import "./menuItemDetail.style.scss";
 
 const { Title, Text } = Typography;
 

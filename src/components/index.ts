@@ -1,13 +1,12 @@
-export { DeleteItemConfirmModalComponent } from "./MenuItemModalComponent/DeleteItemConfirmModal.component";
 export { MenuItemCardComponent } from "./MenuItemCardComponent";
-export { MenuItemFormModalComponent } from "./MenuItemModalComponent/MenuItemFormModal.component";
+export { MenuItemFormModalComponent } from "./MenuItemFormModalComponent";
 export { MenuItemListComponent } from "./MenuItemListComponent";
 export { MenuItemDetailComponent } from "./MenuItemDetailComponent";
 export { BackToButtonComponent } from "./BackToButtonComponent";
 export { RestaurantCardComponent } from "./RestaurantCardComponent";
 export { RestaurantListComponent } from "./RestaurantListComponent";
-export { DeleteConfirmModalComponent } from "./RestaurantModalComponent/DeleteConfirmModal.component";
-export { RestaurantFormModalComponent } from "./RestaurantModalComponent/RestaurantFormModal.component";
+export { DeleteConfirmModalComponent } from "./DeleteConfirmModalComponent";
+export { RestaurantFormModalComponent } from "./RestaurantFormModalComponent";
 export { HeaderComponent } from "./HeaderComponent";
 export { LoginComponent } from "./LoginComponent";
 export { AppLoaderComponent } from "./AppLoaderComponent";

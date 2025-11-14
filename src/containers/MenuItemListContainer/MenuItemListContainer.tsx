@@ -1,48 +1,48 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { message } from "antd";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { message, Typography } from "antd";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { FormikHelpers } from "formik";
 
-import { MenuItemListComponent, MenuItemFormModalComponent } from "@/components";
+import {
+  MenuItemListComponent,
+  MenuItemFormModalComponent,
+  BackToButtonComponent,
+} from "@/components";
 import { getSignedUrl } from "@services/upload.service";
 import { createMenuItem, listMenuItems, listPublicMenuItems } from "@services/menu.service";
 import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
 } from "@store/selectors/selector";
-import {
-  clearMenuItemPagination,
-  closeMenuItemFormModal,
-  setMenuItemNextToken,
-} from "@/store/actions/actions";
-import {
-  ListMenuItemsResponseData,
-  MenuItem,
-  MenuItemFormValues,
-  MenuItemPayload,
-} from "@/services/menu.type";
-import "./menuItemListContainer.style.scss";
-import { resolveAxiosErrorMessage } from "@/utils/helper";
+import { closeMenuItemFormModal } from "@store/actions/modal.actions";
 import { useAuthContext } from "@/context/AuthContext";
 import { USER_ROLE } from "@/services/service.const";
 import { ROUTES_URL } from "@/routes/routes.const";
+import { clearMenuItemPagination, setMenuItemNextToken } from "@store/actions/menuItems.actions";
+import { resolveError } from "@/utils/errorHandlers";
+import { MENU_ITEM_PAGE_SIZE } from "./menuItemListContainer.const";
 
-const PAGE_SIZE = 12;
+import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
+
+import "./menuItemListContainer.style.scss";
+
+const { Title } = Typography;
 
 export const MenuItemListContainer: React.FC = () => {
   const { authUser, role } = useAuthContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const nextPageToken = useSelector(selectMenuItemNextPageToken);
-  const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
-  const { restaurantId } = useParams<{ restaurantId?: string }>();
+  const { restaurantId } = useParams<{ restaurantId: string }>();
 
   const [items, setItems] = useState<MenuItem[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
   const isOwner = role === USER_ROLE.OWNER;
+  const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
+  const lastFetchRestaurantRef = useRef<string | null | undefined>(undefined);
 
   const getAuthToken = useCallback(async (): Promise<string | null> => {
     if (!authUser) {
@@ -54,14 +54,12 @@ export const MenuItemListContainer: React.FC = () => {
       const token = await authUser.getIdToken();
       if (!token) {
         setLoading(false);
-        setLoadingMore(false);
         return null;
       }
 
       return token;
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unable to resolve authentication token";
+      const errorMessage = resolveError({ error });
       message.error(errorMessage);
       return null;
     }
@@ -69,27 +67,17 @@ export const MenuItemListContainer: React.FC = () => {
 
   const fetchMenuItems = useCallback(
     async (append: boolean, cursorId: string | null) => {
-      if (append) {
-        setLoadingMore(true);
-      } else {
-        setLoading(true);
-      }
-
+      setLoading(true);
       const token = await getAuthToken();
-      if (!restaurantId) {
-        setLoading(false);
-        setLoadingMore(false);
-        return;
-      }
 
       try {
         const response = isOwner
-          ? await listMenuItems(token, restaurantId, {
-              perPage: PAGE_SIZE,
+          ? await listMenuItems(token, restaurantId!, {
+              perPage: MENU_ITEM_PAGE_SIZE,
               nextPageToken: cursorId ?? undefined,
             })
-          : await listPublicMenuItems(restaurantId, {
-              perPage: PAGE_SIZE,
+          : await listPublicMenuItems(restaurantId!, {
+              perPage: MENU_ITEM_PAGE_SIZE,
               nextPageToken: cursorId ?? undefined,
             });
 
@@ -99,26 +87,30 @@ export const MenuItemListContainer: React.FC = () => {
 
         const nextToken = response.data?.nextPageToken ?? null;
         dispatch(setMenuItemNextToken(nextToken));
-        setHasMore(Boolean(nextToken));
+        setHasMore(!!nextToken && fetchedItems.length == MENU_ITEM_PAGE_SIZE);
       } catch (error) {
-        const errorMessage = resolveAxiosErrorMessage(error, "Failed to load menu items");
+        const errorMessage = resolveError({
+          error,
+          defaultAxiosError: "Failed to load menu items",
+        });
         message.error(errorMessage);
         dispatch(setMenuItemNextToken(null));
       } finally {
         setLoading(false);
-        setLoadingMore(false);
       }
     },
-    [dispatch, getAuthToken, restaurantId],
+    [dispatch, getAuthToken],
   );
 
   useEffect(() => {
-    if (!restaurantId) {
+    const restaurant = restaurantId;
+    if (lastFetchRestaurantRef.current === restaurant) {
       return;
     }
+    lastFetchRestaurantRef.current = restaurant;
 
     setItems([]);
-    setHasMore(true);
+    setHasMore(false);
     dispatch(clearMenuItemPagination());
     fetchMenuItems(false, null);
 
@@ -126,30 +118,30 @@ export const MenuItemListContainer: React.FC = () => {
       dispatch(closeMenuItemFormModal());
       dispatch(clearMenuItemPagination());
     };
-  }, [dispatch, fetchMenuItems, restaurantId]);
+  }, [dispatch, fetchMenuItems]);
 
   const loadMore = useCallback(() => {
-    if (!hasMore || loadingMore || loading) {
+    if (!hasMore || loading) {
       return;
     }
-
     fetchMenuItems(true, nextPageToken);
-  }, [fetchMenuItems, hasMore, loading, loadingMore, nextPageToken]);
+  }, [fetchMenuItems, hasMore, loading, nextPageToken]);
 
-  const handleCreate = async (values: MenuItemFormValues, file?: File) => {
+  const handleCreate = async (
+    values: MenuItemFormValues,
+    helpers: FormikHelpers<MenuItemFormValues>,
+    file?: File,
+  ) => {
     const token = await getAuthToken();
     if (!token) {
+      helpers.setSubmitting(false);
       return;
     }
 
     const ownerId = authUser?.uid;
     if (!ownerId) {
-      message.error("Missing owner id");
-      return;
-    }
-
-    if (!restaurantId) {
-      message.error("Restaurant context missing");
+      message.error("Unable to resolve owner details. Please sign in again.");
+      helpers.setSubmitting(false);
       return;
     }
 
@@ -158,10 +150,10 @@ export const MenuItemListContainer: React.FC = () => {
       return;
     }
 
-    const contentType = file.type || "application/octet-stream";
+    const contentType = file.type;
+    let uploadedImageName = file.name;
 
-    let uploadedImageName: string | null = null;
-
+    //image upload
     try {
       const signedUrlResponse = await getSignedUrl(token, file.name, contentType);
       const { uploadUrl, imageName } = signedUrlResponse?.data ?? signedUrlResponse ?? {};
@@ -179,16 +171,12 @@ export const MenuItemListContainer: React.FC = () => {
 
       uploadedImageName = imageName;
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(
+      const errorMessage = resolveError({
         error,
-        "Image upload failed. Please try again.",
-      );
+        defaultAxiosError: "Image upload failed. Please try again.",
+      });
       message.error(errorMessage);
-      return;
-    }
-
-    if (!uploadedImageName) {
-      message.error("Image upload failed. Please try again.");
+      helpers.setSubmitting(false);
       return;
     }
 
@@ -207,24 +195,25 @@ export const MenuItemListContainer: React.FC = () => {
       restaurantId,
     };
 
+    //create menu-item
     try {
-      await createMenuItem(token, restaurantId, payload);
+      await createMenuItem(token, restaurantId!, payload);
       message.success("Menu item created");
-      dispatch(clearMenuItemPagination());
-      await fetchMenuItems(false, null);
       dispatch(closeMenuItemFormModal());
+      helpers.resetForm();
     } catch (error) {
-      const errorMessage = resolveAxiosErrorMessage(
+      const errorMessage = resolveError({
         error,
-        "Failed to create menu item. Please try again.",
-      );
+        defaultAxiosError: "Failed to create menu item. Please try again.",
+      });
       message.error(errorMessage);
+    } finally {
+      helpers.setSubmitting(false);
     }
   };
 
   const handleMenuItemView = useCallback(
     (id: string) => {
-      console.log("called with", id)
       navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`);
     },
     [navigate],
@@ -239,10 +228,15 @@ export const MenuItemListContainer: React.FC = () => {
 
   return (
     <section className="menu-container">
+      <header className="menu-container__heading">
+        <Title level={2} className="menu-container__section-title">
+          Your Menu Items
+        </Title>
+        <BackToButtonComponent label="Back To Restaurant" />
+      </header>
       <MenuItemListComponent
         items={items}
         loading={loading}
-        loadingMore={loadingMore}
         hasMore={hasMore}
         loadMore={loadMore}
         restaurantId={restaurantId}

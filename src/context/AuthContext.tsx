@@ -7,12 +7,15 @@ import React, {
   useState,
 } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { message } from "antd";
 
 import { app } from "@/firebase/firebase";
 import { getUserDetails } from "@/services";
 import { normalizeRole } from "@/utils/helper";
+import { resolveError } from "@/utils/errorHandlers";
+
 import type { Role } from "@services/service.type";
-import type { AuthContextType } from "./context.type";
+import type { AuthContextType } from "./authContext.type";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -42,24 +45,20 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
         return;
       }
       // if present --
-      try {
-        await firebaseUser.reload();
-      } catch {
-        clearUserData();
-        return;
-      }
-      // set user
-      setAuthUser(firebaseUser);
       let currentRole: Role | null = null;
 
-      // set role
       try {
+        await firebaseUser.reload();
+        setAuthUser(firebaseUser);
         const tokenResult = await firebaseUser.getIdTokenResult();
         const claimRole = normalizeRole(tokenResult?.claims?.role);
         if (claimRole) {
           currentRole = claimRole;
         }
-      } catch {
+      } catch (error: unknown) {
+        const errorMessage = resolveError({ error });
+        message.error(errorMessage);
+        clearUserData();
         currentRole = null;
       }
 
@@ -82,7 +81,9 @@ export const AuthProvider: React.FC<{ children?: ReactNode }> = ({ children }) =
             setUserName(null);
           }
         }
-      } catch {
+      } catch (error: unknown) {
+        const errorMessage = resolveError({ error });
+        message.error(errorMessage);
         setUserName(null);
       }
 

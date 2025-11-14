@@ -21,7 +21,7 @@ export interface SignupPayload {
 export interface BackendResponse<T = unknown> {
   data?: T;
   message: string;
-  errors?: Record<string, string[]> | string;
+  errors?: Record<string, unknown> | string;
   status_code: number;
 }
 

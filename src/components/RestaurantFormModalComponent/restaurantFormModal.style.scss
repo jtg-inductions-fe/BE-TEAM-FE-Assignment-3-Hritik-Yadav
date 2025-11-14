@@ -1,0 +1,15 @@
+@use "@styles/variables/colors" as *;
+
+.restaurant-modal {
+  &__title.ant-typography {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0;
+  }
+
+  &__ok-button {
+    &:focus-visible {
+      box-shadow: 0 0 0 0.2rem rgba($color-link, 0.45);
+    }
+  }
+}

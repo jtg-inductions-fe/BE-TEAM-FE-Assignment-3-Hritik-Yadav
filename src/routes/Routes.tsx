@@ -21,6 +21,7 @@ export const AppRoutes: React.FC = () => {
           <Route index element={<RestaurantPage />} />
           <Route path={ROUTES_URL.SIGNUP} element={<SignupPage />} />
           <Route path={ROUTES_URL.LOGIN} element={<LoginPage />} />
+          <Route path={ROUTES_URL.VERIFICATION} element={<VerificationPage />} />
           <Route
             path={`${ROUTES_URL.RESTAURANT}/:restaurantId/${ROUTES_URL.MENU}`}
             element={<RestaurantItemsPage />}
@@ -31,7 +32,7 @@ export const AppRoutes: React.FC = () => {
           />
         </Route>
         <Route element={<ProtectedRouteComponent />}>
-          <Route path={ROUTES_URL.CONFIRMATION} element={<VerificationPage />} />
+          <Route path={ROUTES_URL.VERIFICATION} element={<VerificationPage />} />
         </Route>
       </Route>
       <Route path={ROUTES_URL.ROUTE_NOT_FOUND} element={<NotFoundPage />} />
