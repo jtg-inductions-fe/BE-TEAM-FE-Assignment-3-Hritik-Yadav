@@ -39,7 +39,7 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
         <div className="menu-item-list__grid">
           {items.map((menuItem) => (
             <div key={menuItem.id} className="menu-item-list__item">
-              <MenuItemCardComponent item={menuItem} restaurantId={restaurantId} />
+              <MenuItemCardComponent item={menuItem} restaurantId={restaurantId!} />
             </div>
           ))}
         </div>

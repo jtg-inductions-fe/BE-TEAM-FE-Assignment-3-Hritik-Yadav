@@ -37,7 +37,6 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
   showUpload = true,
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-
   const initialValues: MenuItemFormValues = getMenuItemFormInitialValues(initial);
 
   const handleCancel = () => {
@@ -50,20 +49,13 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
       initialValues={initialValues}
       validationSchema={menuItemFormValidationSchema}
       onSubmit={async (values, helpers) => {
-        const file = showUpload
-          ? (fileList[0]?.originFileObj as File | undefined)
-          : undefined;
-
+        const file = showUpload ? (fileList[0]?.originFileObj as File | undefined) : undefined;
         if (showUpload && !file) {
           helpers.setSubmitting(false);
           return;
         }
 
-        await onSubmit(
-          values,
-          helpers,
-          file,
-        );
+        await onSubmit(values, helpers, file);
         if (mode === "create") {
           setFileList([]);
         }
@@ -75,129 +67,129 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
 
         return (
           <Modal
-          open={open}
-          title={
-            <Title className="menu-item-modal__title" level={4}>
-              {mode === "create" ? "Add Menu Item" : "Update Menu Item"}
-            </Title>
-          }
-          onCancel={handleCancel}
-          onOk={submitForm}
-          okButtonProps={{
-            loading: isSubmitting,
-            className: "menu-item-modal__ok-button",
-          }}
-          className="menu-item-modal"
-          closeIcon={<CloseCircleFilled />}
-          destroyOnClose
-        >
-          <Form layout="vertical">
-            <Field name="name">
-              {({ field, meta }: FieldProps<string>) => (
-                <Form.Item
-                  label="Item Name"
-                  validateStatus={meta.touched && meta.error ? "error" : ""}
-                  help={meta.touched && meta.error ? meta.error : ""}
-                >
-                  <Input {...field} placeholder="e.g., Margherita Pizza" />
-                </Form.Item>
-              )}
-            </Field>
+            open={open}
+            title={
+              <Title className="menu-item-modal__title" level={4}>
+                {mode === "create" ? "Add Menu Item" : "Update Menu Item"}
+              </Title>
+            }
+            onCancel={handleCancel}
+            onOk={submitForm}
+            okButtonProps={{
+              loading: isSubmitting,
+              className: "menu-item-modal__ok-button",
+            }}
+            className="menu-item-modal"
+            closeIcon={<CloseCircleFilled />}
+            destroyOnClose
+          >
+            <Form layout="vertical">
+              <Field name="name">
+                {({ field, meta }: FieldProps<string>) => (
+                  <Form.Item
+                    label="Item Name"
+                    validateStatus={meta.touched && meta.error ? "error" : ""}
+                    help={meta.touched && meta.error ? meta.error : ""}
+                  >
+                    <Input {...field} placeholder="e.g., Margherita Pizza" />
+                  </Form.Item>
+                )}
+              </Field>
 
-            <Field name="description">
-              {({ field, meta }: FieldProps<string>) => (
-                <Form.Item
-                  label="Description"
-                  validateStatus={meta.touched && meta.error ? "error" : ""}
-                  help={meta.touched && meta.error ? String(meta.error) : ""}
-                >
-                  <TextArea {...field} placeholder="Describe the item" rows={3} />
-                </Form.Item>
-              )}
-            </Field>
+              <Field name="description">
+                {({ field, meta }: FieldProps<string>) => (
+                  <Form.Item
+                    label="Description"
+                    validateStatus={meta.touched && meta.error ? "error" : ""}
+                    help={meta.touched && meta.error ? String(meta.error) : ""}
+                  >
+                    <TextArea {...field} placeholder="Describe the item" rows={3} />
+                  </Form.Item>
+                )}
+              </Field>
 
-            <Space align="start">
-              <Field name="amount.price">
+              <Space align="start">
+                <Field name="amount.price">
+                  {({ field, meta, form }: FieldProps<number>) => (
+                    <Form.Item
+                      label="Price"
+                      validateStatus={meta.touched && meta.error ? "error" : ""}
+                      help={meta.touched && meta.error ? String(meta.error) : ""}
+                    >
+                      <InputNumber
+                        {...field}
+                        min={0}
+                        onChange={(value) => {
+                          form.setFieldValue(field.name, value);
+                        }}
+                        placeholder="Enter price"
+                      />
+                    </Form.Item>
+                  )}
+                </Field>
+
+                <Field name="amount.currency">
+                  {({ field, form }: FieldProps<Currency>) => (
+                    <Form.Item label="Currency">
+                      <Select
+                        value={field.value}
+                        onChange={(value) => {
+                          form.setFieldValue(field.name, value);
+                        }}
+                        options={MENU_ITEM_CURRENCY_OPTIONS.map((currency) => ({
+                          label: currency,
+                          value: currency,
+                        }))}
+                      />
+                    </Form.Item>
+                  )}
+                </Field>
+              </Space>
+
+              <Field name="category">
+                {({ field, form }: FieldProps<ItemCategory>) => (
+                  <Form.Item label="Category">
+                    <Radio.Group
+                      value={field.value}
+                      onChange={(e) => form.setFieldValue(field.name, e.target.value)}
+                    >
+                      <Radio value="VEG">Veg</Radio>
+                      <Radio value="NONVEG">Non-Veg</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                )}
+              </Field>
+
+              <Field name="quantity">
                 {({ field, meta, form }: FieldProps<number>) => (
                   <Form.Item
-                    label="Price"
+                    label="Available Quantity"
                     validateStatus={meta.touched && meta.error ? "error" : ""}
                     help={meta.touched && meta.error ? String(meta.error) : ""}
                   >
                     <InputNumber
-                      {...field}
-                      min={0}
-                      onChange={(value) => {
-                        form.setFieldValue(field.name, value);
-                      }}
-                      placeholder="Enter price"
-                    />
-                  </Form.Item>
-                )}
-              </Field>
-
-              <Field name="amount.currency">
-                {({ field, form }: FieldProps<Currency>) => (
-                  <Form.Item label="Currency">
-                    <Select
                       value={field.value}
+                      min={0}
+                      placeholder="Enter stock quantity"
                       onChange={(value) => {
-                        form.setFieldValue(field.name, value);
+                        form.setFieldValue(field.name, value ?? 0);
                       }}
-                      options={MENU_ITEM_CURRENCY_OPTIONS.map((currency) => ({
-                        label: currency,
-                        value: currency,
-                      }))}
                     />
                   </Form.Item>
                 )}
               </Field>
-            </Space>
-
-            <Field name="category">
-              {({ field, form }: FieldProps<ItemCategory>) => (
-                <Form.Item label="Category">
-                  <Radio.Group
-                    value={field.value}
-                    onChange={(e) => form.setFieldValue(field.name, e.target.value)}
-                  >
-                    <Radio value="VEG">Veg</Radio>
-                    <Radio value="NONVEG">Non-Veg</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              )}
-            </Field>
-
-            <Field name="quantity">
-              {({ field, meta, form }: FieldProps<number>) => (
+              {showUpload ? (
                 <Form.Item
-                  label="Available Quantity"
-                  validateStatus={meta.touched && meta.error ? "error" : ""}
-                  help={meta.touched && meta.error ? String(meta.error) : ""}
+                  label="Item Image"
+                  validateStatus={showImageError ? "error" : ""}
+                  help={showImageError ? "Please select an image before submitting." : undefined}
                 >
-                  <InputNumber
-                    value={field.value}
-                    min={0}
-                    placeholder="Enter stock quantity"
-                    onChange={(value) => {
-                      form.setFieldValue(field.name, value ?? 0);
-                    }}
-                  />
+                  <Upload {...getUploadProps(fileList, setFileList)}>
+                    <Button icon={<UploadOutlined />}>Select Image</Button>
+                  </Upload>
                 </Form.Item>
-              )}
-            </Field>
-            {showUpload ? (
-              <Form.Item
-                label="Item Image"
-                validateStatus={showImageError ? "error" : ""}
-                help={showImageError ? "Please select an image before submitting." : undefined}
-              >
-                <Upload {...getUploadProps(fileList, setFileList)}>
-                  <Button icon={<UploadOutlined />}>Select Image</Button>
-                </Upload>
-              </Form.Item>
-            ) : null}
-          </Form>
+              ) : null}
+            </Form>
           </Modal>
         );
       }}

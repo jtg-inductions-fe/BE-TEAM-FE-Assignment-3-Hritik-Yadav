@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Tag, Button, Typography } from "antd";
+import { Card, Tag, Button, Typography, Image } from "antd";
 import { StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -37,11 +37,10 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, resta
           </Tag>
         </div>
         <div className="menu-item-card__meta">
-          <img
+          <Image
             src={imageUrl}
             alt={`image of ${name}`}
-            height={100}
-            width={100}
+            preview
             loading="lazy"
             className="menu-item-card__thumbnail"
           />

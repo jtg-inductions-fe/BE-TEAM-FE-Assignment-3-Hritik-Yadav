@@ -1,5 +1,5 @@
 import type { FormikHelpers } from "formik";
-import type{ MenuItem, MenuItemFormValues } from "@/services/menu.type";
+import type { MenuItem, MenuItemFormValues } from "@/services/menu.type";
 
 export interface MenuItemFormModalProps {
   open: boolean;
