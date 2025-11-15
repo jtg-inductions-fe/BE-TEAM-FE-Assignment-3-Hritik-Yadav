@@ -1,0 +1,9 @@
+@use "@styles/variables/colors" as *;
+
+.add-to-cart {
+  button {
+    &:focus-visible {
+      box-shadow: 0 0 0 0.2rem $color-link;
+    }
+  }
+}

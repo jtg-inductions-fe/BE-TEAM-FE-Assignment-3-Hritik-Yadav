@@ -13,7 +13,7 @@ export const DeleteConfirmModalComponent: React.FC<DeleteConfirmModalProps> = ({
   restaurant,
   menuItem,
   onCancel,
-  onConfirm,
+  onDelete,
   loading,
 }) => {
   return (
@@ -25,7 +25,7 @@ export const DeleteConfirmModalComponent: React.FC<DeleteConfirmModalProps> = ({
         </Title>
       }
       onCancel={onCancel}
-      onOk={onConfirm}
+      onOk={onDelete}
       okText="Delete"
       okButtonProps={{ danger: true, loading, className: "delete-confirm-modal__delete-button" }}
       className="delete-confirm-modal"

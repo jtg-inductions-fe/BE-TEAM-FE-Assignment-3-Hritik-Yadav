@@ -1,8 +1,8 @@
 import React from "react";
 import { Card, Tag, Button, Typography } from "antd";
-import { useNavigate } from "react-router-dom";
 
-import { ROUTES_URL } from "@/routes/routes.const";
+import { useAuthContext } from "@/context/AuthContext";
+import { USER_ROLE } from "@services/service.const";
 import { STATUS_TAG_COLOR } from "./RestaurantCard.const";
 
 import type { RestaurantCardProps } from "./RestaurantCard.type";
@@ -13,13 +13,15 @@ const { Text, Title } = Typography;
 
 export const RestaurantCardComponent: React.FC<RestaurantCardProps> = ({
   restaurant,
+  onView,
   onUpdate,
   onDelete,
 }) => {
-  const navigate = useNavigate();
   const { id, name, openingTime, closingTime, status } = restaurant;
 
   const statusColor = STATUS_TAG_COLOR[status] || "default";
+  const { role } = useAuthContext();
+  const isOwner = role === USER_ROLE.OWNER;
 
   return (
     <Card className="restaurant-card">
@@ -41,26 +43,27 @@ export const RestaurantCardComponent: React.FC<RestaurantCardProps> = ({
           </Text>
         </div>
         <div className="restaurant-card__actions">
-          <Button
-            className="restaurant-card__button"
-            onClick={() => navigate(`${ROUTES_URL.RESTAURANT}/${id}/${ROUTES_URL.MENU}`)}
-          >
+          <Button className="restaurant-card__button" onClick={() => onView(id)} type="primary">
             View Items
           </Button>
-          <Button
-            className="restaurant-card__button"
-            type="default"
-            onClick={() => onUpdate(restaurant)}
-          >
-            Update
-          </Button>
-          <Button
-            danger
-            onClick={() => onDelete(restaurant)}
-            className="restaurant-card__delete-button"
-          >
-            Delete
-          </Button>
+          {isOwner && (
+            <>
+              <Button
+                className="restaurant-card__button"
+                type="default"
+                onClick={() => onUpdate(restaurant)}
+              >
+                Update
+              </Button>
+              <Button
+                danger
+                onClick={() => onDelete(restaurant)}
+                className="restaurant-card__delete-button"
+              >
+                Delete
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </Card>

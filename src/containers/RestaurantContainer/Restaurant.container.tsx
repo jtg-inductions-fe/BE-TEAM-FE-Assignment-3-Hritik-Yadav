@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Typography, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import type { FormikHelpers } from "formik";
 
@@ -8,6 +9,7 @@ import { useAuthContext } from "@/context/AuthContext";
 import {
   createRestaurant,
   deleteRestaurant,
+  listPublicRestaurants,
   listRestaurants,
   updateRestaurant,
 } from "@services/restaurant.service";
@@ -37,6 +39,8 @@ import type {
 } from "@services/restaurant.type";
 
 import "./restaurantContainer.style.scss";
+import { USER_ROLE } from "@/services/service.const";
+import { ROUTES_URL } from "@/routes/routes.const";
 
 const { Title } = Typography;
 
@@ -49,8 +53,10 @@ const mapFormValuesToPayload = (values: RestaurantFormValues): RestaurantPayload
 
 export const RestaurantContainer: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const nextPageToken = useSelector(selectRestaurantNextPageToken);
-  const { authUser, isAuthLoading } = useAuthContext();
+  const { authUser, isAuthLoading, role } = useAuthContext();
 
   const [items, setItems] = useState<Restaurant[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -69,35 +75,43 @@ export const RestaurantContainer: React.FC = () => {
   // to provide consistent token to all functions
   const getAuthToken = useCallback(async (): Promise<string | null> => {
     if (!authUser) {
-      message.error("Authentication required");
+      if (role === USER_ROLE.OWNER) message.error("Authentication required");
       return null;
     }
 
     try {
-      return await authUser.getIdToken();
+      const token = await authUser.getIdToken();
+      if (!token) {
+        setLoading(false);
+        return null;
+      }
+
+      return token;
     } catch (error) {
       const errorMessage = resolveError({ error });
       message.error(errorMessage);
       return null;
     }
-  }, [authUser]);
+  }, [authUser, role]);
 
   // restaurant list function to fetch list
-  const fetchPage = useCallback(
+  const fetchRestaurants = useCallback(
     async (append: boolean, cursorId?: string | null) => {
       setLoading(true);
 
       const token = await getAuthToken();
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
       try {
-        const response = await listRestaurants(token, {
-          perPage: PAGE_SIZE,
-          nextPageToken: cursorId ?? null,
-        });
+        const response =
+          role == USER_ROLE.OWNER
+            ? await listRestaurants(token, {
+                perPage: PAGE_SIZE,
+                nextPageToken: cursorId ?? null,
+              })
+            : await listPublicRestaurants({
+                perPage: PAGE_SIZE,
+                nextPageToken: cursorId ?? null,
+              });
+
         const fetchedItems = response.data?.items ?? [];
         setItems((previousItems) => (append ? [...previousItems, ...fetchedItems] : fetchedItems));
 
@@ -114,7 +128,7 @@ export const RestaurantContainer: React.FC = () => {
         setLoading(false);
       }
     },
-    [dispatch, getAuthToken],
+    [dispatch, getAuthToken, role],
   );
 
   const resetRestaurants = useCallback(() => {
@@ -129,22 +143,16 @@ export const RestaurantContainer: React.FC = () => {
       return;
     }
     lastFetchAuthKeyRef.current = authKey;
-
-    if (!authUser) {
-      resetRestaurants();
-      return;
-    }
     resetRestaurants();
-
-    fetchPage(false, null);
-  }, [authUser, dispatch, fetchPage, resetRestaurants]);
+    fetchRestaurants(false, null);
+  }, [authUser, dispatch, fetchRestaurants, resetRestaurants]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loading) {
       return;
     }
-    fetchPage(true, nextPageToken);
-  }, [fetchPage, hasMore, loading, nextPageToken]);
+    fetchRestaurants(true, nextPageToken);
+  }, [fetchRestaurants, hasMore, loading, nextPageToken]);
 
   const handleFormModalCancel = useCallback(() => {
     if (editOpen) {
@@ -178,13 +186,9 @@ export const RestaurantContainer: React.FC = () => {
         ...mapFormValuesToPayload(values),
         ownerId,
       };
-      const response = await createRestaurant(token, {
+      await createRestaurant(token, {
         ...payload,
       });
-      const createdRestaurant = response.data;
-      if (createdRestaurant) {
-        setItems((previousItems) => [createdRestaurant, ...previousItems]);
-      }
       message.success("Restaurant created");
       dispatch(closeRestaurantFormModal());
       helpers.resetForm();
@@ -262,6 +266,13 @@ export const RestaurantContainer: React.FC = () => {
     }
   };
 
+  const handleRestaurantView = useCallback(
+    (id: string) => {
+      navigate(`${ROUTES_URL.RESTAURANT}/${id}/${ROUTES_URL.MENU}`);
+    },
+    [navigate],
+  );
+
   if (isAuthLoading) {
     return <AppLoaderComponent />;
   }
@@ -270,7 +281,7 @@ export const RestaurantContainer: React.FC = () => {
     <section className="restaurant-container">
       <header className="restaurant-container__heading">
         <Title level={2} className="restaurant-container__heading-title">
-          Your Restaurants
+          Restaurants
         </Title>
       </header>
       <RestaurantListComponent
@@ -286,6 +297,7 @@ export const RestaurantContainer: React.FC = () => {
           setDeleteTarget(restaurantItem);
           setDeleteOpen(true);
         }}
+        onView={handleRestaurantView}
       />
 
       <RestaurantFormModalComponent
@@ -300,7 +312,7 @@ export const RestaurantContainer: React.FC = () => {
         open={deleteOpen}
         restaurant={deleteTarget ?? undefined}
         onCancel={() => setDeleteOpen(false)}
-        onConfirm={handleDelete}
+        onDelete={handleDelete}
         loading={deleteLoading}
       />
     </section>

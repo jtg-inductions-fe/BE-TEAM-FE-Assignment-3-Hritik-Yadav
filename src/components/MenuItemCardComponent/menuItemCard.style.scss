@@ -35,9 +35,11 @@
 
   &__thumbnail {
     border-radius: 0.5rem;
-    height: 4.5rem;
-    object-fit: cover;
-    width: 4.5rem;
+    &.ant-image-img {
+      width: 4.5rem;
+      object-fit: cover;
+      height: 4.5rem;
+    }
   }
 
   &__meta-info {
@@ -68,10 +70,12 @@
 
   &__actions {
     display: flex;
+    gap: 0.5rem;
     margin-top: auto;
   }
 
   &__button {
+    flex: 1;
     &:focus-visible {
       box-shadow: 0 0 0 0.2rem rgba($color-link, 0.45);
     }

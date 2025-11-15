@@ -6,4 +6,6 @@ export interface MenuItemListProps {
   hasMore: boolean;
   loadMore: () => void;
   restaurantId?: string;
+  onView: (id: string) => void;
+  onAddToCart?: (menuItem: MenuItem) => void;
 }

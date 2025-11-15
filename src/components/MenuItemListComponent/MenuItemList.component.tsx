@@ -16,6 +16,8 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
   hasMore,
   loadMore,
   restaurantId,
+  onView,
+  onAddToCart,
 }) => {
   return (
     <div className="menu-item-list">
@@ -39,7 +41,12 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
         <div className="menu-item-list__grid">
           {items.map((menuItem) => (
             <div key={menuItem.id} className="menu-item-list__item">
-              <MenuItemCardComponent item={menuItem} restaurantId={restaurantId!} />
+              <MenuItemCardComponent
+                item={menuItem}
+                onView={onView}
+                restaurantId={restaurantId!}
+                onAddToCart={onAddToCart}
+              />
             </div>
           ))}
         </div>
