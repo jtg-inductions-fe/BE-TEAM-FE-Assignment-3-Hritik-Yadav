@@ -35,9 +35,11 @@
 
   &__thumbnail {
     border-radius: 0.5rem;
-    height: 4.5rem;
-    object-fit: cover;
-    width: 4.5rem;
+    &.ant-image-img {
+      width: 4.5rem;
+      object-fit: cover;
+      height: 4.5rem;
+    }
   }
 
   &__meta-info {

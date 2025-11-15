@@ -36,15 +36,15 @@ export const CartComponent: React.FC<CartComponentProps> = ({
             renderItem={(item) => (
               <Card className="cart__item-card" key={item.itemId}>
                 <Space size={"middle"}>
-                <Button
-                  danger
-                  type="text"
-                  icon={<DeleteOutlined />}
-                  onClick={() => onRemoveItem(item.itemId)}
-                  className="item-card__remove-button"
-                >
-                  Remove
-                </Button>
+                  <Button
+                    danger
+                    type="text"
+                    icon={<DeleteOutlined />}
+                    onClick={() => onRemoveItem(item.itemId)}
+                    className="item-card__remove-button"
+                  >
+                    Remove
+                  </Button>
                   <Text strong className="item-card__item-name">
                     {item.name}
                   </Text>
