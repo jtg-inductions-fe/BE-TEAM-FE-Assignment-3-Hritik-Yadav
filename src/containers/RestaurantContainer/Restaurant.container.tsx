@@ -92,7 +92,7 @@ export const RestaurantContainer: React.FC = () => {
       message.error(errorMessage);
       return null;
     }
-  }, [authUser]);
+  }, [authUser, role]);
 
   // restaurant list function to fetch list
   const fetchRestaurants = useCallback(
@@ -128,14 +128,14 @@ export const RestaurantContainer: React.FC = () => {
         setLoading(false);
       }
     },
-    [dispatch, getAuthToken],
+    [dispatch, getAuthToken, role],
   );
 
-  const resetRestaurants = () => {
+  const resetRestaurants = useCallback(() => {
     setItems([]);
     dispatch(clearRestaurantPagination());
     setHasMore(false);
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     const authKey = authUser?.uid ?? null;
@@ -145,7 +145,7 @@ export const RestaurantContainer: React.FC = () => {
     lastFetchAuthKeyRef.current = authKey;
     resetRestaurants();
     fetchRestaurants(false, null);
-  }, [authUser, dispatch, fetchRestaurants]);
+  }, [authUser, dispatch, fetchRestaurants, resetRestaurants]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loading) {
@@ -316,7 +316,7 @@ export const RestaurantContainer: React.FC = () => {
         open={deleteOpen}
         restaurant={deleteTarget ?? undefined}
         onCancel={() => setDeleteOpen(false)}
-        onConfirm={handleDelete}
+        onDelete={handleDelete}
         loading={deleteLoading}
       />
     </section>

@@ -5,14 +5,13 @@ import { message } from "antd";
 
 import { VerificationComponent } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { USER_ROLE } from "@services/service.const";
 import { useAuthContext } from "@/context/AuthContext";
 
 export const VerificationContainer: React.FC = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>("Checking verification status...");
   const [subtitle, setSubtitle] = useState<string>("");
-  const { authUser, role } = useAuthContext();
+  const { authUser } = useAuthContext();
 
   const checkVerified = useCallback(async () => {
     if (!authUser) {
@@ -25,7 +24,7 @@ export const VerificationContainer: React.FC = () => {
     }
     setTitle("Email not verified yet");
     setSubtitle("Click resend to send the verification email again.");
-  }, [authUser, navigate, role]);
+  }, [authUser, navigate]);
 
   useEffect(() => {
     (async () => {

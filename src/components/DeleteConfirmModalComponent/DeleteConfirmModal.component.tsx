@@ -32,7 +32,8 @@ export const DeleteConfirmModalComponent: React.FC<DeleteConfirmModalProps> = ({
       closeIcon={<CloseCircleFilled />}
       destroyOnClose
     >
-      Are you sure you want to delete {restaurant?.name ?? menuItem?.name} This action cannot be undone.
+      Are you sure you want to delete {restaurant?.name ?? menuItem?.name} This action cannot be
+      undone.
     </Modal>
   );
 };

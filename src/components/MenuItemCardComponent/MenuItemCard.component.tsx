@@ -1,9 +1,7 @@
 import React from "react";
-import { Card, Tag, Button, Typography } from "antd";
+import { Card, Tag, Button, Typography, Image } from "antd";
 import { StarFilled } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
-import { ROUTES_URL } from "@/routes/routes.const";
 import { CATEGORY_COLOR } from "./menuItemCard.const";
 import { getPriceLabel } from "@/utils/helper";
 import { AddToCartButton } from "@components/AddToCartButton";
@@ -36,11 +34,10 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({
           </Tag>
         </div>
         <div className="menu-item-card__meta">
-          <img
+          <Image
             src={imageUrl}
             alt={`image of ${name}`}
-            height={100}
-            width={100}
+            preview
             loading="lazy"
             className="menu-item-card__thumbnail"
           />
@@ -56,18 +53,11 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({
           </div>
         </div>
         <div className="menu-item-card__actions">
-          <Button
-            type="primary"
-            onClick={()=>onView(id)}
-            className="menu-item-card__button"
-          >
+          <Button type="primary" onClick={() => onView(id)} className="menu-item-card__button">
             View Item
           </Button>
           {onAddToCart && (
-            <AddToCartButton
-              disabled={quantity <= 0}
-              onClick={() => onAddToCart(item)}
-            />
+            <AddToCartButton disabled={quantity <= 0} onClick={() => onAddToCart(item)} />
           )}
         </div>
       </div>

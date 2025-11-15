@@ -31,9 +31,11 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
           </div>
         }
         endMessage={
-          <Text className="menu-item-list__end">
-            {!loading && items.length === 0 ? "No Menu Item found" : "No more results to show"}
-          </Text>
+          !loading ? (
+            <Text className="menu-item-list__end">
+              {items.length === 0 ? "No Menu Item found" : "No more results to show"}
+            </Text>
+          ) : undefined
         }
       >
         <div className="menu-item-list__grid">
@@ -42,7 +44,7 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
               <MenuItemCardComponent
                 item={menuItem}
                 onView={onView}
-                restaurantId={restaurantId}
+                restaurantId={restaurantId!}
                 onAddToCart={onAddToCart}
               />
             </div>

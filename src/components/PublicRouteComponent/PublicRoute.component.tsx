@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
 
 import { AppLoaderComponent } from "@/components";
@@ -13,4 +13,3 @@ export const PublicRouteComponent: React.FC = () => {
 
   return <Outlet />;
 };
-//recheck - dont remove - for the creator

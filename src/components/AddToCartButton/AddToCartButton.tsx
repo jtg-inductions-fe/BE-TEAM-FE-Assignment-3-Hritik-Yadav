@@ -5,18 +5,9 @@ import type { AddToCartButtonProps } from "./addToCartButton.type";
 
 import "./addToCartButton.style.scss";
 
-export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
-  disabled = false,
-  onClick,
-}) => {
-
+export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ disabled = false, onClick }) => {
   return (
-    <Button
-      type="default"
-      disabled={disabled}
-      onClick={onClick}
-      className="add-to-cart__button"
-    >
+    <Button type="default" disabled={disabled} onClick={onClick} className="add-to-cart__button">
       {disabled ? "Out of Stock" : "Add to Cart"}
     </Button>
   );

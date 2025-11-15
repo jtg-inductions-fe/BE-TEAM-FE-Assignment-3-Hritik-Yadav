@@ -88,9 +88,10 @@ export const listRestaurants = async (
   return data;
 };
 
-export const listPublicRestaurants = async (
-  { perPage = 10, nextPageToken }: ListRestaurantParams = {},
-): Promise<BackendResponse<ListRestaurantsResponseData>> => {
+export const listPublicRestaurants = async ({
+  perPage = 10,
+  nextPageToken,
+}: ListRestaurantParams = {}): Promise<BackendResponse<ListRestaurantsResponseData>> => {
   const params: Record<string, string | number> = {};
 
   if (perPage) {

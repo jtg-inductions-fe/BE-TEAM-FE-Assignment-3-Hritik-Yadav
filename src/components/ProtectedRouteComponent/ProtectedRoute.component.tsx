@@ -35,7 +35,6 @@ export const ProtectedRouteComponent: React.FC = () => {
       navigate(ROUTES_URL.HOME, { replace: true });
       return;
     }
-
   }, [authUser, isAuthLoading, isVerificationRoute, navigate, pathname, role]);
 
   if (isAuthLoading || !authUser) {

@@ -1,16 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { message, Typography } from "antd";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { FormikHelpers } from "formik";
+import type { FormikHelpers } from "formik";
 
 import {
   MenuItemListComponent,
   MenuItemFormModalComponent,
   BackToButtonComponent,
 } from "@/components";
-import { getSignedUrl } from "@services/upload.service";
+import { uploadImage } from "@services/upload.service";
 import { createMenuItem, listMenuItems, listPublicMenuItems } from "@services/menu.service";
 import {
   selectIsMenuItemFormModalOpen,
@@ -29,6 +28,22 @@ import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/me
 import "./menuItemListContainer.style.scss";
 
 const { Title } = Typography;
+
+const mapFormValuesToPayload = (
+  values: MenuItemFormValues,
+  overrides: Partial<MenuItemPayload> = {},
+): MenuItemPayload => ({
+  name: values.name,
+  description: values.description,
+  amount: {
+    currency: values.amount.currency,
+    price: values.amount.price,
+  },
+  rating: values.rating,
+  category: values.category,
+  quantity: values.quantity,
+  ...overrides,
+});
 
 export const MenuItemListContainer: React.FC = () => {
   const { authUser, role } = useAuthContext();
@@ -63,7 +78,7 @@ export const MenuItemListContainer: React.FC = () => {
       message.error(errorMessage);
       return null;
     }
-  }, [authUser]);
+  }, [authUser, isOwner]);
 
   const fetchMenuItems = useCallback(
     async (append: boolean, cursorId: string | null) => {
@@ -99,15 +114,14 @@ export const MenuItemListContainer: React.FC = () => {
         setLoading(false);
       }
     },
-    [dispatch, getAuthToken],
+    [dispatch, getAuthToken, restaurantId, isOwner],
   );
 
   useEffect(() => {
-    const restaurant = restaurantId;
-    if (lastFetchRestaurantRef.current === restaurant) {
+    if (lastFetchRestaurantRef.current === restaurantId) {
       return;
     }
-    lastFetchRestaurantRef.current = restaurant;
+    lastFetchRestaurantRef.current = restaurantId;
 
     setItems([]);
     setHasMore(false);
@@ -118,7 +132,7 @@ export const MenuItemListContainer: React.FC = () => {
       dispatch(closeMenuItemFormModal());
       dispatch(clearMenuItemPagination());
     };
-  }, [dispatch, fetchMenuItems]);
+  }, [dispatch, fetchMenuItems, restaurantId]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loading) {
@@ -146,30 +160,14 @@ export const MenuItemListContainer: React.FC = () => {
     }
 
     if (!file) {
-      message.error("Image upload failed. Please try again.");
+      helpers.setSubmitting(false);
       return;
     }
 
-    const contentType = file.type;
-    let uploadedImageName = file.name;
+    let uploadedImageName: string;
 
-    //image upload
     try {
-      const signedUrlResponse = await getSignedUrl(token, file.name, contentType);
-      const { uploadUrl, imageName } = signedUrlResponse?.data ?? signedUrlResponse ?? {};
-
-      if (!uploadUrl || !imageName) {
-        message.error("Unable to resolve upload destination.");
-        return;
-      }
-
-      await axios.put(uploadUrl, file, {
-        headers: {
-          "Content-Type": contentType,
-        },
-      });
-
-      uploadedImageName = imageName;
+      uploadedImageName = await uploadImage(token, file);
     } catch (error) {
       const errorMessage = resolveError({
         error,
@@ -180,24 +178,19 @@ export const MenuItemListContainer: React.FC = () => {
       return;
     }
 
-    const payload: MenuItemPayload = {
-      name: values.name,
-      description: values.description,
-      amount: {
-        currency: values.amount.currency,
-        price: values.amount.price,
-      },
+    const payload: MenuItemPayload = mapFormValuesToPayload(values, {
       imageName: uploadedImageName,
-      category: values.category,
-      rating: values.rating,
-      quantity: values.quantity,
       ownerId,
       restaurantId,
-    };
+    });
 
     //create menu-item
     try {
-      await createMenuItem(token, restaurantId!, payload);
+      const response = await createMenuItem(token, restaurantId!, payload);
+      const createdMenuItem = response.data;
+      if (createdMenuItem) {
+        setItems((previousItems) => [createdMenuItem, ...previousItems]);
+      }
       message.success("Menu item created");
       dispatch(closeMenuItemFormModal());
       helpers.resetForm();
@@ -214,9 +207,11 @@ export const MenuItemListContainer: React.FC = () => {
 
   const handleMenuItemView = useCallback(
     (id: string) => {
-      navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`);
+      navigate(
+        `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`,
+      );
     },
-    [navigate],
+    [navigate, restaurantId],
   );
 
   const handleAddToCart = useCallback(
