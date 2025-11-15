@@ -9,3 +9,7 @@ export const selectMenuItemNextPageToken = (state: RootState) =>
   state.menuItemPagination.nextPageToken;
 export const selectIsMenuItemFormModalOpen = (state: RootState) =>
   state.menuItemModal.isMenuItemFormModalOpen;
+
+export const selectCartItems = (state: RootState) => state.cart.items;
+export const selectCartTotalAmount = (state: RootState) => state.cart.totalAmount;
+export const selectCartRestaurantId = (state: RootState) => state.cart.restaurantId;

@@ -14,10 +14,13 @@ import { createMenuItem, listMenuItems, listPublicMenuItems } from "@services/me
 import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
+  selectCartItems,
+  selectCartRestaurantId,
 } from "@store/selectors/selector";
 import { closeMenuItemFormModal } from "@store/actions/modal.actions";
+import { addItemToCart } from "@store/actions/cart.actions";
 import { useAuthContext } from "@/context/AuthContext";
-import { USER_ROLE } from "@/services/service.const";
+import { USER_ROLE } from "@services/service.const";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { clearMenuItemPagination, setMenuItemNextToken } from "@store/actions/menuItems.actions";
 import { resolveError } from "@/utils/errorHandlers";
@@ -50,13 +53,16 @@ export const MenuItemListContainer: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const nextPageToken = useSelector(selectMenuItemNextPageToken);
-  const { restaurantId } = useParams<{ restaurantId: string }>();
+  const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
+  const cartItems = useSelector(selectCartItems);
+  const cartRestaurantId = useSelector(selectCartRestaurantId);
+  const { restaurantId } = useParams<{ restaurantId?: string }>();
 
   const [items, setItems] = useState<MenuItem[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const isOwner = role === USER_ROLE.OWNER;
-  const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
+  const isCustomer = role === USER_ROLE.CUSTOMER;
   const lastFetchRestaurantRef = useRef<string | null | undefined>(undefined);
 
   const getAuthToken = useCallback(async (): Promise<string | null> => {
@@ -216,9 +222,48 @@ export const MenuItemListContainer: React.FC = () => {
 
   const handleAddToCart = useCallback(
     (menuItem: MenuItem) => {
-      console.log("Add: ", menuItem);
+      if (!isCustomer) {
+        navigate(ROUTES_URL.LOGIN);
+      }
+      if (!restaurantId) {
+        return;
+      }
+
+      if (cartRestaurantId && cartRestaurantId !== restaurantId) {
+        message.error("Cannot select items from different restaurants.");
+        return;
+      }
+
+      if (menuItem.quantity <= 0) {
+        message.info("Item currently out of stock");
+        return;
+      }
+
+      const existingCartItem = cartItems.find((item) => item.itemId === menuItem.id);
+      const currentQuantity = existingCartItem?.quantity ?? 0;
+
+      if (currentQuantity >= menuItem.quantity) {
+        message.warning(`Only ${menuItem.quantity} available for ${menuItem.name}`);
+        return;
+      }
+
+      dispatch(
+        addItemToCart({
+          item: {
+            itemId: menuItem.id,
+            name: menuItem.name,
+            price: menuItem.amount.price,
+            quantity: 1,
+            availableQuantity: menuItem.quantity,
+          },
+          currency: menuItem.amount.currency,
+          restaurantId,
+        }),
+      );
+
+      message.success("Item added to cart");
     },
-    [role],
+    [cartItems, cartRestaurantId, dispatch, restaurantId, isCustomer, navigate],
   );
 
   return (

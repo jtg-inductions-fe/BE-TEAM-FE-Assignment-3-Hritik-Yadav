@@ -27,7 +27,12 @@ describe("RestaurantCard", () => {
 
   test("displays restaurant details", () => {
     render(
-      <RestaurantCardComponent restaurant={restaurant} onView={jest.fn()} onUpdate={jest.fn()} onDelete={jest.fn()} />,
+      <RestaurantCardComponent
+        restaurant={restaurant}
+        onView={jest.fn()}
+        onUpdate={jest.fn()}
+        onDelete={jest.fn()}
+      />,
     );
 
     expect(screen.getByText(restaurant.name)).toBeVisible();
@@ -40,7 +45,12 @@ describe("RestaurantCard", () => {
     const user = userEvent.setup();
 
     render(
-      <RestaurantCardComponent restaurant={restaurant} onView={jest.fn()} onUpdate={jest.fn()} onDelete={jest.fn()} />,
+      <RestaurantCardComponent
+        restaurant={restaurant}
+        onView={jest.fn()}
+        onUpdate={jest.fn()}
+        onDelete={jest.fn()}
+      />,
     );
 
     await user.click(screen.getByRole("button", { name: "View Items" }));
@@ -54,7 +64,12 @@ describe("RestaurantCard", () => {
     const onDelete = jest.fn();
 
     render(
-      <RestaurantCardComponent restaurant={restaurant} onUpdate={onUpdate} onView={jest.fn()} onDelete={onDelete} />,
+      <RestaurantCardComponent
+        restaurant={restaurant}
+        onUpdate={onUpdate}
+        onView={jest.fn()}
+        onDelete={onDelete}
+      />,
     );
 
     await user.click(screen.getByRole("button", { name: "Update" }));

@@ -186,13 +186,9 @@ export const RestaurantContainer: React.FC = () => {
         ...mapFormValuesToPayload(values),
         ownerId,
       };
-      const response = await createRestaurant(token, {
+      await createRestaurant(token, {
         ...payload,
       });
-      const createdRestaurant = response.data;
-      if (createdRestaurant) {
-        setItems((previousItems) => [createdRestaurant, ...previousItems]);
-      }
       message.success("Restaurant created");
       dispatch(closeRestaurantFormModal());
       helpers.resetForm();

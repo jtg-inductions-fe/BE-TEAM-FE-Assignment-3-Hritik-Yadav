@@ -10,6 +10,7 @@ import {
   RestaurantPage,
   RestaurantItemsPage,
   MenuItemPage,
+  CartPage,
 } from "@/pages";
 import { ProtectedRouteComponent, PublicRouteComponent, RootLayoutComponent } from "@/components";
 
@@ -33,6 +34,7 @@ export const AppRoutes: React.FC = () => {
         </Route>
         <Route element={<ProtectedRouteComponent />}>
           <Route path={ROUTES_URL.VERIFICATION} element={<VerificationPage />} />
+          <Route path={ROUTES_URL.CART} element={<CartPage />} />
         </Route>
       </Route>
       <Route path={ROUTES_URL.ROUTE_NOT_FOUND} element={<NotFoundPage />} />
