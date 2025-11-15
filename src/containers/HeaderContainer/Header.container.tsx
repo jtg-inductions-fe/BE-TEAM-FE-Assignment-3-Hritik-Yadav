@@ -8,7 +8,7 @@ import { app } from "@/firebase/firebase";
 import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { openRestaurantFormModal } from "@store/actions/modal.actions";
+import { openMenuItemFormModal, openRestaurantFormModal } from "@store/actions/modal.actions";
 import { resolveError } from "@/utils/errorHandlers";
 
 export const HeaderContainer: React.FC = () => {
@@ -22,6 +22,8 @@ export const HeaderContainer: React.FC = () => {
   const isAllowedPage = !isSignupPage && !isLoginPage && !isVerificationPage;
   const { authUser, isAuthLoading, userName } = useAuthContext();
   const isAuthenticate = !!authUser && !isAuthLoading;
+  const isMenuRoute = location.pathname.endsWith(ROUTES_URL.MENU);
+  const isRestaurantRoute = location.pathname === ROUTES_URL.RESTAURANT;
 
   const logout = async () => {
     try {
@@ -34,12 +36,34 @@ export const HeaderContainer: React.FC = () => {
     }
   };
 
+  const handlePrimaryAction = () => {
+    if (!isAuthenticate || !isAllowedPage) {
+      return;
+    }
+
+    if (isMenuRoute) {
+      dispatch(openMenuItemFormModal());
+      return;
+    }
+    if (isRestaurantRoute) {
+      dispatch(openRestaurantFormModal());
+      return;
+    }
+  };
+
+  const primaryActionLabel = isMenuRoute
+    ? "Create Item"
+    : isRestaurantRoute
+      ? "Create Restaurant"
+      : "";
+
   return (
     <HeaderComponent
       logout={logout}
       isAllowedPage={isAllowedPage}
       isAuthenticate={isAuthenticate}
-      onCreateRestaurant={() => dispatch(openRestaurantFormModal())}
+      primaryActionLabel={isAuthenticate && isAllowedPage ? primaryActionLabel : undefined}
+      onPrimaryAction={isAuthenticate && isAllowedPage ? handlePrimaryAction : undefined}
       userName={userName}
     />
   );

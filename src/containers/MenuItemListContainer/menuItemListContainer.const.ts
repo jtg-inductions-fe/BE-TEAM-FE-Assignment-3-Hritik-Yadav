@@ -1,0 +1,1 @@
+export const MENU_ITEM_PAGE_SIZE = 12;

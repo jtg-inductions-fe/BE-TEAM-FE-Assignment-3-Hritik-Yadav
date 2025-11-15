@@ -117,11 +117,11 @@ export const RestaurantContainer: React.FC = () => {
     [dispatch, getAuthToken],
   );
 
-  const resetRestaurants = () => {
+  const resetRestaurants = useCallback(() => {
     setItems([]);
     dispatch(clearRestaurantPagination());
     setHasMore(false);
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     const authKey = authUser?.uid ?? null;
@@ -137,7 +137,7 @@ export const RestaurantContainer: React.FC = () => {
     resetRestaurants();
 
     fetchPage(false, null);
-  }, [authUser, dispatch, fetchPage]);
+  }, [authUser, dispatch, fetchPage, resetRestaurants]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loading) {

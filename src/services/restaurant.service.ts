@@ -72,7 +72,7 @@ export const listRestaurants = async (
   const params: Record<string, string | number> = {};
 
   if (perPage) {
-    params.perpage = perPage;
+    params.perPage = perPage;
   }
 
   if (nextPageToken) {

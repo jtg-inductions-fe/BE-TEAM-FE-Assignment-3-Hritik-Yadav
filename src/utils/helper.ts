@@ -23,6 +23,35 @@ export const buildApiUrl = (
   return url;
 };
 
+export const buildMenuApiUrl = (
+  ENDPOINT: ENDPOINT,
+  restaurantId?: string,
+  endpointNext?: ENDPOINT,
+  menuItemId?: string,
+  params?: ApiUrlParams,
+): string => {
+  let url = `${BASE_URL}/${ENDPOINT}`;
+
+  if (restaurantId) {
+    url += `/${restaurantId}`;
+  }
+  if (endpointNext) {
+    url += `/${endpointNext}`;
+  }
+  if (menuItemId) {
+    url += `/${menuItemId}`;
+  }
+
+  if (params && Object.keys(params).length > 0) {
+    const queryString = new URLSearchParams(
+      Object.entries(params).map(([key, value]) => [key, String(value)]),
+    ).toString();
+    url += `?${queryString}`;
+  }
+
+  return url;
+};
+
 export const normalizeRole = (value: unknown): Role | null => {
   if (typeof value !== "string") {
     return null;
@@ -33,4 +62,11 @@ export const normalizeRole = (value: unknown): Role | null => {
   }
 
   return null;
+};
+
+export const getPriceLabel = (currency: string, price: number): string => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: currency,
+  }).format(price);
 };
