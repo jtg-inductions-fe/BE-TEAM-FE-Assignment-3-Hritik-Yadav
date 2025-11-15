@@ -35,6 +35,7 @@ export const CartComponent: React.FC<CartComponentProps> = ({
             dataSource={items}
             renderItem={(item) => (
               <Card className="cart__item-card" key={item.itemId}>
+                <Space size={"middle"}>
                 <Button
                   danger
                   type="text"
@@ -44,11 +45,11 @@ export const CartComponent: React.FC<CartComponentProps> = ({
                 >
                   Remove
                 </Button>
-                <Space size={"large"}>
                   <Text strong className="item-card__item-name">
                     {item.name}
                   </Text>
-                  <Text type="secondary">Price: {getPriceLabel(currency, item.unitPrice)} x</Text>
+                  <Text type="secondary">Price: {getPriceLabel(currency, item.unitPrice)}</Text>
+                  <Text>x</Text>
                   <InputNumber
                     min={1}
                     max={item.availableQuantity}
@@ -58,7 +59,8 @@ export const CartComponent: React.FC<CartComponentProps> = ({
                       onQuantityChange(item.itemId, nextQuantity);
                     }}
                   />
-                  <Text type="secondary"> = {getPriceLabel(currency, item.itemTotal)}</Text>
+                  <Text>=</Text>
+                  <Text type="secondary">{getPriceLabel(currency, item.itemTotal)}</Text>
                 </Space>
               </Card>
             )}
@@ -78,7 +80,7 @@ export const CartComponent: React.FC<CartComponentProps> = ({
             <Text type="secondary">Service Charge: </Text>
             <Text strong>{getPriceLabel(currency, totals.serviceCharge)}</Text>
           </Space>
-          <Space direction="horizontal" size={3} className="cart__summary-item">
+          <Space direction="horizontal" size={8} className="cart__summary-item">
             <Title level={4} className="cart__amount">
               <Text type="secondary">Total Amount: </Text>
               {getPriceLabel(currency, totals.amount)}

@@ -3,8 +3,6 @@
 .cart {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
   width: 40rem;
 
   &__header {
@@ -19,14 +17,14 @@
 
   &__list {
     background-color: $color-bg-surface;
-    padding: 2rem;
+    padding: 0.8rem;
     box-shadow: 0 0.12rem 0.5rem $color-bg-muted;
   }
 
   &__summary {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
     background-color: $color-bg-surface;
     border-radius: 0.75rem;
     padding: 2rem;
@@ -58,9 +56,6 @@
   }
 }
 .item-card {
-  &__item-name {
-    padding: 0 1rem;
-  }
   &__remove-button:focus-visible {
     box-shadow: 0 0 0 0.2rem $color-error;
   }

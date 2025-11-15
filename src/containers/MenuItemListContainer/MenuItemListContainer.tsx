@@ -270,7 +270,7 @@ export const MenuItemListContainer: React.FC = () => {
     <section className="menu-container">
       <header className="menu-container__heading">
         <Title level={2} className="menu-container__section-title">
-          Your Menu Items
+          Menu Items
         </Title>
         <BackToButtonComponent label="Back To Restaurant" />
       </header>

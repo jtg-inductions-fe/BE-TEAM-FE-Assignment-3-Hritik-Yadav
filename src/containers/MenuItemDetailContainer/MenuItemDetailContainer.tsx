@@ -18,10 +18,9 @@ import {
   getPublicMenuItem,
   updateMenuItem,
 } from "@services/menu.service";
-
 import { resolveError } from "@/utils/errorHandlers";
 import { USER_ROLE } from "@services/service.const";
-import { addItemToCart } from "@/store/actions/cart.actions";
+import { addItemToCart } from "@store/actions/cart.actions";
 import { selectCartItems, selectCartRestaurantId } from "@store/selectors/selector";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";

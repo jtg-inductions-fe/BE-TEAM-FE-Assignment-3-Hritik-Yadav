@@ -281,7 +281,7 @@ export const RestaurantContainer: React.FC = () => {
     <section className="restaurant-container">
       <header className="restaurant-container__heading">
         <Title level={2} className="restaurant-container__heading-title">
-          Your Restaurants
+          Restaurants
         </Title>
       </header>
       <RestaurantListComponent

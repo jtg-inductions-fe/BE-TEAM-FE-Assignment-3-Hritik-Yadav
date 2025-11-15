@@ -8,7 +8,7 @@ import { useAuthContext } from "@/context/AuthContext";
 export const ProtectedRouteComponent: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { authUser, isAuthLoading, role } = useAuthContext();
+  const { authUser, isAuthLoading } = useAuthContext();
   const { pathname } = location;
   const isVerificationRoute = pathname === ROUTES_URL.VERIFICATION;
 
@@ -35,7 +35,7 @@ export const ProtectedRouteComponent: React.FC = () => {
       navigate(ROUTES_URL.HOME, { replace: true });
       return;
     }
-  }, [authUser, isAuthLoading, isVerificationRoute, navigate, pathname, role]);
+  }, [authUser, isAuthLoading, isVerificationRoute, navigate, pathname]);
 
   if (isAuthLoading || !authUser) {
     return <AppLoaderComponent />;

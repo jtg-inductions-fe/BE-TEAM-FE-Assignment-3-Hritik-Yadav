@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CartComponent } from "@/components";
 import { selectCartItems, selectCartTotalAmount } from "@store/selectors/selector";
 import { clearCart, removeItemFromCart, updateCartItemQuantity } from "@store/actions/cart.actions";
+
 import type { CartDisplayItem } from "@components/CartComponent/cart.component.type";
 
 import "./cartContainer.style.scss";

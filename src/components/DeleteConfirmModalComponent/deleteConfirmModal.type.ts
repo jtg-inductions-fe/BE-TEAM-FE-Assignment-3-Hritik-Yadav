@@ -5,7 +5,7 @@ export interface DeleteConfirmModalProps {
   open: boolean;
   restaurant?: Restaurant | null;
   menuItem?: MenuItem | null;
-  onCancel?: () => void;
-  onDelete?: () => Promise<void> | void;
+  onCancel: () => void;
+  onDelete: () => Promise<void> | void;
   loading?: boolean;
 }

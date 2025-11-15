@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Tag, Button, Typography } from "antd";
 
 import { useAuthContext } from "@/context/AuthContext";
-import { USER_ROLE } from "@/services/service.const";
+import { USER_ROLE } from "@services/service.const";
 import { STATUS_TAG_COLOR } from "./RestaurantCard.const";
 
 import type { RestaurantCardProps } from "./RestaurantCard.type";
