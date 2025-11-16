@@ -38,14 +38,14 @@ export const resolveAxiosError = (error: unknown, defaultMessage: string): strin
 
 export const resolveError = ({
   error,
-  defaultFirebaseError = "Firebase Error",
-  defaultAxiosError = "Request Failed",
+  FirebaseErrorMessage = "Firebase Error",
+  AxiosErrorMessage = "Request Failed",
 }: resolveErrorTypes): string => {
   let message = ERROR_MESSAGE;
   if (error instanceof FirebaseError) {
-    message = resolveFirebaseError(error, defaultFirebaseError);
+    message = resolveFirebaseError(error, FirebaseErrorMessage);
   } else if (error instanceof AxiosError) {
-    message = resolveAxiosError(error, defaultAxiosError);
+    message = resolveAxiosError(error, AxiosErrorMessage);
   }
   return message;
 };
