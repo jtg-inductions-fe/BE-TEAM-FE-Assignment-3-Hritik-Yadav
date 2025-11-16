@@ -107,7 +107,7 @@ export const RestaurantContainer: React.FC = () => {
       } catch (error) {
         const errorMessage = resolveError({
           error,
-          defaultAxiosError: "Failed to load restaurants",
+          AxiosErrorMessage: "Failed to load restaurants",
         });
         message.error(errorMessage);
       } finally {
@@ -189,7 +189,7 @@ export const RestaurantContainer: React.FC = () => {
       dispatch(closeRestaurantFormModal());
       helpers.resetForm();
     } catch (error) {
-      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Creation failed" });
+      const errorMessage = resolveError({ error, AxiosErrorMessage: "Restaurant Creation failed" });
       message.error(errorMessage);
     } finally {
       helpers.setSubmitting(false);
@@ -227,7 +227,7 @@ export const RestaurantContainer: React.FC = () => {
       setEditOpen(false);
       setEditTarget(null);
     } catch (error) {
-      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Updation failed" });
+      const errorMessage = resolveError({ error, AxiosErrorMessage: "Restaurant Updation failed" });
       message.error(errorMessage);
     } finally {
       helpers.setSubmitting(false);
@@ -255,7 +255,7 @@ export const RestaurantContainer: React.FC = () => {
       setDeleteOpen(false);
       setDeleteTarget(null);
     } catch (error) {
-      const errorMessage = resolveError({ error, defaultAxiosError: "Restaurant Deletion failed" });
+      const errorMessage = resolveError({ error, AxiosErrorMessage: "Restaurant Deletion failed" });
       message.error(errorMessage);
     } finally {
       setDeleteLoading(false);
