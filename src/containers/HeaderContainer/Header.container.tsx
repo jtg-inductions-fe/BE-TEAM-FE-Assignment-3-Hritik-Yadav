@@ -8,8 +8,9 @@ import { app } from "@/firebase/firebase";
 import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { openMenuItemFormModal, openRestaurantFormModal } from "@store/actions/modal.actions";
+import { openMenuItemFormModal } from "@store/actions/menuItems.actions";
 import { resolveError } from "@/utils/errorHandlers";
+import { openRestaurantFormModal } from "@store/actions/restaurant.actions";
 
 export const HeaderContainer: React.FC = () => {
   const auth = getAuth(app);
@@ -31,7 +32,7 @@ export const HeaderContainer: React.FC = () => {
       message.success("Logout Successfully");
       navigate(ROUTES_URL.LOGIN);
     } catch (error) {
-      const errorMessage = resolveError({ error, defaultFirebaseError: "Logout Failed" });
+      const errorMessage = resolveError({ error, FirebaseErrorMessage: "Logout Failed" });
       message.error(errorMessage);
     }
   };

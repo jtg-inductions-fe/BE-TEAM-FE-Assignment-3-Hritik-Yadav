@@ -15,7 +15,7 @@ import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
 } from "@store/selectors/selector";
-import { closeMenuItemFormModal } from "@store/actions/modal.actions";
+import { closeMenuItemFormModal } from "@store/actions/menuItems.actions";
 import { useAuthContext } from "@/context/AuthContext";
 import { clearMenuItemPagination, setMenuItemNextToken } from "@store/actions/menuItems.actions";
 import { resolveError } from "@/utils/errorHandlers";
@@ -47,7 +47,7 @@ export const MenuItemListContainer: React.FC = () => {
   const { authUser } = useAuthContext();
   const dispatch = useDispatch();
   const nextPageToken = useSelector(selectMenuItemNextPageToken);
-  const { restaurantId } = useParams<{ restaurantId: string }>();
+  const { restaurantId = "" } = useParams<{ restaurantId: string }>();
 
   const [items, setItems] = useState<MenuItem[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -55,10 +55,10 @@ export const MenuItemListContainer: React.FC = () => {
   const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
   const lastFetchRestaurantRef = useRef<string | null | undefined>(undefined);
 
-  const getAuthToken = useCallback(async (): Promise<string | null> => {
+  const getAuthToken = useCallback(async (): Promise<string> => {
     if (!authUser) {
       message.error("Authentication required");
-      return null;
+      return "";
     }
 
     try {
@@ -66,7 +66,7 @@ export const MenuItemListContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({ error });
       message.error(errorMessage);
-      return null;
+      return "";
     }
   }, [authUser]);
 
@@ -75,13 +75,8 @@ export const MenuItemListContainer: React.FC = () => {
       setLoading(true);
 
       const token = await getAuthToken();
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
       try {
-        const response = await listMenuItems(token, restaurantId!, {
+        const response = await listMenuItems(token, restaurantId, {
           perPage: MENU_ITEM_PAGE_SIZE,
           nextPageToken: cursorId ?? undefined,
         });
@@ -94,7 +89,7 @@ export const MenuItemListContainer: React.FC = () => {
       } catch (error) {
         const errorMessage = resolveError({
           error,
-          defaultAxiosError: "Failed to load menu items",
+          AxiosErrorMessage: "Failed to load menu items",
         });
         message.error(errorMessage);
         dispatch(setMenuItemNextToken(null));
@@ -135,10 +130,6 @@ export const MenuItemListContainer: React.FC = () => {
     file?: File,
   ) => {
     const token = await getAuthToken();
-    if (!token) {
-      helpers.setSubmitting(false);
-      return;
-    }
 
     const ownerId = authUser?.uid;
     if (!ownerId) {
@@ -159,7 +150,7 @@ export const MenuItemListContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({
         error,
-        defaultAxiosError: "Image upload failed. Please try again.",
+        AxiosErrorMessage: "Image upload failed. Please try again.",
       });
       message.error(errorMessage);
       helpers.setSubmitting(false);
@@ -174,7 +165,7 @@ export const MenuItemListContainer: React.FC = () => {
 
     //create menu-item
     try {
-      const response = await createMenuItem(token, restaurantId!, payload);
+      const response = await createMenuItem(token, restaurantId, payload);
       const createdMenuItem = response.data;
       if (createdMenuItem) {
         setItems((previousItems) => [createdMenuItem, ...previousItems]);
@@ -185,7 +176,7 @@ export const MenuItemListContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({
         error,
-        defaultAxiosError: "Failed to create menu item. Please try again.",
+        AxiosErrorMessage: "Failed to create menu item. Please try again.",
       });
       message.error(errorMessage);
     } finally {

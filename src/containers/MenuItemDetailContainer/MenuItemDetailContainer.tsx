@@ -36,7 +36,10 @@ const mapFormValuesToPayload = (
 
 export const MenuItemDetailContainer: React.FC = () => {
   const navigate = useNavigate();
-  const { restaurantId, menuItemId } = useParams<{ restaurantId: string; menuItemId: string }>();
+  const { restaurantId = "", menuItemId = "" } = useParams<{
+    restaurantId: string;
+    menuItemId: string;
+  }>();
   const { authUser, isAuthLoading } = useAuthContext();
 
   const [menuItem, setMenuItem] = useState<MenuItem | null>(null);
@@ -45,10 +48,11 @@ export const MenuItemDetailContainer: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const getAuthToken = useCallback(async (): Promise<string | null> => {
+  const getAuthToken = useCallback(async (): Promise<string> => {
     if (!authUser) {
       message.error("Authentication required");
-      return null;
+      navigate(ROUTES_URL.LOGIN);
+      return "";
     }
 
     try {
@@ -56,9 +60,9 @@ export const MenuItemDetailContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({ error });
       message.error(errorMessage);
-      return null;
+      return "";
     }
-  }, [authUser]);
+  }, [authUser, navigate]);
 
   const fetchMenuItem = useCallback(async () => {
     if (isAuthLoading) {
@@ -66,14 +70,10 @@ export const MenuItemDetailContainer: React.FC = () => {
     }
 
     const token = await getAuthToken();
-    if (!token) {
-      setLoading(false);
-      return;
-    }
 
     try {
       setLoading(true);
-      const response = await getMenuItem(token, restaurantId!, menuItemId!);
+      const response = await getMenuItem(token, restaurantId, menuItemId);
       const data = response.data;
       if (!data) {
         setMenuItem(null);
@@ -84,7 +84,7 @@ export const MenuItemDetailContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({
         error,
-        defaultAxiosError: "Failed to fetch menu item",
+        AxiosErrorMessage: "Failed to fetch menu item",
       });
       message.error(errorMessage);
     } finally {
@@ -107,9 +107,9 @@ export const MenuItemDetailContainer: React.FC = () => {
 
       try {
         const payload: MenuItemPayload = mapFormValuesToPayload(values, {
-          imageName: menuItem!.imageName,
+          imageName: menuItem.imageName, //fix
         });
-        const response = await updateMenuItem(token!, restaurantId!, menuItemId!, payload);
+        const response = await updateMenuItem(token, restaurantId, menuItemId, payload);
         const updatedItem = response.data;
         if (updatedItem) {
           setMenuItem(updatedItem);
@@ -117,7 +117,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         message.success("Menu item updated");
         setIsUpdateModalOpen(false);
       } catch (error) {
-        const errorMessage = resolveError({ error, defaultAxiosError: "Update failed" });
+        const errorMessage = resolveError({ error, AxiosErrorMessage: "Update failed" });
         message.error(errorMessage);
       } finally {
         helpers.setSubmitting(false);
@@ -135,12 +135,12 @@ export const MenuItemDetailContainer: React.FC = () => {
 
     try {
       setDeleteLoading(true);
-      await deleteMenuItem(token!, restaurantId!, menuItemId!, menuItem!.imageName ?? "");
+      await deleteMenuItem(token, restaurantId, menuItemId, menuItem.imageName ?? ""); //fix
       message.success("Menu item deleted");
       setIsDeleteModalOpen(false);
       navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}`, { replace: true });
     } catch (error) {
-      const errorMessage = resolveError({ error, defaultAxiosError: "Delete failed" });
+      const errorMessage = resolveError({ error, AxiosErrorMessage: "Delete failed" });
       message.error(errorMessage);
     } finally {
       setDeleteLoading(false);
@@ -188,7 +188,7 @@ export const MenuItemDetailContainer: React.FC = () => {
 
       <DeleteConfirmModalComponent
         open={isDeleteModalOpen}
-        menuItem={menuItem}
+        menuItemName={menuItem.name ?? "this item"}
         onCancel={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
         loading={deleteLoading}

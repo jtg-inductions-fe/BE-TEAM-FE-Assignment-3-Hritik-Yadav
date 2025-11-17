@@ -5,7 +5,7 @@ import { DownOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
-import { LOGOUT, menuItems } from "./header.const";
+import { LOGOUT, MENU_ITEMS } from "./header.const";
 
 import type { HeaderProps } from "./header.type";
 
@@ -44,7 +44,7 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
               {primaryActionLabel}
             </Button>
           )}
-          <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }}>
+          <Dropdown menu={{ items: MENU_ITEMS, onClick: handleMenuClick }}>
             <Button type="default" className="header__user-button">
               <span className="header__user-label">{userName ?? "Account"}</span>
               <DownOutlined />

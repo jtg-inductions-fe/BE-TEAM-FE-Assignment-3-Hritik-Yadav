@@ -29,8 +29,8 @@ export const SignupContainer: React.FC = () => {
     } catch (error: unknown) {
       const errorMessage = resolveError({
         error,
-        defaultFirebaseError: "User Created, Login failed: Please Try Login Again",
-        defaultAxiosError: "User not created. Try again later.",
+        FirebaseErrorMessage: "User Created, Login failed: Please Try Login Again",
+        AxiosErrorMessage: "User not created. Try again later.",
       });
       message.error(errorMessage);
     }
