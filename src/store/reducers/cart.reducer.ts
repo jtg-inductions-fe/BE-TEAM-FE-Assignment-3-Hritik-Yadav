@@ -1,38 +1,14 @@
-import type { Currency } from "@/services/menu.type";
-
-import type { CartAction } from "@/store/actions/cart.actions.type";
 import {
   ADD_ITEM_TO_CART,
   CLEAR_CART,
   REMOVE_ITEM_FROM_CART,
   UPDATE_CART_ITEM_QUANTITY,
-} from "@/store/actions/cart.actions.const";
+} from "@store/actions/cart.actions.const";
+import { DEFAULT_CART_CURRENCY } from "./cart.const";
+import { calculateCartTotalAmount, resolveCurrency } from "./cart.helper";
 
+import type { CartAction } from "@store/actions/cart.actions.type";
 import type { CartItem, CartState } from "./cart.type";
-
-const DEFAULT_CART_CURRENCY: Currency = "INR";
-
-const roundToTwoDecimals = (value: number): number => Math.round(value * 100) / 100;
-
-const calculateCartTotalAmount = (
-  items: CartItem[],
-  currency: Currency,
-): CartState["totalAmount"] => {
-  const subtotal = roundToTwoDecimals(
-    items.reduce((sum, cartItem) => sum + cartItem.price * cartItem.quantity, 0),
-  );
-  const serviceCharge = subtotal > 0 ? roundToTwoDecimals(Math.max(20, subtotal * 0.01)) : 0;
-  const amount = subtotal > 0 ? roundToTwoDecimals(subtotal + serviceCharge) : 0;
-
-  return {
-    subtotal,
-    serviceCharge,
-    amount,
-    currency,
-  };
-};
-
-const resolveCurrency = (currency?: Currency): Currency => currency ?? DEFAULT_CART_CURRENCY;
 
 const initialState: CartState = {
   items: [],
@@ -51,10 +27,11 @@ export const cartReducer = (state: CartState = initialState, action: CartAction)
       const { item, currency, restaurantId } = action.payload;
       const nextCurrency = resolveCurrency(currency);
 
+      // checking if the quantity of items added is within range of the available quantity
       if (item.availableQuantity <= 0 || item.availableQuantity < item.quantity) {
         return state;
       }
-
+      //cheking if the restaurantId matches from the cart Items
       if (state.restaurantId !== null && state.restaurantId !== restaurantId) {
         return state;
       }
@@ -65,6 +42,7 @@ export const cartReducer = (state: CartState = initialState, action: CartAction)
 
       let updatedItems: CartItem[];
 
+      //if item does not exist in the cart then add else ignore
       if (existingItemIndex === -1) {
         updatedItems = [...state.items, item];
       } else {
@@ -79,38 +57,17 @@ export const cartReducer = (state: CartState = initialState, action: CartAction)
     }
 
     case UPDATE_CART_ITEM_QUANTITY: {
-      const { item } = action.payload; //get item here also
+      const { item } = action.payload;
       const existingItem = state.items.find((cartItem) => cartItem.itemId === item.itemId);
+      //if item is not present in the cart
       if (!existingItem) {
         return state;
       }
 
       const newQuantity = Math.min(item.quantity, item.availableQuantity);
-
-      if (newQuantity <= 0) {
-        const filteredItems = state.items.filter((cartItem) => cartItem.itemId !== item.itemId);
-
-        if (filteredItems.length === 0) {
-          return {
-            ...initialState,
-            totalAmount: {
-              ...initialState.totalAmount,
-              currency: state.totalAmount.currency,
-            },
-          };
-        }
-
-        return {
-          items: filteredItems,
-          restaurantId: state.restaurantId,
-          totalAmount: calculateCartTotalAmount(filteredItems, state.totalAmount.currency),
-        };
-      }
-
       if (newQuantity === existingItem.quantity) {
         return state;
       }
-
       const updatedItems = state.items.map((cartItem) =>
         cartItem.itemId === item.itemId
           ? { ...cartItem, quantity: newQuantity, availableQuantity: item.availableQuantity }
@@ -129,13 +86,7 @@ export const cartReducer = (state: CartState = initialState, action: CartAction)
       const updatedItems = state.items.filter((cartItem) => cartItem.itemId !== itemId);
 
       if (updatedItems.length === 0) {
-        return {
-          ...initialState,
-          totalAmount: {
-            ...initialState.totalAmount,
-            currency: state.totalAmount.currency,
-          },
-        };
+        return initialState;
       }
 
       return {
@@ -146,13 +97,7 @@ export const cartReducer = (state: CartState = initialState, action: CartAction)
     }
 
     case CLEAR_CART: {
-      return {
-        ...initialState,
-        totalAmount: {
-          ...initialState.totalAmount,
-          currency: state.totalAmount.currency,
-        },
-      };
+      return initialState;
     }
 
     default:

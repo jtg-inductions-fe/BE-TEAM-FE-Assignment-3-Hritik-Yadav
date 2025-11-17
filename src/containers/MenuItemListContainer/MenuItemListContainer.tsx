@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { message, Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,44 +10,29 @@ import {
   BackToButtonComponent,
   CsvMenuUploadComponent,
 } from "@/components";
-import { uploadCsv, uploadImage } from "@services/upload.service";
-import { createMenuItem, listMenuItems, listPublicMenuItems } from "@services/menu.service";
+import { createMenuItem, listMenuItems, uploadImage, listPublicMenuItems, uploadCsv } from "@/services";
 import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
   selectCartItems,
   selectCartRestaurantId,
 } from "@store/selectors/selector";
-import { closeMenuItemFormModal } from "@store/actions/modal.actions";
 import { addItemToCart } from "@store/actions/cart.actions";
+import { closeMenuItemFormModal } from "@store/actions/menuItems.actions";
 import { useAuthContext } from "@/context/AuthContext";
 import { USER_ROLE } from "@services/service.const";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { clearMenuItemPagination, setMenuItemNextToken } from "@store/actions/menuItems.actions";
 import { resolveError } from "@/utils/errorHandlers";
 import { MENU_ITEM_PAGE_SIZE } from "./menuItemListContainer.const";
+import { mapItemFormValuesToPayload } from "./menuItemListContainer.helper";
+import { CREATE_MODE } from "@/components/MenuItemFormModalComponent/MenuItemFormModal.const";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
 
 import "./menuItemListContainer.style.scss";
 
 const { Title } = Typography;
-
-const mapFormValuesToPayload = (
-  values: MenuItemFormValues,
-  overrides: Partial<MenuItemPayload> = {},
-): MenuItemPayload => ({
-  name: values.name,
-  description: values.description,
-  amount: {
-    currency: values.amount.currency,
-    price: values.amount.price,
-  },
-  rating: values.rating,
-  category: values.category,
-  quantity: values.quantity,
-  ...overrides,
-});
 
 export const MenuItemListContainer: React.FC = () => {
   const { authUser, role } = useAuthContext();
@@ -57,7 +42,7 @@ export const MenuItemListContainer: React.FC = () => {
   const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
   const cartItems = useSelector(selectCartItems);
   const cartRestaurantId = useSelector(selectCartRestaurantId);
-  const { restaurantId } = useParams<{ restaurantId?: string }>();
+  const { restaurantId = "" } = useParams<{ restaurantId: string }>();
 
   const [uploading, setUploading] = useState(false);
   const [items, setItems] = useState<MenuItem[]>([]);
@@ -65,28 +50,30 @@ export const MenuItemListContainer: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const isOwner = role === USER_ROLE.OWNER;
   const isCustomer = role === USER_ROLE.CUSTOMER;
-  const lastFetchRestaurantRef = useRef<string | null | undefined>(undefined);
 
-  const getAuthToken = useCallback(async (): Promise<string | null> => {
+  const getAuthToken = useCallback(async (): Promise<string> => {
     if (!authUser) {
-      if (isOwner) message.error("Authentication required");
-      return null;
+      if (isOwner) {
+        message.error("Authentication required");
+        navigate(ROUTES_URL.LOGIN);
+      }
+      return "";
     }
 
     try {
       const token = await authUser.getIdToken();
       if (!token) {
         setLoading(false);
-        return null;
+        return "";
       }
 
       return token;
     } catch (error) {
       const errorMessage = resolveError({ error });
       message.error(errorMessage);
-      return null;
+      return "";
     }
-  }, [authUser, isOwner]);
+  }, [authUser, isOwner, navigate]);
 
   const fetchMenuItems = useCallback(
     async (append: boolean, cursorId: string | null) => {
@@ -114,7 +101,7 @@ export const MenuItemListContainer: React.FC = () => {
       } catch (error) {
         const errorMessage = resolveError({
           error,
-          defaultAxiosError: "Failed to load menu items",
+          AxiosErrorMessage: "Failed to load menu items",
         });
         message.error(errorMessage);
         dispatch(setMenuItemNextToken(null));
@@ -126,12 +113,6 @@ export const MenuItemListContainer: React.FC = () => {
   );
 
   useEffect(() => {
-    if (lastFetchRestaurantRef.current === restaurantId) {
-      return;
-    }
-    lastFetchRestaurantRef.current = restaurantId;
-
-    setItems([]);
     setHasMore(false);
     dispatch(clearMenuItemPagination());
     fetchMenuItems(false, null);
@@ -155,10 +136,6 @@ export const MenuItemListContainer: React.FC = () => {
     file?: File,
   ) => {
     const token = await getAuthToken();
-    if (!token) {
-      helpers.setSubmitting(false);
-      return;
-    }
 
     const ownerId = authUser?.uid;
     if (!ownerId) {
@@ -166,27 +143,26 @@ export const MenuItemListContainer: React.FC = () => {
       helpers.setSubmitting(false);
       return;
     }
-
     if (!file) {
       helpers.setSubmitting(false);
+      message.error("Image got corrupt. Please Try Again.");
       return;
     }
-
-    let uploadedImageName: string;
+    let uploadedImageName: string = "";
 
     try {
       uploadedImageName = await uploadImage(token, file);
     } catch (error) {
       const errorMessage = resolveError({
         error,
-        defaultAxiosError: "Image upload failed. Please try again.",
+        AxiosErrorMessage: "Image upload failed. Please try again.",
       });
       message.error(errorMessage);
       helpers.setSubmitting(false);
       return;
     }
 
-    const payload: MenuItemPayload = mapFormValuesToPayload(values, {
+    const payload: MenuItemPayload = mapItemFormValuesToPayload(values, {
       imageName: uploadedImageName,
       ownerId,
       restaurantId,
@@ -194,7 +170,7 @@ export const MenuItemListContainer: React.FC = () => {
 
     //create menu-item
     try {
-      const response = await createMenuItem(token, restaurantId!, payload);
+      const response = await createMenuItem(token, restaurantId, payload);
       const createdMenuItem = response.data;
       if (createdMenuItem) {
         setItems((previousItems) => [createdMenuItem, ...previousItems]);
@@ -205,7 +181,7 @@ export const MenuItemListContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({
         error,
-        defaultAxiosError: "Failed to create menu item. Please try again.",
+        AxiosErrorMessage: "Failed to create menu item. Please try again.",
       });
       message.error(errorMessage);
     } finally {
@@ -276,7 +252,7 @@ export const MenuItemListContainer: React.FC = () => {
       await uploadCsv(token!, restaurantId!, file);
       message.success("File uploaded successfully");
     } catch (error) {
-      const errorMessage = resolveError({ error, defaultAxiosError: "Upload failed" });
+      const errorMessage = resolveError({ error, AxiosErrorMessage: "Upload failed" });
       message.error(errorMessage);
     } finally {
       setUploading(false);
@@ -285,13 +261,13 @@ export const MenuItemListContainer: React.FC = () => {
 
   return (
     <section className="menu-container">
-      <header className="menu-container__heading">
+      <div className="menu-container__heading">
         <Title level={2} className="menu-container__section-title">
           Menu Items
         </Title>
         <BackToButtonComponent label="Back To Restaurant" />
         <CsvMenuUploadComponent onUpload={onUpload} uploading={uploading} />
-      </header>
+      </div>
       <MenuItemListComponent
         items={items}
         loading={loading}
@@ -304,7 +280,7 @@ export const MenuItemListContainer: React.FC = () => {
 
       <MenuItemFormModalComponent
         open={isCreateModalOpen}
-        mode="create"
+        mode={CREATE_MODE}
         onCancel={() => dispatch(closeMenuItemFormModal())}
         onSubmit={handleCreate}
       />

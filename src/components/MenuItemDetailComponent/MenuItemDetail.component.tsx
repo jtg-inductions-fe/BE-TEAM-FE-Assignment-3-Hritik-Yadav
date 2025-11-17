@@ -28,7 +28,7 @@ export const MenuItemDetailComponent: React.FC<MenuItemDetailProps> = ({
     <section className="menu-item-detail">
       <BackToButtonComponent label="Back to Menu" />
 
-      <Card className="menu-item-detail__card" bodyStyle={{ padding: 0 }}>
+      <Card className="menu-item-detail__card">
         <div className="menu-item-detail__card-content">
           <div className="menu-item-detail__image">
             <Image src={imageUrl} alt={`image of ${name}`} preview loading="lazy" />

@@ -1,7 +1,7 @@
 import { MenuProps } from "antd";
 
 export const LOGOUT = "Logout";
-export const menuItems: MenuProps["items"] = [
+export const MENU_ITEMS: MenuProps["items"] = [
   {
     key: LOGOUT,
     label: LOGOUT,

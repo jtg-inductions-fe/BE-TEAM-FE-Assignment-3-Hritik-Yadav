@@ -1,3 +1,4 @@
-export interface MenuItemPaginationState {
+export interface MenuItemState {
   nextPageToken: string | null;
+  isMenuItemFormModalOpen: boolean;
 }

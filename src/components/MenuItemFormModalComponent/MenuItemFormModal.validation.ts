@@ -1,6 +1,10 @@
 import * as Yup from "yup";
 
-import { MENU_ITEM_CURRENCY_OPTIONS } from "./MenuItemFormModal.const";
+import {
+  MENU_ITEM_CATEGORY_OPTIONS,
+  MENU_ITEM_CURRENCY_OPTIONS,
+  MINIMUM_PRICE,
+} from "./MenuItemFormModal.const";
 
 export const menuItemFormValidationSchema = Yup.object({
   name: Yup.string()
@@ -12,12 +16,13 @@ export const menuItemFormValidationSchema = Yup.object({
     .max(300, "Description should not exceed 300 characters"),
   amount: Yup.object({
     currency: Yup.string().oneOf(MENU_ITEM_CURRENCY_OPTIONS, "Invalid currency"),
-    price: Yup.number().min(0.1, "Price must be added and positive").required("Price is required"),
+    price: Yup.number()
+      .min(MINIMUM_PRICE, "Price must be added and positive")
+      .required("Price is required"),
   }),
-  category: Yup.string().oneOf(["VEG", "NONVEG"], "Select a valid catrgory"),
+  category: Yup.string().oneOf(MENU_ITEM_CATEGORY_OPTIONS, "Select a valid category"),
   quantity: Yup.number()
     .required("Quantity is required")
     .min(0, "Quantity cannot be negative")
     .max(1000, "Quantity can not be greater than 1000"),
-  rating: Yup.number().min(0).max(5).notRequired(),
 });
