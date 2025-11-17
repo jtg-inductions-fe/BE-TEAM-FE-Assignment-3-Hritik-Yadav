@@ -7,6 +7,13 @@
     margin-bottom: 0;
   }
 
+  &__time-slot {
+    display: flex;
+    justify-content: flex-start;
+    align-items: top;
+    gap: 2rem;
+  }
+
   &__ok-button {
     &:focus-visible {
       box-shadow: 0 0 0 0.2rem rgba($color-link, 0.45);

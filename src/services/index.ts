@@ -7,4 +7,13 @@ export {
   deleteRestaurant,
   listPublicRestaurants,
 } from "./restaurant.service";
-export { listPublicMenuItems } from "./menu.service";
+export {
+  createMenuItem,
+  getMenuItem,
+  updateMenuItem,
+  deleteMenuItem,
+  listMenuItems,
+  listPublicMenuItems,
+  getPublicMenuItem,
+} from "./menu.service";
+export { uploadImage } from "./upload.service";

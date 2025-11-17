@@ -18,13 +18,13 @@ import type { FieldProps } from "formik";
 import type { UploadFile } from "antd/es/upload/interface";
 
 import { menuItemFormValidationSchema } from "./MenuItemFormModal.validation";
-import { MENU_ITEM_CURRENCY_OPTIONS } from "./MenuItemFormModal.const";
+import { CREATE_MODE, MENU_ITEM_CURRENCY_OPTIONS } from "./MenuItemFormModal.const";
 import { getMenuItemFormInitialValues, getUploadProps } from "./menuItemFormModal.helper";
-
-import "./menuItemFormModal.style.scss";
 
 import type { MenuItemFormModalProps } from "./MenuItemModal.type";
 import type { Currency, ItemCategory, MenuItemFormValues } from "@services/menu.type";
+
+import "./menuItemFormModal.style.scss";
 
 const { Title } = Typography;
 
@@ -50,13 +50,9 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
       validationSchema={menuItemFormValidationSchema}
       onSubmit={async (values, helpers) => {
         const file = showUpload ? (fileList[0]?.originFileObj as File | undefined) : undefined;
-        if (showUpload && !file) {
-          helpers.setSubmitting(false);
-          return;
-        }
 
         await onSubmit(values, helpers, file);
-        if (mode === "create") {
+        if (mode === CREATE_MODE) {
           setFileList([]);
         }
       }}
@@ -70,7 +66,7 @@ export const MenuItemFormModalComponent: React.FC<MenuItemFormModalProps> = ({
             open={open}
             title={
               <Title className="menu-item-modal__title" level={4}>
-                {mode === "create" ? "Add Menu Item" : "Update Menu Item"}
+                {mode === CREATE_MODE ? "Add Menu Item" : "Update Menu Item"}
               </Title>
             }
             onCancel={handleCancel}

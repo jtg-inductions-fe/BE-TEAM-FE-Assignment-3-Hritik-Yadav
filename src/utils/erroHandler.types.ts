@@ -1,5 +1,5 @@
 export interface resolveErrorTypes {
   error: unknown;
-  defaultFirebaseError?: string;
-  defaultAxiosError?: string;
+  FirebaseErrorMessage?: string;
+  AxiosErrorMessage?: string;
 }

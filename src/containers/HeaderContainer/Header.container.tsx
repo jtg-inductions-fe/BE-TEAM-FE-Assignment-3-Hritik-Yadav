@@ -10,9 +10,10 @@ import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { selectCartItems } from "@/store/selectors/selector";
 import { USER_ROLE } from "@/services/service.const";
-import { openMenuItemFormModal, openRestaurantFormModal } from "@store/actions/modal.actions";
-import { resolveError } from "@/utils/errorHandlers";
 import { clearCart } from "@/store/actions/cart.actions";
+import { openMenuItemFormModal } from "@store/actions/menuItems.actions";
+import { resolveError } from "@/utils/errorHandlers";
+import { openRestaurantFormModal } from "@store/actions/restaurant.actions";
 
 export const HeaderContainer: React.FC = () => {
   const auth = getAuth(app);
@@ -44,16 +45,12 @@ export const HeaderContainer: React.FC = () => {
       message.success("Logout Successfully");
       navigate(ROUTES_URL.LOGIN);
     } catch (error) {
-      const errorMessage = resolveError({ error, defaultFirebaseError: "Logout Failed" });
+      const errorMessage = resolveError({ error, FirebaseErrorMessage: "Logout Failed" });
       message.error(errorMessage);
     }
   };
 
   const handlePrimaryAction = () => {
-    if (!isAuthenticate || !isAllowedPage) {
-      return;
-    }
-
     if (isMenuRoute) {
       dispatch(openMenuItemFormModal());
       return;
@@ -64,11 +61,12 @@ export const HeaderContainer: React.FC = () => {
     }
   };
 
-  const primaryActionLabel = isMenuRoute
-    ? "Create Item"
-    : isRestaurantRoute
-      ? "Create Restaurant"
-      : "";
+  let primaryActionLabel = "";
+  if (isMenuRoute) {
+    primaryActionLabel = "Create Item";
+  } else if (isRestaurantRoute) {
+    primaryActionLabel = "Create Restaurant";
+  }
 
   const handleCartNavigate = useCallback(() => {
     navigate(ROUTES_URL.CART);

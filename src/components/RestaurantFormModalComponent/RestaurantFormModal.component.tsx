@@ -1,6 +1,6 @@
 import React from "react";
 import { Formik, Field } from "formik";
-import { Modal, Form, Input, Radio, Space, TimePicker, Typography } from "antd";
+import { Modal, Form, Input, Radio, TimePicker, Typography } from "antd";
 import { CloseCircleFilled } from "@ant-design/icons";
 
 import type { FieldProps } from "formik";
@@ -30,7 +30,7 @@ export const RestaurantFormModalComponent: React.FC<RestaurantFormModalProps> = 
     <Formik
       initialValues={initialValues}
       validationSchema={restaurantFormValidationSchema}
-      onSubmit={(values, helpers) => onSubmit(values, helpers)}
+      onSubmit={onSubmit}
       enableReinitialize
     >
       {({ submitForm, isSubmitting }) => (
@@ -61,7 +61,7 @@ export const RestaurantFormModalComponent: React.FC<RestaurantFormModalProps> = 
               )}
             </Field>
 
-            <Space size="large">
+            <div className="restaurant-modal__time-slot">
               <Field name="openingTime">
                 {({ field, form, meta }: FieldProps<RestaurantFormValues["openingTime"]>) => (
                   <Form.Item
@@ -103,7 +103,7 @@ export const RestaurantFormModalComponent: React.FC<RestaurantFormModalProps> = 
                   </Form.Item>
                 )}
               </Field>
-            </Space>
+            </div>
 
             <Field name="status">
               {({ field, form, meta }: FieldProps<RestaurantFormValues["status"]>) => (

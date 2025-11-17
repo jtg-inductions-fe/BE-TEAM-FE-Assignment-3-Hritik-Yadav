@@ -1,11 +1,9 @@
-import type { MenuItem } from "@services/menu.type";
-import type { Restaurant } from "@services/restaurant.type";
-
 export interface DeleteConfirmModalProps {
+  title: string;
   open: boolean;
-  restaurant?: Restaurant | null;
-  menuItem?: MenuItem | null;
+  restaurantName?: string;
+  itemName?: string;
   onCancel: () => void;
-  onDelete: () => Promise<void> | void;
+  onConfirm: () => Promise<void> | void;
   loading?: boolean;
 }

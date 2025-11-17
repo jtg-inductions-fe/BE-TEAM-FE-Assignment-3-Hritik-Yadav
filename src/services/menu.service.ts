@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { buildMenuApiUrl } from "@/utils/helper";
+import { buildApiUrl } from "@/utils/helper";
 import { ENDPOINT } from "./service.const";
 
 import type { BackendResponse } from "./service.type";
@@ -16,7 +16,7 @@ export const createMenuItem = async (
   restaurantId: string,
   payload: MenuItemPayload,
 ): Promise<BackendResponse<MenuItem>> => {
-  const url = buildMenuApiUrl(ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS]);
   const { data } = await axios.post<BackendResponse<MenuItem>>(url, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -31,7 +31,7 @@ export const getMenuItem = async (
   restaurantId: string,
   menuItemId: string,
 ): Promise<BackendResponse<MenuItem>> => {
-  const url = buildMenuApiUrl(ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId]);
 
   const { data } = await axios.get<BackendResponse<MenuItem>>(url, {
     headers: {
@@ -45,7 +45,7 @@ export const getPublicMenuItem = async (
   restaurantId: string,
   menuItemId: string,
 ): Promise<BackendResponse<MenuItem>> => {
-  const url = buildMenuApiUrl(ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId]);
 
   const { data } = await axios.get<BackendResponse<MenuItem>>(url);
   return data;
@@ -57,7 +57,7 @@ export const updateMenuItem = async (
   menuItemId: string,
   payload: MenuItemPayload,
 ): Promise<BackendResponse<MenuItem>> => {
-  const url = buildMenuApiUrl(ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId]);
   const { data } = await axios.put<BackendResponse<MenuItem>>(url, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -78,11 +78,8 @@ export const deleteMenuItem = async (
   if (imageName) {
     params.imageName = imageName;
   }
-  const url = buildMenuApiUrl(
-    ENDPOINT.RESTAURANT,
-    restaurantId,
-    ENDPOINT.MENU_ITEMS,
-    menuItemId,
+  const url = buildApiUrl(
+    [ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, menuItemId],
     params,
   );
   const { data } = await axios.delete<BackendResponse>(url, {
@@ -108,13 +105,7 @@ export const listMenuItems = async (
     params.nextPageToken = nextPageToken;
   }
 
-  const url = buildMenuApiUrl(
-    ENDPOINT.RESTAURANT,
-    restaurantId,
-    ENDPOINT.MENU_ITEMS,
-    undefined,
-    params,
-  );
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS], params);
   const { data } = await axios.get<BackendResponse<ListMenuItemsResponseData>>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -137,11 +128,8 @@ export const listPublicMenuItems = async (
     params.nextPageToken = nextPageToken;
   }
 
-  const url = buildMenuApiUrl(
-    ENDPOINT.RESTAURANT,
-    restaurantId,
-    ENDPOINT.MENU_ITEMS,
-    ENDPOINT.LIST,
+  const url = buildApiUrl(
+    [ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.MENU_ITEMS, ENDPOINT.LIST],
     params,
   );
   const { data } = await axios.get<BackendResponse<ListMenuItemsResponseData>>(url);

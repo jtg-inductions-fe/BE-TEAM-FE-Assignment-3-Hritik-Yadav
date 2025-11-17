@@ -12,7 +12,7 @@ export const getSignedUrl = async (
 ): Promise<BackendResponse<SignedUrlData>> => {
   const params: Record<string, string> = {};
   params.type = type;
-  const url = buildApiUrl(ENDPOINT.UPLOAD_URL, name, params);
+  const url = buildApiUrl([ENDPOINT.UPLOAD_URL, name], params);
 
   const { data } = await axios.get<BackendResponse<SignedUrlData>>(url, {
     headers: {
