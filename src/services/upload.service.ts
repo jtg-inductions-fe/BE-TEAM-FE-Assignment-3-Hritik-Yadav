@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 
-import { buildApiUrl, buildMenuApiUrl } from "@/utils/helper";
+import { buildApiUrl } from "@/utils/helper";
 import { ENDPOINT } from "./service.const";
 
 import type { BackendResponse } from "./service.type";
@@ -49,12 +49,12 @@ export const getCsvSignedUrl = async (
 ): Promise<BackendResponse<CsvSignedUrlData>> => {
   const params: Record<string, string> = {};
   params.type = type;
-  params.email = "this@gmail.com";
-  const url = buildMenuApiUrl(
-    ENDPOINT.RESTAURANT,
+  params.email = email;
+  const url = buildApiUrl(
+    [ENDPOINT.RESTAURANT,
     restaurantId,
     ENDPOINT.CSV_UPLOAD_URL,
-    name,
+    name],
     params,
   );
 

@@ -10,7 +10,13 @@ import {
   BackToButtonComponent,
   CsvMenuUploadComponent,
 } from "@/components";
-import { createMenuItem, listMenuItems, uploadImage, listPublicMenuItems, uploadCsv } from "@/services";
+import {
+  createMenuItem,
+  listMenuItems,
+  uploadImage,
+  listPublicMenuItems,
+  uploadCsv,
+} from "@/services";
 import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
@@ -245,7 +251,6 @@ export const MenuItemListContainer: React.FC = () => {
   );
 
   const onUpload = async (file: File) => {
-
     setUploading(true);
     try {
       const token = await getAuthToken();
@@ -265,8 +270,10 @@ export const MenuItemListContainer: React.FC = () => {
         <Title level={2} className="menu-container__section-title">
           Menu Items
         </Title>
-        <BackToButtonComponent label="Back To Restaurant" />
-        <CsvMenuUploadComponent onUpload={onUpload} uploading={uploading} />
+        <div>
+          <BackToButtonComponent label="Back To Restaurant" />
+          <CsvMenuUploadComponent onUpload={onUpload} uploading={uploading} />
+        </div>
       </div>
       <MenuItemListComponent
         items={items}

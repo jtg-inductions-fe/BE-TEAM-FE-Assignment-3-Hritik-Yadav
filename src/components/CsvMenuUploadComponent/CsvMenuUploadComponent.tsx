@@ -38,7 +38,7 @@ export const CsvMenuUploadComponent: React.FC<CsvMenuUploadComponentProps> = ({
         </Upload>
         <Button
           type="primary"
-          onClick={() => onUpload((fileList[0] as any).originFileObj)}
+          onClick={() => onUpload((fileList[0]?.originFileObj as File ))}
           disabled={fileList.length !== 1}
           loading={uploading}
           className="csv-upload__upload-button"
