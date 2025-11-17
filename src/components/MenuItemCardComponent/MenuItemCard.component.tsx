@@ -1,9 +1,7 @@
 import React from "react";
 import { Card, Tag, Button, Typography, Image } from "antd";
 import { StarFilled } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
-import { ROUTES_URL } from "@/routes/routes.const";
 import { CATEGORY_COLOR } from "./menuItemCard.const";
 import { getPriceLabel } from "@/utils/helper";
 
@@ -13,20 +11,14 @@ import "./menuItemCard.style.scss";
 
 const { Title, Text } = Typography;
 
-export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, restaurantId }) => {
-  const navigate = useNavigate();
+export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, onView }) => {
   const { id, name, amount, rating, category, quantity, imageUrl } = item;
   const categoryColor = CATEGORY_COLOR[category];
   const priceLabel = getPriceLabel(amount.currency, amount.price);
   const availabilityLabel = quantity > 0 ? `${quantity} available` : "Out of stock";
 
-  const handleViewDetails = () => {
-    const detailsPage = `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`;
-    navigate(detailsPage);
-  };
-
   return (
-    <Card className="menu-item-card" hoverable>
+    <Card className="menu-item-card">
       <div className="menu-item-card__content">
         <div className="menu-item-card__header">
           <Title level={4} className="menu-item-card__title">
@@ -59,7 +51,7 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, resta
           <Button
             type="primary"
             block
-            onClick={handleViewDetails}
+            onClick={()=>onView(id)}
             className="menu-item-card__button"
           >
             View Item

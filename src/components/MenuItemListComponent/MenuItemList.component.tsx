@@ -15,7 +15,7 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
   loading,
   hasMore,
   loadMore,
-  restaurantId,
+  onView,
 }) => {
   return (
     <div className="menu-item-list">
@@ -31,7 +31,7 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
         endMessage={
           !loading ? (
             <Text className="menu-item-list__end">
-              {items.length === 0 ? "No Menu Item found" : "No more results to show"}
+              {items.length === 0 ? "No Item found" : "No more results to show"}
             </Text>
           ) : undefined
         }
@@ -39,7 +39,7 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
         <div className="menu-item-list__grid">
           {items.map((menuItem) => (
             <div key={menuItem.id} className="menu-item-list__item">
-              <MenuItemCardComponent item={menuItem} restaurantId={restaurantId!} />
+              <MenuItemCardComponent item={menuItem} onView={onView} />
             </div>
           ))}
         </div>

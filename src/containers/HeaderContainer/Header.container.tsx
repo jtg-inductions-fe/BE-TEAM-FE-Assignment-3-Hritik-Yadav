@@ -38,10 +38,6 @@ export const HeaderContainer: React.FC = () => {
   };
 
   const handlePrimaryAction = () => {
-    if (!isAuthenticate || !isAllowedPage) {
-      return;
-    }
-
     if (isMenuRoute) {
       dispatch(openMenuItemFormModal());
       return;
@@ -52,11 +48,12 @@ export const HeaderContainer: React.FC = () => {
     }
   };
 
-  const primaryActionLabel = isMenuRoute
-    ? "Create Item"
-    : isRestaurantRoute
-      ? "Create Restaurant"
-      : "";
+  let primaryActionLabel = "";
+  if (isMenuRoute) {
+    primaryActionLabel = "Create Item";
+  } else if (isRestaurantRoute) {
+    primaryActionLabel = "Create Restaurant";
+  }
 
   return (
     <HeaderComponent

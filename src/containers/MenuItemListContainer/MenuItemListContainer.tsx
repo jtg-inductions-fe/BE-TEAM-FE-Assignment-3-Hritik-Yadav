@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { message, Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { FormikHelpers } from "formik";
 
 import {
@@ -20,31 +20,19 @@ import { useAuthContext } from "@/context/AuthContext";
 import { clearMenuItemPagination, setMenuItemNextToken } from "@store/actions/menuItems.actions";
 import { resolveError } from "@/utils/errorHandlers";
 import { MENU_ITEM_PAGE_SIZE } from "./menuItemListContainer.const";
+import { mapItemFormValuesToPayload } from "./menuItemListContainer.helper";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
 
 import "./menuItemListContainer.style.scss";
+import { ROUTES_URL } from "@/routes/routes.const";
+import { CREATE_MODE } from "@/components/MenuItemFormModalComponent/MenuItemFormModal.const";
 
 const { Title } = Typography;
 
-const mapFormValuesToPayload = (
-  values: MenuItemFormValues,
-  overrides: Partial<MenuItemPayload> = {},
-): MenuItemPayload => ({
-  name: values.name,
-  description: values.description,
-  amount: {
-    currency: values.amount.currency,
-    price: values.amount.price,
-  },
-  rating: values.rating,
-  category: values.category,
-  quantity: values.quantity,
-  ...overrides,
-});
-
 export const MenuItemListContainer: React.FC = () => {
   const { authUser } = useAuthContext();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const nextPageToken = useSelector(selectMenuItemNextPageToken);
   const { restaurantId = "" } = useParams<{ restaurantId: string }>();
@@ -157,7 +145,7 @@ export const MenuItemListContainer: React.FC = () => {
       return;
     }
 
-    const payload: MenuItemPayload = mapFormValuesToPayload(values, {
+    const payload: MenuItemPayload = mapItemFormValuesToPayload(values, {
       imageName: uploadedImageName,
       ownerId,
       restaurantId,
@@ -183,6 +171,10 @@ export const MenuItemListContainer: React.FC = () => {
       helpers.setSubmitting(false);
     }
   };
+  const handleView = (id: string) => {
+    const detailsPage = `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`;
+    navigate(detailsPage);
+  };
 
   return (
     <section className="menu-container">
@@ -197,12 +189,12 @@ export const MenuItemListContainer: React.FC = () => {
         loading={loading}
         hasMore={hasMore}
         loadMore={loadMore}
-        restaurantId={restaurantId}
+        onView={handleView}
       />
 
       <MenuItemFormModalComponent
         open={isCreateModalOpen}
-        mode="create"
+        mode={CREATE_MODE}
         onCancel={() => dispatch(closeMenuItemFormModal())}
         onSubmit={handleCreate}
       />

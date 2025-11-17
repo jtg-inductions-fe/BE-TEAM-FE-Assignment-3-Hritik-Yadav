@@ -15,24 +15,9 @@ import { deleteMenuItem, getMenuItem, updateMenuItem } from "@services/menu.serv
 import { resolveError } from "@/utils/errorHandlers";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
+import { mapUpdateFormValuesToPayload } from "./menuItemDetailContainer.helper";
 
 const { Text } = Typography;
-
-const mapFormValuesToPayload = (
-  values: MenuItemFormValues,
-  overrides: Partial<MenuItemPayload> = {},
-): MenuItemPayload => ({
-  name: values.name,
-  description: values.description,
-  amount: {
-    currency: values.amount.currency,
-    price: values.amount.price,
-  },
-  rating: values.rating,
-  category: values.category,
-  quantity: values.quantity,
-  ...overrides,
-});
 
 export const MenuItemDetailContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -104,9 +89,13 @@ export const MenuItemDetailContainer: React.FC = () => {
     async (values: MenuItemFormValues, helpers: FormikHelpers<MenuItemFormValues>) => {
       helpers.setSubmitting(true);
       const token = await getAuthToken();
+      if (!menuItem) {
+        message.error("Could not resolve item data. Try Again");
+        return;
+      }
 
       try {
-        const payload: MenuItemPayload = mapFormValuesToPayload(values, {
+        const payload: MenuItemPayload = mapUpdateFormValuesToPayload(values, {
           imageName: menuItem.imageName, //fix
         });
         const response = await updateMenuItem(token, restaurantId, menuItemId, payload);
@@ -132,6 +121,10 @@ export const MenuItemDetailContainer: React.FC = () => {
 
   const handleDeleteConfirm = useCallback(async () => {
     const token = await getAuthToken();
+    if (!menuItem) {
+      message.error("Could not resolve item data. Try Again");
+      return;
+    }
 
     try {
       setDeleteLoading(true);
@@ -187,8 +180,9 @@ export const MenuItemDetailContainer: React.FC = () => {
       />
 
       <DeleteConfirmModalComponent
+        title="Item"
         open={isDeleteModalOpen}
-        menuItemName={menuItem.name ?? "this item"}
+        itemName={menuItem.name ?? "this item"}
         onCancel={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
         loading={deleteLoading}
