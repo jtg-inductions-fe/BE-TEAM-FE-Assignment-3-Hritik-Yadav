@@ -51,10 +51,7 @@ export const getCsvSignedUrl = async (
   params.type = type;
   params.email = email;
   const url = buildApiUrl(
-    [ENDPOINT.RESTAURANT,
-    restaurantId,
-    ENDPOINT.CSV_UPLOAD_URL,
-    name],
+    [ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.CSV_UPLOAD_URL, name],
     params,
   );
 
