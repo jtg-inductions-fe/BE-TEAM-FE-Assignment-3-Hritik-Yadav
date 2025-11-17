@@ -32,10 +32,7 @@ import { PAGE_SIZE } from "./restaurantContainer.const";
 import { resolveError } from "@/utils/errorHandlers";
 import { ROUTES_URL } from "@/routes/routes.const";
 
-import type {
-  Restaurant,
-  RestaurantFormValues,
-} from "@services/restaurant.type";
+import type { Restaurant, RestaurantFormValues } from "@services/restaurant.type";
 
 import "./restaurantContainer.style.scss";
 
@@ -117,7 +114,6 @@ export const RestaurantContainer: React.FC = () => {
     if (!authUser) {
       return;
     }
-
     fetchPage(false, null);
   }, [authUser, fetchPage, resetRestaurants]);
 
@@ -161,7 +157,7 @@ export const RestaurantContainer: React.FC = () => {
       });
       const createdRestaurant = response.data;
       if (createdRestaurant) {
-        setItems((previousItems) => [createdRestaurant, ...previousItems]);
+        setItems((previousItems) => [...previousItems, createdRestaurant]);
       }
       message.success("Restaurant created");
       dispatch(closeRestaurantFormModal());
@@ -186,7 +182,6 @@ export const RestaurantContainer: React.FC = () => {
     }
 
     const token = await getAuthToken();
-
     try {
       const payload = mapFormValuesToPayload(values);
       const response = await updateRestaurant(token, editTarget.id, payload);
@@ -242,9 +237,7 @@ export const RestaurantContainer: React.FC = () => {
 
   return (
     <section className="restaurant-container">
-      <Title level={2}>
-        Your Restaurants
-      </Title>
+      <Title level={2}>Your Restaurants</Title>
       <RestaurantListComponent
         items={items}
         loading={loading}
