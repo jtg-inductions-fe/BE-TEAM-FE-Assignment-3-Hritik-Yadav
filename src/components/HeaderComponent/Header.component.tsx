@@ -43,7 +43,7 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
               Create Restaurant
             </Button>
           )}
-        <Dropdown menu={{ items: MENU_ITEMS, onClick: handleMenuClick }}>
+          <Dropdown menu={{ items: MENU_ITEMS, onClick: handleMenuClick }}>
             <Button type="default" className="header__user-button">
               <span className="header__user-label">{userName ?? "Account"}</span>
               <DownOutlined />

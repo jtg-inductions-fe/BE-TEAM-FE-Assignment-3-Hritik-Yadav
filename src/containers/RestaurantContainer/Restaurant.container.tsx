@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Typography, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import type { FormikHelpers } from "formik";
 
@@ -15,7 +16,6 @@ import {
   selectIsRestaurantFormModalOpen,
   selectRestaurantNextPageToken,
 } from "@store/selectors/selector";
-import { closeRestaurantFormModal } from "@/store/actions/modal.actions";
 import {
   AppLoaderComponent,
   DeleteConfirmModalComponent,
@@ -24,31 +24,26 @@ import {
 } from "@/components";
 import {
   clearRestaurantPagination,
+  closeRestaurantFormModal,
   setRestaurantNextToken,
-} from "@/store/actions/restaurant.actions";
-import { RESTAURANT_MODAL_TIME_FORMAT } from "@components/RestaurantFormModalComponent/RestaurantFormModal.const";
+} from "@store/actions/restaurant.actions";
+import { mapFormValuesToPayload } from "./restaurantContainer.helper";
 import { PAGE_SIZE } from "./restaurantContainer.const";
 import { resolveError } from "@/utils/errorHandlers";
+import { ROUTES_URL } from "@/routes/routes.const";
 
 import type {
   Restaurant,
   RestaurantFormValues,
-  RestaurantPayload,
 } from "@services/restaurant.type";
 
 import "./restaurantContainer.style.scss";
 
 const { Title } = Typography;
 
-const mapFormValuesToPayload = (values: RestaurantFormValues): RestaurantPayload => ({
-  name: values.name,
-  openingTime: values.openingTime.format(RESTAURANT_MODAL_TIME_FORMAT),
-  closingTime: values.closingTime.format(RESTAURANT_MODAL_TIME_FORMAT),
-  status: values.status,
-});
-
 export const RestaurantContainer: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const nextPageToken = useSelector(selectRestaurantNextPageToken);
   const { authUser, isAuthLoading } = useAuthContext();
 
@@ -63,14 +58,13 @@ export const RestaurantContainer: React.FC = () => {
   const [deleteTarget, setDeleteTarget] = useState<Restaurant | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const isCreateModalOpen = useSelector(selectIsRestaurantFormModalOpen);
-  // Guard against StrictMode double-running effects in development.
-  const lastFetchAuthKeyRef = useRef<string | null | undefined>(undefined);
 
   // to provide consistent token to all functions
-  const getAuthToken = useCallback(async (): Promise<string | null> => {
+  const getAuthToken = useCallback(async (): Promise<string> => {
     if (!authUser) {
       message.error("Authentication required");
-      return null;
+      navigate(ROUTES_URL.LOGIN);
+      return "";
     }
 
     try {
@@ -78,20 +72,15 @@ export const RestaurantContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({ error });
       message.error(errorMessage);
-      return null;
+      return "";
     }
-  }, [authUser]);
+  }, [authUser, navigate]);
 
   // restaurant list function to fetch list
   const fetchPage = useCallback(
     async (append: boolean, cursorId?: string | null) => {
       setLoading(true);
-
       const token = await getAuthToken();
-      if (!token) {
-        setLoading(false);
-        return;
-      }
 
       try {
         const response = await listRestaurants(token, {
@@ -117,27 +106,20 @@ export const RestaurantContainer: React.FC = () => {
     [dispatch, getAuthToken],
   );
 
-  const resetRestaurants = () => {
+  const resetRestaurants = useCallback(() => {
     setItems([]);
     dispatch(clearRestaurantPagination());
     setHasMore(false);
-  };
+  }, [dispatch]);
 
   useEffect(() => {
-    const authKey = authUser?.uid ?? null;
-    if (lastFetchAuthKeyRef.current === authKey) {
-      return;
-    }
-    lastFetchAuthKeyRef.current = authKey;
-
-    if (!authUser) {
-      resetRestaurants();
-      return;
-    }
     resetRestaurants();
+    if (!authUser) {
+      return;
+    }
 
     fetchPage(false, null);
-  }, [authUser, dispatch, fetchPage]);
+  }, [authUser, fetchPage, resetRestaurants]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loading) {
@@ -161,10 +143,6 @@ export const RestaurantContainer: React.FC = () => {
     helpers: FormikHelpers<RestaurantFormValues>,
   ) => {
     const token = await getAuthToken();
-    if (!token) {
-      helpers.setSubmitting(false);
-      return;
-    }
 
     const ownerId = authUser?.uid;
     if (!ownerId) {
@@ -202,15 +180,12 @@ export const RestaurantContainer: React.FC = () => {
     helpers: FormikHelpers<RestaurantFormValues>,
   ) => {
     if (!editTarget) {
+      message.error("Some Error Occured. Try Again");
       helpers.setSubmitting(false);
       return;
     }
 
     const token = await getAuthToken();
-    if (!token) {
-      helpers.setSubmitting(false);
-      return;
-    }
 
     try {
       const payload = mapFormValuesToPayload(values);
@@ -237,13 +212,12 @@ export const RestaurantContainer: React.FC = () => {
   // handles deletion of restaurant
   const handleDelete = async () => {
     if (!deleteTarget) {
+      setDeleteOpen(false);
+      message.error("Some Error Occured. Try Again");
       return;
     }
 
     const token = await getAuthToken();
-    if (!token) {
-      return;
-    }
 
     try {
       setDeleteLoading(true);
@@ -268,11 +242,9 @@ export const RestaurantContainer: React.FC = () => {
 
   return (
     <section className="restaurant-container">
-      <header className="restaurant-container__heading">
-        <Title level={2} className="restaurant-container__heading-title">
-          Your Restaurants
-        </Title>
-      </header>
+      <Title level={2}>
+        Your Restaurants
+      </Title>
       <RestaurantListComponent
         items={items}
         loading={loading}
@@ -298,7 +270,7 @@ export const RestaurantContainer: React.FC = () => {
 
       <DeleteConfirmModalComponent
         open={deleteOpen}
-        restaurant={deleteTarget ?? undefined}
+        restaurantName={deleteTarget?.name ?? "this restaurant"}
         onCancel={() => setDeleteOpen(false)}
         onConfirm={handleDelete}
         loading={deleteLoading}

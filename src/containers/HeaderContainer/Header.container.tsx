@@ -8,8 +8,8 @@ import { app } from "@/firebase/firebase";
 import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { openRestaurantFormModal } from "@store/actions/modal.actions";
 import { resolveError } from "@/utils/errorHandlers";
+import { openRestaurantFormModal } from "@store/actions/restaurant.actions";
 
 export const HeaderContainer: React.FC = () => {
   const auth = getAuth(app);
