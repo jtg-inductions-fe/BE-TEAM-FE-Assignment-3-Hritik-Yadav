@@ -31,7 +31,7 @@ export const MenuItemListComponent: React.FC<MenuItemListProps> = ({
         endMessage={
           !loading ? (
             <Text className="menu-item-list__end">
-              {items.length === 0 ? "No Item found" : "No more results to show"}
+              {items.length === 0 ? "No Items found" : "No more results to show"}
             </Text>
           ) : undefined
         }

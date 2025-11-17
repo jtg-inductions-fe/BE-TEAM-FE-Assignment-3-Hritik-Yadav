@@ -14,7 +14,7 @@ export const createRestaurant = async (
   token: string,
   payload: RestaurantPayload,
 ): Promise<BackendResponse<Restaurant>> => {
-  const url = buildApiUrl(ENDPOINT.RESTAURANT);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT]);
   const { data } = await axios.post<BackendResponse<Restaurant>>(url, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ export const getRestaurant = async (
   token: string,
   restaurantId: string,
 ): Promise<BackendResponse<Restaurant>> => {
-  const url = buildApiUrl(ENDPOINT.RESTAURANT, restaurantId);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId]);
   const { data } = await axios.get<BackendResponse<Restaurant>>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ export const updateRestaurant = async (
   restaurantId: string,
   payload: RestaurantPayload,
 ): Promise<BackendResponse<Restaurant>> => {
-  const url = buildApiUrl(ENDPOINT.RESTAURANT, restaurantId);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId]);
   const { data } = await axios.put<BackendResponse<Restaurant>>(url, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -56,7 +56,7 @@ export const deleteRestaurant = async (
   token: string,
   restaurantId: string,
 ): Promise<BackendResponse> => {
-  const url = buildApiUrl(ENDPOINT.RESTAURANT, restaurantId);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId]);
   const { data } = await axios.delete<BackendResponse>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ export const listRestaurants = async (
     params.nextPageToken = nextPageToken;
   }
 
-  const url = buildApiUrl(ENDPOINT.RESTAURANT, undefined, params);
+  const url = buildApiUrl([ENDPOINT.RESTAURANT], params);
   const { data } = await axios.get<BackendResponse<ListRestaurantsResponseData>>(url, {
     headers: {
       Authorization: `Bearer ${token}`,

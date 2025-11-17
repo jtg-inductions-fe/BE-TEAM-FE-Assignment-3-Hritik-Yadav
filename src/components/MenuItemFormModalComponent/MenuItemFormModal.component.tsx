@@ -21,10 +21,10 @@ import { menuItemFormValidationSchema } from "./MenuItemFormModal.validation";
 import { CREATE_MODE, MENU_ITEM_CURRENCY_OPTIONS } from "./MenuItemFormModal.const";
 import { getMenuItemFormInitialValues, getUploadProps } from "./menuItemFormModal.helper";
 
-import "./menuItemFormModal.style.scss";
-
 import type { MenuItemFormModalProps } from "./MenuItemModal.type";
 import type { Currency, ItemCategory, MenuItemFormValues } from "@services/menu.type";
+
+import "./menuItemFormModal.style.scss";
 
 const { Title } = Typography;
 

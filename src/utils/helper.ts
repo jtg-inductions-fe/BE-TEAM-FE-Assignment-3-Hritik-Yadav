@@ -2,45 +2,8 @@ import { BASE_URL, ENDPOINT, USER_ROLE } from "@services/service.const";
 
 import type { ApiUrlParams, Role } from "@services/service.type";
 
-export const buildApiUrl = (
-  endpoint: ENDPOINT,
-  id?: number | string,
-  params?: ApiUrlParams,
-): string => {
-  let url = `${BASE_URL}/${endpoint}`;
-
-  if (id) {
-    url += `/${id}`;
-  }
-
-  if (params && Object.keys(params).length > 0) {
-    const queryString = new URLSearchParams(
-      Object.entries(params).map(([key, value]) => [key, String(value)]),
-    ).toString();
-    url += `?${queryString}`;
-  }
-
-  return url;
-};
-
-export const buildMenuApiUrl = (
-  ENDPOINT: ENDPOINT,
-  restaurantId?: string,
-  endpointNext?: ENDPOINT,
-  menuItemId?: string,
-  params?: ApiUrlParams,
-): string => {
-  let url = `${BASE_URL}/${ENDPOINT}`;
-
-  if (restaurantId) {
-    url += `/${restaurantId}`;
-  }
-  if (endpointNext) {
-    url += `/${endpointNext}`;
-  }
-  if (menuItemId) {
-    url += `/${menuItemId}`;
-  }
+export const buildApiUrl = (segments: Array<ENDPOINT | string>, params?: ApiUrlParams): string => {
+  let url = `${BASE_URL}/${segments.join("/")}`;
 
   if (params && Object.keys(params).length > 0) {
     const queryString = new URLSearchParams(

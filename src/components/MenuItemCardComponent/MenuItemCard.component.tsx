@@ -51,7 +51,7 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, onVie
           <Button
             type="primary"
             block
-            onClick={()=>onView(id)}
+            onClick={() => onView(id)}
             className="menu-item-card__button"
           >
             View Item

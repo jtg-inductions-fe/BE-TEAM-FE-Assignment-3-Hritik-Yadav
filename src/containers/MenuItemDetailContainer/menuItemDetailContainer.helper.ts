@@ -1,4 +1,4 @@
-import { MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
+import type { MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
 
 export const mapUpdateFormValuesToPayload = (
   values: MenuItemFormValues,

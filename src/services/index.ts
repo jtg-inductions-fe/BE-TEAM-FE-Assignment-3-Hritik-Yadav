@@ -6,3 +6,11 @@ export {
   updateRestaurant,
   deleteRestaurant,
 } from "./restaurant.service";
+export {
+  createMenuItem,
+  getMenuItem,
+  updateMenuItem,
+  deleteMenuItem,
+  listMenuItems,
+} from "./menu.service";
+export { uploadImage } from "./upload.service";

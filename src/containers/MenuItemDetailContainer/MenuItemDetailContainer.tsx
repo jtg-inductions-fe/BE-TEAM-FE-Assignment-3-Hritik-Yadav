@@ -11,11 +11,12 @@ import {
   BackToButtonComponent,
 } from "@/components";
 import { ROUTES_URL } from "@/routes/routes.const";
-import { deleteMenuItem, getMenuItem, updateMenuItem } from "@services/menu.service";
+import { deleteMenuItem, getMenuItem, updateMenuItem } from "@/services";
 import { resolveError } from "@/utils/errorHandlers";
+import { mapUpdateFormValuesToPayload } from "./menuItemDetailContainer.helper";
+import { UPDATE_MODE } from "@components/MenuItemFormModalComponent/MenuItemFormModal.const";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
-import { mapUpdateFormValuesToPayload } from "./menuItemDetailContainer.helper";
 
 const { Text } = Typography;
 
@@ -25,8 +26,8 @@ export const MenuItemDetailContainer: React.FC = () => {
     restaurantId: string;
     menuItemId: string;
   }>();
-  const { authUser, isAuthLoading } = useAuthContext();
 
+  const { authUser } = useAuthContext();
   const [menuItem, setMenuItem] = useState<MenuItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -50,10 +51,6 @@ export const MenuItemDetailContainer: React.FC = () => {
   }, [authUser, navigate]);
 
   const fetchMenuItem = useCallback(async () => {
-    if (isAuthLoading) {
-      return;
-    }
-
     const token = await getAuthToken();
 
     try {
@@ -75,10 +72,10 @@ export const MenuItemDetailContainer: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [getAuthToken, isAuthLoading, menuItemId, restaurantId]);
+  }, [getAuthToken, menuItemId, restaurantId]);
 
   useEffect(() => {
-    void fetchMenuItem();
+    fetchMenuItem();
   }, [fetchMenuItem]);
 
   const handleUpdateOpen = useCallback(() => {
@@ -96,7 +93,7 @@ export const MenuItemDetailContainer: React.FC = () => {
 
       try {
         const payload: MenuItemPayload = mapUpdateFormValuesToPayload(values, {
-          imageName: menuItem.imageName, //fix
+          imageName: menuItem.imageName,
         });
         const response = await updateMenuItem(token, restaurantId, menuItemId, payload);
         const updatedItem = response.data;
@@ -128,7 +125,7 @@ export const MenuItemDetailContainer: React.FC = () => {
 
     try {
       setDeleteLoading(true);
-      await deleteMenuItem(token, restaurantId, menuItemId, menuItem.imageName ?? ""); //fix
+      await deleteMenuItem(token, restaurantId, menuItemId, menuItem.imageName ?? "");
       message.success("Menu item deleted");
       setIsDeleteModalOpen(false);
       navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}`, { replace: true });
@@ -172,7 +169,7 @@ export const MenuItemDetailContainer: React.FC = () => {
 
       <MenuItemFormModalComponent
         open={isUpdateModalOpen}
-        mode="update"
+        mode={UPDATE_MODE}
         initial={menuItem}
         onCancel={() => setIsUpdateModalOpen(false)}
         onSubmit={handleUpdateSubmit}

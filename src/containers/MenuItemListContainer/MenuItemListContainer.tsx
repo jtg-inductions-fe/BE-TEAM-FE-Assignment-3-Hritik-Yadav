@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { message, Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,8 +9,7 @@ import {
   MenuItemFormModalComponent,
   BackToButtonComponent,
 } from "@/components";
-import { uploadImage } from "@services/upload.service";
-import { createMenuItem, listMenuItems } from "@services/menu.service";
+import { createMenuItem, listMenuItems, uploadImage } from "@/services";
 import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
@@ -21,12 +20,12 @@ import { clearMenuItemPagination, setMenuItemNextToken } from "@store/actions/me
 import { resolveError } from "@/utils/errorHandlers";
 import { MENU_ITEM_PAGE_SIZE } from "./menuItemListContainer.const";
 import { mapItemFormValuesToPayload } from "./menuItemListContainer.helper";
+import { ROUTES_URL } from "@/routes/routes.const";
+import { CREATE_MODE } from "@/components/MenuItemFormModalComponent/MenuItemFormModal.const";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
 
 import "./menuItemListContainer.style.scss";
-import { ROUTES_URL } from "@/routes/routes.const";
-import { CREATE_MODE } from "@/components/MenuItemFormModalComponent/MenuItemFormModal.const";
 
 const { Title } = Typography;
 
@@ -41,7 +40,6 @@ export const MenuItemListContainer: React.FC = () => {
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
-  const lastFetchRestaurantRef = useRef<string | null | undefined>(undefined);
 
   const getAuthToken = useCallback(async (): Promise<string> => {
     if (!authUser) {
@@ -58,7 +56,7 @@ export const MenuItemListContainer: React.FC = () => {
     }
   }, [authUser]);
 
-  const fetchPage = useCallback(
+  const fetchMenuItems = useCallback(
     async (append: boolean, cursorId: string | null) => {
       setLoading(true);
 
@@ -89,28 +87,22 @@ export const MenuItemListContainer: React.FC = () => {
   );
 
   useEffect(() => {
-    if (lastFetchRestaurantRef.current === restaurantId) {
-      return;
-    }
-    lastFetchRestaurantRef.current = restaurantId;
-
-    setItems([]);
     setHasMore(false);
     dispatch(clearMenuItemPagination());
-    fetchPage(false, null);
+    fetchMenuItems(false, null);
 
     return () => {
       dispatch(closeMenuItemFormModal());
       dispatch(clearMenuItemPagination());
     };
-  }, [dispatch, fetchPage, restaurantId]);
+  }, [dispatch, fetchMenuItems, restaurantId]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loading) {
       return;
     }
-    fetchPage(true, nextPageToken);
-  }, [fetchPage, hasMore, loading, nextPageToken]);
+    fetchMenuItems(true, nextPageToken);
+  }, [fetchMenuItems, hasMore, loading, nextPageToken]);
 
   const handleCreate = async (
     values: MenuItemFormValues,
@@ -125,13 +117,12 @@ export const MenuItemListContainer: React.FC = () => {
       helpers.setSubmitting(false);
       return;
     }
-
     if (!file) {
       helpers.setSubmitting(false);
+      message.error("Image got corrupt. Please Try Again.");
       return;
     }
-
-    let uploadedImageName: string;
+    let uploadedImageName: string = "";
 
     try {
       uploadedImageName = await uploadImage(token, file);
@@ -178,12 +169,12 @@ export const MenuItemListContainer: React.FC = () => {
 
   return (
     <section className="menu-container">
-      <header className="menu-container__heading">
+      <div className="menu-container__heading">
         <Title level={2} className="menu-container__section-title">
           Your Menu Items
         </Title>
         <BackToButtonComponent label="Back To Restaurant" />
-      </header>
+      </div>
       <MenuItemListComponent
         items={items}
         loading={loading}

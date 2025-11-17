@@ -1,5 +1,5 @@
 export interface DeleteConfirmModalProps {
-  title: string,
+  title: string;
   open: boolean;
   restaurantName?: string;
   itemName?: string;
