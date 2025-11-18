@@ -2,11 +2,11 @@ import { BASE_URL, ENDPOINT, USER_ROLE } from "@services/service.const";
 import type { ApiUrlParams, Role } from "@/services/service.type";
 
 export const buildApiUrl = (
-  ENDPOINT: ENDPOINT,
+  endpoint: ENDPOINT,
   id?: number | string,
   params?: ApiUrlParams,
 ): string => {
-  let url = `${BASE_URL}/${ENDPOINT}`;
+  let url = `${BASE_URL}/${endpoint}`;
 
   if (id) {
     url += `/${id}`;
