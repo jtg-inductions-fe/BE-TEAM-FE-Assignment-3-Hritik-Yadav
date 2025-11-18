@@ -1,3 +1,7 @@
+export { MenuItemCardComponent } from "./MenuItemCardComponent";
+export { MenuItemFormModalComponent } from "./MenuItemFormModalComponent";
+export { MenuItemListComponent } from "./MenuItemListComponent";
+export { MenuItemDetailComponent } from "./MenuItemDetailComponent";
 export { BackToButtonComponent } from "./BackToButtonComponent";
 export { RestaurantCardComponent } from "./RestaurantCardComponent";
 export { RestaurantListComponent } from "./RestaurantListComponent";

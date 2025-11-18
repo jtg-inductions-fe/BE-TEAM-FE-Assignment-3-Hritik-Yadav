@@ -2,16 +2,8 @@ import { BASE_URL, ENDPOINT, USER_ROLE } from "@services/service.const";
 
 import type { ApiUrlParams, Role } from "@services/service.type";
 
-export const buildApiUrl = (
-  endpoint: ENDPOINT,
-  id?: number | string,
-  params?: ApiUrlParams,
-): string => {
-  let url = `${BASE_URL}/${endpoint}`;
-
-  if (id) {
-    url += `/${id}`;
-  }
+export const buildApiUrl = (segments: Array<ENDPOINT | string>, params?: ApiUrlParams): string => {
+  let url = `${BASE_URL}/${segments.join("/")}`;
 
   if (params && Object.keys(params).length > 0) {
     const queryString = new URLSearchParams(
@@ -33,4 +25,11 @@ export const normalizeRole = (value: unknown): Role | null => {
   }
 
   return null;
+};
+
+export const getPriceLabel = (currency: string, price: number): string => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: currency,
+  }).format(price);
 };

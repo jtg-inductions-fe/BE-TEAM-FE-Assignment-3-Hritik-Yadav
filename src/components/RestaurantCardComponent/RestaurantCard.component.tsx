@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Tag, Button, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
+import { ROUTES_URL } from "@/routes/routes.const";
 import { STATUS_TAG_COLOR } from "./RestaurantCard.const";
 
 import type { RestaurantCardProps } from "./RestaurantCard.type";
@@ -42,7 +43,7 @@ export const RestaurantCardComponent: React.FC<RestaurantCardProps> = ({
         <div className="restaurant-card__actions">
           <Button
             className="restaurant-card__button"
-            onClick={() => navigate(`/restaurant/${id}/mnu-items`)}
+            onClick={() => navigate(`${ROUTES_URL.RESTAURANT}/${id}/${ROUTES_URL.MENU}`)}
           >
             View Items
           </Button>

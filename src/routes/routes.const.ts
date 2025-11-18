@@ -3,6 +3,8 @@ export enum ROUTES_URL {
   HOME = "/",
   SIGNUP = "/signup",
   LOGIN = "/login",
+  MENU = "menu",
+  ITEM = "item",
   RESTAURANT = "/restaurants",
   VERIFICATION = "/verify",
 }

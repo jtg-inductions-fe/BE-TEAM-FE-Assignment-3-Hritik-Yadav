@@ -262,6 +262,7 @@ export const RestaurantContainer: React.FC = () => {
       />
 
       <DeleteConfirmModalComponent
+        title="Restaurant"
         open={deleteOpen}
         restaurantName={deleteTarget?.name ?? "this restaurant"}
         onCancel={() => setDeleteOpen(false)}

@@ -7,6 +7,8 @@ export enum ENDPOINT {
   SIGNUP = "auth/signup",
   USER = "users/me",
   RESTAURANT = "restaurants",
+  UPLOAD_URL = "upload-url",
+  MENU_ITEMS = "menu-items",
 }
 
 export enum USER_ROLE {

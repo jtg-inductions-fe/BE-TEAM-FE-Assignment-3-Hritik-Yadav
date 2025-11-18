@@ -3,3 +3,5 @@ export { LoginContainer } from "./LoginContainer";
 export { SignupContainer } from "./SignupContainer";
 export { RestaurantContainer } from "./RestaurantContainer";
 export { VerificationContainer } from "./VerificationContainer";
+export { MenuItemListContainer } from "./MenuItemListContainer";
+export { MenuItemDetailContainer } from "./MenuItemDetailContainer";

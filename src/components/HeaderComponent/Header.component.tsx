@@ -18,7 +18,8 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
   logout,
   isAuthenticate,
   isAllowedPage,
-  onCreateRestaurant,
+  primaryActionLabel,
+  onPrimaryAction,
   userName,
 }) => {
   const navigate = useNavigate();
@@ -38,9 +39,9 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
       </Title>
       {isAuthenticate ? (
         <div className="header__button">
-          {onCreateRestaurant && (
-            <Button type="primary" onClick={onCreateRestaurant} className="header__create-button">
-              Create Restaurant
+          {primaryActionLabel && onPrimaryAction && (
+            <Button type="primary" onClick={onPrimaryAction} className="header__create-button">
+              {primaryActionLabel}
             </Button>
           )}
           <Dropdown menu={{ items: MENU_ITEMS, onClick: handleMenuClick }}>

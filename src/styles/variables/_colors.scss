@@ -4,9 +4,11 @@ $color-link: #1677ff;
 
 $color-bg-header: #ffffff;
 $color-bg-surface: #ffffff;
+$color-bg-muted: #fafafa;
 
 $color-text-primary: #111827;
-$color-text-muted: rgba($color-text-primary, 0.45);
+$color-text-secondary: rgba(0, 0, 0, 0.65);
+$color-text-muted: rgba(0, 0, 0, 0.45);
 
 $color-border-light: #e5e7eb;
 
@@ -14,3 +16,4 @@ $color-box-shadow: rgba(0, 0, 0, 0.08);
 
 $color-error: #ff4d4f;
 $color-warning: #e43336;
+$color-rating-star: #faad14;
