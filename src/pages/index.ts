@@ -3,4 +3,5 @@ export { SignupPage } from "./SignupPage";
 export { VerificationPage } from "./VerificationPage";
 export { LoginPage } from "./LoginPage";
 export { HomePage } from "./HomePage";
-export { AdminPage } from "./AdminPage";
+export { RestaurantPage } from "./RestaurantPage";
+export { RestaurantItemsPage } from "./RestaurantItemsPage/RestaurantItems.page";
