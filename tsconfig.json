@@ -4,7 +4,7 @@
     "module": "ESNext",
     "lib": ["DOM", "ESNext"],
     "jsx": "react-jsx",
-    "types": ["react", "react-dom", "node"],
+    "types": ["react", "react-dom", "node", "jest"],
     "moduleResolution": "bundler",
     "strict": true,
     "esModuleInterop": true,
@@ -12,13 +12,13 @@
     "skipLibCheck": true,
     "baseUrl": "src",
     "paths": {
+      "@/*": ["*"],
       "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"],
+      "@containers/*": ["containers/*"],
+      "@pages/*": ["pages/*"],
       "@services/*": ["services/*"],
       "@store/*": ["store/*"],
-      "@pages/*": ["pages/*"],
-      "@containers/*": ["containers/*"],
-      "@/*": ["*"]
+      "@styles/*": ["styles/*"]
     }
   },
   "include": ["src"],

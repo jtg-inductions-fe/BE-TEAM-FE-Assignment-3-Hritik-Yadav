@@ -1,0 +1,27 @@
+@use "@styles/variables/colors" as *;
+
+.verification {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+
+  &__card {
+    width: 100%;
+    max-width: 40rem;
+    background: $color-bg-surface;
+    border: 0.06rem solid $color-border-light;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 0.35rem 1.25rem $color-box-shadow;
+  }
+
+  &__result {
+    text-align: center;
+  }
+
+  &__hint {
+    text-align: center;
+    color: $color-text-primary;
+  }
+}

@@ -1,1 +1,2 @@
-// this file will contain the service function
+export { signup } from "./auth.service";
+export { getUserDetails } from "./user.service";
