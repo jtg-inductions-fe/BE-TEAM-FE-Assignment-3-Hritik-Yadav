@@ -107,7 +107,7 @@ export const MenuItemListContainer: React.FC = () => {
       } catch (error) {
         const errorMessage = resolveError({
           error,
-          AxiosErrorMessage: "Failed to load menu items",
+          axiosErrorMessage: "Failed to load menu items",
         });
         message.error(errorMessage);
         dispatch(setMenuItemNextToken(null));
@@ -161,7 +161,7 @@ export const MenuItemListContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({
         error,
-        AxiosErrorMessage: "Image upload failed. Please try again.",
+        axiosErrorMessage: "Image upload failed. Please try again.",
       });
       message.error(errorMessage);
       helpers.setSubmitting(false);
@@ -187,7 +187,7 @@ export const MenuItemListContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({
         error,
-        AxiosErrorMessage: "Failed to create menu item. Please try again.",
+        axiosErrorMessage: "Failed to create menu item. Please try again.",
       });
       message.error(errorMessage);
     } finally {

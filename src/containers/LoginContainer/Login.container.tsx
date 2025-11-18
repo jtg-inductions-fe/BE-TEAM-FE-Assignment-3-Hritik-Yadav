@@ -25,7 +25,7 @@ export const LoginContainer: React.FC = () => {
       }
       navigate(ROUTES_URL.HOME);
     } catch (error) {
-      const errorMessage = resolveError({ error, FirebaseErrorMessage: "Login Failed" });
+      const errorMessage = resolveError({ error, firebaseErrorMessage: "Login Failed" });
       message.error(errorMessage);
     }
   };

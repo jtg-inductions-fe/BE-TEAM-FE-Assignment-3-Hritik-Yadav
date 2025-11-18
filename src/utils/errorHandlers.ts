@@ -6,7 +6,7 @@ import { FirebaseError } from "firebase/app";
 
 import { ERROR_MESSAGE } from "@services/service.const";
 
-import type { resolveErrorTypes } from "./erroHandler.types";
+import type { ResolveErrorTypes } from "./errorHandler.types";
 
 export const resolveFirebaseError = (error: FirebaseError, defaultMessage: string): string => {
   let errorMessage = defaultMessage;
@@ -38,14 +38,14 @@ export const resolveAxiosError = (error: unknown, defaultMessage: string): strin
 
 export const resolveError = ({
   error,
-  FirebaseErrorMessage = "Firebase Error",
-  AxiosErrorMessage = "Request Failed",
-}: resolveErrorTypes): string => {
+  firebaseErrorMessage = "Firebase Error",
+  axiosErrorMessage = "Request Failed",
+}: ResolveErrorTypes): string => {
   let message = ERROR_MESSAGE;
   if (error instanceof FirebaseError) {
-    message = resolveFirebaseError(error, FirebaseErrorMessage);
+    message = resolveFirebaseError(error, firebaseErrorMessage);
   } else if (error instanceof AxiosError) {
-    message = resolveAxiosError(error, AxiosErrorMessage);
+    message = resolveAxiosError(error, axiosErrorMessage);
   }
   return message;
 };

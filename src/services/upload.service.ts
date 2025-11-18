@@ -8,12 +8,11 @@ import type { CsvSignedUrlData, SignedUrlData } from "./upload.type";
 
 export const getImageSignedUrl = async (
   token: string,
-  name: string,
   type: string,
 ): Promise<BackendResponse<SignedUrlData>> => {
   const params: Record<string, string> = {};
   params.type = type;
-  const url = buildApiUrl([ENDPOINT.UPLOAD_URL, name], params);
+  const url = buildApiUrl([ENDPOINT.UPLOAD_URL], params);
 
   const { data } = await axios.get<BackendResponse<SignedUrlData>>(url, {
     headers: {
@@ -24,7 +23,7 @@ export const getImageSignedUrl = async (
 };
 
 export const uploadImage = async (token: string, file: File): Promise<string> => {
-  const signedUrlResponse = await getImageSignedUrl(token, file.name, file.type);
+  const signedUrlResponse = await getImageSignedUrl(token, file.type);
   const { uploadUrl, imageName } = signedUrlResponse.data ?? {};
 
   if (!uploadUrl || !imageName) {
@@ -43,7 +42,6 @@ export const uploadImage = async (token: string, file: File): Promise<string> =>
 export const getCsvSignedUrl = async (
   token: string,
   restaurantId: string,
-  name: string,
   type: string,
   email: string,
 ): Promise<BackendResponse<CsvSignedUrlData>> => {
@@ -51,7 +49,7 @@ export const getCsvSignedUrl = async (
   params.type = type;
   params.email = email;
   const url = buildApiUrl(
-    [ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.CSV_UPLOAD_URL, name],
+    [ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.CSV_UPLOAD_URL],
     params,
   );
 
@@ -69,7 +67,7 @@ export const uploadCsv = async (
   file: File,
 ): Promise<string> => {
   const email = "Your@gmail.com";
-  const signedUrlResponse = await getCsvSignedUrl(token, restaurantId, file.name, file.type, email);
+  const signedUrlResponse = await getCsvSignedUrl(token, restaurantId, file.type, email);
   const { csvUploadUrl, csvFileName } = signedUrlResponse.data ?? {};
 
   if (!csvUploadUrl || !csvFileName) {
