@@ -1,0 +1,57 @@
+@use "@styles/variables/colors" as *;
+
+.restaurant-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  &__header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__status {
+    text-transform: capitalize;
+  }
+
+  &__meta {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  &__timings {
+    color: $color-text-muted;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  &__button {
+    &:focus-visible {
+      box-shadow: 0 0 0 0.2rem rgba($color-link, 0.45);
+    }
+  }
+
+  &__delete-button {
+    &:focus-visible {
+      box-shadow: 0 0 0 0.2rem rgba($color-warning, 0.45);
+    }
+  }
+}

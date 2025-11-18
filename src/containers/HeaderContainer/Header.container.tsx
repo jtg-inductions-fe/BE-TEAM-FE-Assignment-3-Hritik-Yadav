@@ -2,17 +2,20 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getAuth } from "firebase/auth";
+import { useDispatch } from "react-redux";
 
 import { app } from "@/firebase/firebase";
 import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { resolveError } from "@/utils/errorHandlers";
+import { openRestaurantFormModal } from "@store/actions/restaurant.actions";
 
 export const HeaderContainer: React.FC = () => {
   const auth = getAuth(app);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const isSignupPage = location.pathname === ROUTES_URL.SIGNUP;
   const isLoginPage = location.pathname === ROUTES_URL.LOGIN;
   const isVerificationPage = location.pathname === ROUTES_URL.VERIFICATION;
@@ -36,6 +39,7 @@ export const HeaderContainer: React.FC = () => {
       logout={logout}
       isAllowedPage={isAllowedPage}
       isAuthenticate={isAuthenticate}
+      onCreateRestaurant={() => dispatch(openRestaurantFormModal())}
       userName={userName}
     />
   );
