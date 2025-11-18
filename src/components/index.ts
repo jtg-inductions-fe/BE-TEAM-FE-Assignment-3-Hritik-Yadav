@@ -1,8 +1,3 @@
-export { BackToButtonComponent } from "./BackToButtonComponent";
-export { RestaurantCardComponent } from "./RestaurantCardComponent";
-export { RestaurantListComponent } from "./RestaurantListComponent";
-export { DeleteConfirmModalComponent } from "./DeleteConfirmModalComponent";
-export { RestaurantFormModalComponent } from "./RestaurantFormModalComponent";
 export { HeaderComponent } from "./HeaderComponent";
 export { LoginComponent } from "./LoginComponent";
 export { AppLoaderComponent } from "./AppLoaderComponent";

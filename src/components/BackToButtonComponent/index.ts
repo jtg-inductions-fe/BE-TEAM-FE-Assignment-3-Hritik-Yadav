@@ -1,1 +1,0 @@
-export { BackToButtonComponent } from "./BackToButtonComponent";
