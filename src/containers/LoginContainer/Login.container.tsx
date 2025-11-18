@@ -32,7 +32,7 @@ export const LoginContainer: React.FC = () => {
         navigate(ROUTES_URL.VERIFICATION);
         return;
       }
-      const route = roleFromClaims === USER_ROLE.OWNER ? ROUTES_URL.RESTAURANT : ROUTES_URL.HOME;
+      const route = roleFromClaims === USER_ROLE.OWNER ? ROUTES_URL.ADMIN : ROUTES_URL.HOME;
       navigate(route);
     } catch (error) {
       const errorMessage = resolveError({ error, firebaseErrorMessage: "Login Failed" });
