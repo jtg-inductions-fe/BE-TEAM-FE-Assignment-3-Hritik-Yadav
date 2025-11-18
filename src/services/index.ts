@@ -5,6 +5,7 @@ export {
   getRestaurant,
   updateRestaurant,
   deleteRestaurant,
+  listPublicRestaurants,
 } from "./restaurant.service";
 export {
   createMenuItem,
@@ -12,5 +13,7 @@ export {
   updateMenuItem,
   deleteMenuItem,
   listMenuItems,
+  listPublicMenuItems,
+  getPublicMenuItem,
 } from "./menu.service";
 export { uploadImage } from "./upload.service";

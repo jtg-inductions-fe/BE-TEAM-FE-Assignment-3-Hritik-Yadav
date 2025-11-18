@@ -9,18 +9,22 @@ import {
   MenuItemFormModalComponent,
   BackToButtonComponent,
 } from "@/components";
-import { createMenuItem, listMenuItems, uploadImage } from "@/services";
+import { createMenuItem, listMenuItems, uploadImage, listPublicMenuItems } from "@/services";
 import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
+  selectCartItems,
+  selectCartRestaurantId,
 } from "@store/selectors/selector";
+import { addItemToCart } from "@store/actions/cart.actions";
 import { closeMenuItemFormModal } from "@store/actions/menuItems.actions";
 import { useAuthContext } from "@/context/AuthContext";
+import { USER_ROLE } from "@services/service.const";
+import { ROUTES_URL } from "@/routes/routes.const";
 import { clearMenuItemPagination, setMenuItemNextToken } from "@store/actions/menuItems.actions";
 import { resolveError } from "@/utils/errorHandlers";
 import { MENU_ITEM_PAGE_SIZE } from "./menuItemListContainer.const";
 import { mapItemFormValuesToPayload } from "./menuItemListContainer.helper";
-import { ROUTES_URL } from "@/routes/routes.const";
 import { CREATE_MODE } from "@/components/MenuItemFormModalComponent/MenuItemFormModal.const";
 
 import type { MenuItem, MenuItemFormValues, MenuItemPayload } from "@services/menu.type";
@@ -30,43 +34,63 @@ import "./menuItemListContainer.style.scss";
 const { Title } = Typography;
 
 export const MenuItemListContainer: React.FC = () => {
-  const { authUser } = useAuthContext();
-  const navigate = useNavigate();
+  const { authUser, role } = useAuthContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const nextPageToken = useSelector(selectMenuItemNextPageToken);
+  const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
+  const cartItems = useSelector(selectCartItems);
+  const cartRestaurantId = useSelector(selectCartRestaurantId);
   const { restaurantId = "" } = useParams<{ restaurantId: string }>();
 
   const [items, setItems] = useState<MenuItem[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isCreateModalOpen = useSelector(selectIsMenuItemFormModalOpen);
+  const isOwner = role === USER_ROLE.OWNER;
+  const isCustomer = role === USER_ROLE.CUSTOMER;
 
   const getAuthToken = useCallback(async (): Promise<string> => {
     if (!authUser) {
-      message.error("Authentication required");
+      if (isOwner) {
+        message.error("Authentication required");
+        navigate(ROUTES_URL.LOGIN);
+      }
       return "";
     }
 
     try {
-      return await authUser.getIdToken();
+      const token = await authUser.getIdToken();
+      if (!token) {
+        setLoading(false);
+        return "";
+      }
+
+      return token;
     } catch (error) {
       const errorMessage = resolveError({ error });
       message.error(errorMessage);
       return "";
     }
-  }, [authUser]);
+  }, [authUser, isOwner, navigate]);
 
   const fetchMenuItems = useCallback(
     async (append: boolean, cursorId: string | null) => {
       setLoading(true);
-
       const token = await getAuthToken();
+
       try {
-        const response = await listMenuItems(token, restaurantId, {
-          perPage: MENU_ITEM_PAGE_SIZE,
-          nextPageToken: cursorId ?? undefined,
-        });
+        const response = isOwner
+          ? await listMenuItems(token, restaurantId!, {
+              perPage: MENU_ITEM_PAGE_SIZE,
+              nextPageToken: cursorId ?? undefined,
+            })
+          : await listPublicMenuItems(restaurantId!, {
+              perPage: MENU_ITEM_PAGE_SIZE,
+              nextPageToken: cursorId ?? undefined,
+            });
+
         const fetchedItems = response.data?.items ?? [];
+
         setItems((previousItems) => (append ? [...previousItems, ...fetchedItems] : fetchedItems));
 
         const nextToken = response.data?.nextPageToken ?? null;
@@ -83,7 +107,7 @@ export const MenuItemListContainer: React.FC = () => {
         setLoading(false);
       }
     },
-    [dispatch, getAuthToken, restaurantId],
+    [dispatch, getAuthToken, restaurantId, isOwner],
   );
 
   useEffect(() => {
@@ -162,16 +186,67 @@ export const MenuItemListContainer: React.FC = () => {
       helpers.setSubmitting(false);
     }
   };
-  const handleView = (id: string) => {
-    const detailsPage = `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`;
-    navigate(detailsPage);
-  };
+
+  const handleMenuItemView = useCallback(
+    (id: string) => {
+      navigate(
+        `${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}/${ROUTES_URL.ITEM}/${id}`,
+      );
+    },
+    [navigate, restaurantId],
+  );
+
+  const handleAddToCart = useCallback(
+    (menuItem: MenuItem) => {
+      if (!isCustomer) {
+        navigate(ROUTES_URL.LOGIN);
+      }
+      if (!restaurantId) {
+        return;
+      }
+
+      if (cartRestaurantId && cartRestaurantId !== restaurantId) {
+        message.error("Cannot select items from different restaurants.");
+        return;
+      }
+
+      if (menuItem.quantity <= 0) {
+        message.info("Item currently out of stock");
+        return;
+      }
+
+      const existingCartItem = cartItems.find((item) => item.itemId === menuItem.id);
+      const currentQuantity = existingCartItem?.quantity ?? 0;
+
+      if (currentQuantity >= menuItem.quantity) {
+        message.warning(`Only ${menuItem.quantity} available for ${menuItem.name}`);
+        return;
+      }
+
+      dispatch(
+        addItemToCart({
+          item: {
+            itemId: menuItem.id,
+            name: menuItem.name,
+            price: menuItem.amount.price,
+            quantity: 1,
+            availableQuantity: menuItem.quantity,
+          },
+          currency: menuItem.amount.currency,
+          restaurantId,
+        }),
+      );
+
+      message.success("Item added to cart");
+    },
+    [cartItems, cartRestaurantId, dispatch, restaurantId, isCustomer, navigate],
+  );
 
   return (
     <section className="menu-container">
       <div className="menu-container__heading">
         <Title level={2} className="menu-container__section-title">
-          Your Menu Items
+          Menu Items
         </Title>
         <BackToButtonComponent label="Back To Restaurant" />
       </div>
@@ -180,7 +255,9 @@ export const MenuItemListContainer: React.FC = () => {
         loading={loading}
         hasMore={hasMore}
         loadMore={loadMore}
-        onView={handleView}
+        restaurantId={restaurantId}
+        onView={handleMenuItemView}
+        onAddToCart={isOwner ? undefined : handleAddToCart}
       />
 
       <MenuItemFormModalComponent

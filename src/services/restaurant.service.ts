@@ -66,7 +66,7 @@ export const deleteRestaurant = async (
 };
 
 export const listRestaurants = async (
-  token: string,
+  token: string | null,
   { perPage = 10, nextPageToken }: ListRestaurantParams = {},
 ): Promise<BackendResponse<ListRestaurantsResponseData>> => {
   const params: Record<string, string | number> = {};
@@ -85,5 +85,24 @@ export const listRestaurants = async (
       Authorization: `Bearer ${token}`,
     },
   });
+  return data;
+};
+
+export const listPublicRestaurants = async ({
+  perPage = 10,
+  nextPageToken,
+}: ListRestaurantParams = {}): Promise<BackendResponse<ListRestaurantsResponseData>> => {
+  const params: Record<string, string | number> = {};
+
+  if (perPage) {
+    params.perPage = perPage;
+  }
+
+  if (nextPageToken) {
+    params.nextPageToken = nextPageToken;
+  }
+
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, ENDPOINT.LIST], params);
+  const { data } = await axios.get<BackendResponse<ListRestaurantsResponseData>>(url);
   return data;
 };

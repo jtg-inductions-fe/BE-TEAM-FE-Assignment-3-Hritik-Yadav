@@ -4,6 +4,7 @@ import { StarFilled } from "@ant-design/icons";
 
 import { CATEGORY_COLOR } from "./menuItemCard.const";
 import { getPriceLabel } from "@/utils/helper";
+import { AddToCartButton } from "@components/AddToCartButton";
 
 import type { MenuItemCardProps } from "./menuItemCard.type";
 
@@ -11,7 +12,11 @@ import "./menuItemCard.style.scss";
 
 const { Title, Text } = Typography;
 
-export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, onView }) => {
+export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({
+  item,
+  onView,
+  onAddToCart,
+}) => {
   const { id, name, amount, rating, category, quantity, imageUrl } = item;
   const categoryColor = CATEGORY_COLOR[category];
   const priceLabel = getPriceLabel(amount.currency, amount.price);
@@ -48,14 +53,12 @@ export const MenuItemCardComponent: React.FC<MenuItemCardProps> = ({ item, onVie
           </div>
         </div>
         <div className="menu-item-card__actions">
-          <Button
-            type="primary"
-            block
-            onClick={() => onView(id)}
-            className="menu-item-card__button"
-          >
+          <Button type="primary" onClick={() => onView(id)} className="menu-item-card__button">
             View Item
           </Button>
+          {onAddToCart && (
+            <AddToCartButton disabled={quantity <= 0} onClick={() => onAddToCart(item)} />
+          )}
         </div>
       </div>
     </Card>

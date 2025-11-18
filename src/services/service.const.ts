@@ -9,6 +9,7 @@ export enum ENDPOINT {
   RESTAURANT = "restaurants",
   UPLOAD_URL = "upload-url",
   MENU_ITEMS = "menu-items",
+  LIST = "list",
 }
 
 export enum USER_ROLE {

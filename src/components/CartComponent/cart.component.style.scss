@@ -1,0 +1,71 @@
+@use "@styles/variables/colors" as *;
+
+.cart {
+  display: flex;
+  flex-direction: column;
+  width: 40rem;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__list {
+    background-color: $color-bg-surface;
+    padding: 0.8rem;
+    box-shadow: 0 0.12rem 0.5rem $color-bg-muted;
+  }
+
+  &__summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: $color-bg-surface;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 0.12rem 0.5rem $color-bg-muted;
+  }
+
+  &__summary-values {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    gap: 0.8rem;
+  }
+
+  &__summary-item {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0 2rem;
+  }
+
+  &__summary-divider {
+    display: none;
+  }
+
+  &__summary-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+}
+.item-card {
+  &__remove-button:focus-visible {
+    box-shadow: 0 0 0 0.2rem $color-error;
+  }
+}
+
+.summary-actions {
+  &__clear-button:focus-visible {
+    box-shadow: 0 0 0 0.2rem $color-error;
+  }
+  &__checkout-button:focus-visible {
+    box-shadow: 0 0 0 0.2rem $color-link;
+  }
+}

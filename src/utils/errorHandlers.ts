@@ -4,7 +4,7 @@
 import { AxiosError } from "axios";
 import { FirebaseError } from "firebase/app";
 
-import { ERROR_MESSAGE } from "@/services/service.const";
+import { ERROR_MESSAGE } from "@services/service.const";
 
 import type { ResolveErrorTypes } from "./errorHandler.types";
 

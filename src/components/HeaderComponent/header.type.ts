@@ -5,4 +5,6 @@ export interface HeaderProps {
   primaryActionLabel?: string;
   onPrimaryAction?: () => void;
   userName: string | null;
+  onCartNavigate?: () => void;
+  cartItemCount?: number;
 }

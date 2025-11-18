@@ -4,15 +4,13 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES_URL } from "@/routes/routes.const";
 import { AppLoaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
-import { USER_ROLE } from "@services/service.const";
 
 export const ProtectedRouteComponent: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { authUser, isAuthLoading, role } = useAuthContext();
+  const { authUser, isAuthLoading } = useAuthContext();
   const { pathname } = location;
   const isVerificationRoute = pathname === ROUTES_URL.VERIFICATION;
-  const isOwnerRoute = pathname === ROUTES_URL.RESTAURANT;
 
   useEffect(() => {
     if (isAuthLoading) {
@@ -32,17 +30,12 @@ export const ProtectedRouteComponent: React.FC = () => {
       }
       return;
     }
-
+    //to not allow verified user to visit confirmation route
     if (isVerificationRoute) {
-      const destination = role === USER_ROLE.OWNER ? ROUTES_URL.RESTAURANT : ROUTES_URL.HOME;
-      navigate(destination, { replace: true });
+      navigate(ROUTES_URL.HOME, { replace: true });
       return;
     }
-
-    if (isOwnerRoute && role !== USER_ROLE.OWNER) {
-      navigate(ROUTES_URL.HOME, { replace: true });
-    }
-  }, [authUser, isOwnerRoute, isAuthLoading, isVerificationRoute, navigate, pathname, role]);
+  }, [authUser, isAuthLoading, isVerificationRoute, navigate, pathname]);
 
   if (isAuthLoading || !authUser) {
     return <AppLoaderComponent />;

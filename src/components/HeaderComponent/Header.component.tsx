@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Dropdown, Layout, Typography } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import { Badge, Button, Dropdown, Layout, Typography } from "antd";
+import { DownOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 
 import { ROUTES_URL } from "@/routes/routes.const";
@@ -21,6 +21,8 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
   primaryActionLabel,
   onPrimaryAction,
   userName,
+  onCartNavigate,
+  cartItemCount = 0,
 }) => {
   const navigate = useNavigate();
 
@@ -29,6 +31,19 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
       logout();
     }
   };
+
+  const cartButton = onCartNavigate && (
+    <Badge count={cartItemCount} size="small" overflowCount={99} showZero>
+      <Button
+        type="default"
+        className="header__cart-button"
+        icon={<ShoppingCartOutlined />}
+        onClick={onCartNavigate}
+      >
+        View Cart
+      </Button>
+    </Badge>
+  );
 
   return (
     <AntHeader className="header">
@@ -39,6 +54,7 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
       </Title>
       {isAuthenticate ? (
         <div className="header__button">
+          {cartButton}
           {primaryActionLabel && onPrimaryAction && (
             <Button type="primary" onClick={onPrimaryAction} className="header__create-button">
               {primaryActionLabel}
@@ -54,6 +70,7 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
       ) : (
         isAllowedPage && (
           <div className="header__button">
+            {cartButton}
             <Button type="default" onClick={() => navigate(ROUTES_URL.SIGNUP)}>
               Signup
             </Button>

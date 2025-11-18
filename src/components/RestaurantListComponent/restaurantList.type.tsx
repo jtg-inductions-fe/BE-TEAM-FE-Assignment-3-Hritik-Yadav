@@ -5,6 +5,7 @@ export interface RestaurantListProps {
   loading: boolean;
   hasMore: boolean;
   loadMore: () => void;
+  onView: (id: string) => void;
   onUpdate: (restaurantItem: Restaurant) => void;
   onDelete: (restaurantItem: Restaurant) => void;
 }

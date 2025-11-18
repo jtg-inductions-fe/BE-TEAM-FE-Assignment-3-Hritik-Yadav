@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getAuth } from "firebase/auth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { app } from "@/firebase/firebase";
 import { HeaderComponent } from "@/components";
 import { useAuthContext } from "@/context/AuthContext";
 import { ROUTES_URL } from "@/routes/routes.const";
+import { selectCartItems } from "@/store/selectors/selector";
+import { USER_ROLE } from "@/services/service.const";
+import { clearCart } from "@/store/actions/cart.actions";
 import { openMenuItemFormModal } from "@store/actions/menuItems.actions";
 import { resolveError } from "@/utils/errorHandlers";
 import { openRestaurantFormModal } from "@store/actions/restaurant.actions";
@@ -17,18 +20,28 @@ export const HeaderContainer: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
+  const { authUser, isAuthLoading, userName, role } = useAuthContext();
+  const isOwner = role === USER_ROLE.OWNER;
+  const isCustomer = role === USER_ROLE.CUSTOMER;
   const isSignupPage = location.pathname === ROUTES_URL.SIGNUP;
   const isLoginPage = location.pathname === ROUTES_URL.LOGIN;
   const isVerificationPage = location.pathname === ROUTES_URL.VERIFICATION;
   const isAllowedPage = !isSignupPage && !isLoginPage && !isVerificationPage;
-  const { authUser, isAuthLoading, userName } = useAuthContext();
   const isAuthenticate = !!authUser && !isAuthLoading;
-  const isMenuRoute = location.pathname.endsWith(ROUTES_URL.MENU);
-  const isRestaurantRoute = location.pathname === ROUTES_URL.RESTAURANT;
+  const isMenuRoute = location.pathname.endsWith(ROUTES_URL.MENU) && isOwner;
+  const isRestaurantRoute = location.pathname === ROUTES_URL.HOME && isOwner;
+  const isCartRoute = isAllowedPage && location.pathname !== ROUTES_URL.CART && isCustomer;
+
+  const cartItemCount = useMemo(
+    () => cartItems.reduce((total, item) => total + item.quantity, 0),
+    [cartItems],
+  );
 
   const logout = async () => {
     try {
       await auth.signOut();
+      dispatch(clearCart());
       message.success("Logout Successfully");
       navigate(ROUTES_URL.LOGIN);
     } catch (error) {
@@ -55,6 +68,10 @@ export const HeaderContainer: React.FC = () => {
     primaryActionLabel = "Create Restaurant";
   }
 
+  const handleCartNavigate = useCallback(() => {
+    navigate(ROUTES_URL.CART);
+  }, [navigate]);
+
   return (
     <HeaderComponent
       logout={logout}
@@ -63,6 +80,8 @@ export const HeaderContainer: React.FC = () => {
       primaryActionLabel={isAuthenticate && isAllowedPage ? primaryActionLabel : undefined}
       onPrimaryAction={isAuthenticate && isAllowedPage ? handlePrimaryAction : undefined}
       userName={userName}
+      onCartNavigate={isCartRoute ? handleCartNavigate : undefined}
+      cartItemCount={isCartRoute ? cartItemCount : undefined}
     />
   );
 };
