@@ -7,12 +7,11 @@ import type { SignedUrlData } from "./upload.type";
 
 export const getSignedUrl = async (
   token: string,
-  name: string,
   type: string,
 ): Promise<BackendResponse<SignedUrlData>> => {
   const params: Record<string, string> = {};
   params.type = type;
-  const url = buildApiUrl([ENDPOINT.UPLOAD_URL, name], params);
+  const url = buildApiUrl([ENDPOINT.UPLOAD_URL], params);
 
   const { data } = await axios.get<BackendResponse<SignedUrlData>>(url, {
     headers: {
@@ -23,7 +22,7 @@ export const getSignedUrl = async (
 };
 
 export const uploadImage = async (token: string, file: File): Promise<string> => {
-  const signedUrlResponse = await getSignedUrl(token, file.name, file.type);
+  const signedUrlResponse = await getSignedUrl(token, file.type);
   const { uploadUrl, imageName } = signedUrlResponse.data ?? {};
 
   if (!uploadUrl || !imageName) {

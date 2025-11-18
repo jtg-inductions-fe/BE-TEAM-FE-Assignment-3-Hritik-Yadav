@@ -66,7 +66,7 @@ export const MenuItemDetailContainer: React.FC = () => {
     } catch (error) {
       const errorMessage = resolveError({
         error,
-        AxiosErrorMessage: "Failed to fetch menu item",
+        axiosErrorMessage: "Failed to fetch menu item",
       });
       message.error(errorMessage);
     } finally {
@@ -103,7 +103,7 @@ export const MenuItemDetailContainer: React.FC = () => {
         message.success("Menu item updated");
         setIsUpdateModalOpen(false);
       } catch (error) {
-        const errorMessage = resolveError({ error, AxiosErrorMessage: "Update failed" });
+        const errorMessage = resolveError({ error, axiosErrorMessage: "Update failed" });
         message.error(errorMessage);
       } finally {
         helpers.setSubmitting(false);
@@ -130,7 +130,7 @@ export const MenuItemDetailContainer: React.FC = () => {
       setIsDeleteModalOpen(false);
       navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}/${ROUTES_URL.MENU}`, { replace: true });
     } catch (error) {
-      const errorMessage = resolveError({ error, AxiosErrorMessage: "Delete failed" });
+      const errorMessage = resolveError({ error, axiosErrorMessage: "Delete failed" });
       message.error(errorMessage);
     } finally {
       setDeleteLoading(false);
