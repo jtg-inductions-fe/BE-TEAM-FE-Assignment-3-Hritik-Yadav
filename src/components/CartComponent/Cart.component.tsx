@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, Empty, InputNumber, Space, Typography, List, Card } from "antd";
+import React, { useCallback, useState } from "react";
+import { Button, Empty, InputNumber, Space, Typography, List, Card, Modal, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 import { getPriceLabel } from "@/utils/helper";
@@ -16,10 +16,30 @@ export const CartComponent: React.FC<CartComponentProps> = ({
   onQuantityChange,
   onRemoveItem,
   onClearCart,
+  onPlaceOrder,
 }) => {
   const currency = totals.currency;
 
   const hasItems = items.length > 0;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const handleConfirm = useCallback(async () => {
+    if (!onPlaceOrder) {
+      setIsModalOpen(false);
+      return;
+    }
+    try {
+      setConfirmLoading(true);
+      await onPlaceOrder();
+      setIsModalOpen(false);
+    } catch (error) {
+      const errMsg = (error as Error)?.message ?? "Order failed";
+      message.error(errMsg);
+    } finally {
+      setConfirmLoading(false);
+    }
+  }, [onPlaceOrder]);
 
   return (
     <section className="cart">
@@ -96,11 +116,26 @@ export const CartComponent: React.FC<CartComponentProps> = ({
           >
             Clear Cart
           </Button>
-          <Button type="primary" disabled={!hasItems} className="summary-actions__checkout-button">
+          <Button
+            type="primary"
+            disabled={!hasItems}
+            className="summary-actions__checkout-button"
+            onClick={() => setIsModalOpen(true)}
+          >
             Proceed to Checkout
           </Button>
         </div>
       </div>
+      <Modal
+        title="Confirm Order"
+        open={isModalOpen}
+        onOk={handleConfirm}
+        okText="Place Order"
+        confirmLoading={confirmLoading}
+        onCancel={() => setIsModalOpen(false)}
+      >
+        <p>Are you sure you want to place this order?</p>
+      </Modal>
     </section>
   );
 };

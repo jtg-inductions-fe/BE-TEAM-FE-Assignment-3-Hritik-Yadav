@@ -23,6 +23,7 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
   userName,
   onCartNavigate,
   cartItemCount = 0,
+  restaurantOrderView,
 }) => {
   const navigate = useNavigate();
 
@@ -45,6 +46,12 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
     </Badge>
   );
 
+  const orderButton = restaurantOrderView && (
+    <Button type="primary" onClick={restaurantOrderView} className="header__create-button">
+      View Orders
+    </Button>
+  );
+
   return (
     <AntHeader className="header">
       <Title level={3} className="header__title">
@@ -54,6 +61,7 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
       </Title>
       {isAuthenticate ? (
         <div className="header__button">
+          {orderButton}
           {cartButton}
           {primaryActionLabel && onPrimaryAction && (
             <Button type="primary" onClick={onPrimaryAction} className="header__create-button">

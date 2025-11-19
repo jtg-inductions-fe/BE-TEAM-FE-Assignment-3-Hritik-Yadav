@@ -15,4 +15,5 @@ export interface CartComponentProps {
   onQuantityChange: (itemId: string, quantity: number) => void;
   onRemoveItem: (itemId: string) => void;
   onClearCart: () => void;
+  onPlaceOrder: () => Promise<void>;
 }

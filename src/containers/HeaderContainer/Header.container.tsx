@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import { getAuth } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,6 +32,8 @@ export const HeaderContainer: React.FC = () => {
   const isMenuRoute = location.pathname.endsWith(ROUTES_URL.MENU) && isOwner;
   const isRestaurantRoute = location.pathname === ROUTES_URL.HOME && isOwner;
   const isCartRoute = isAllowedPage && location.pathname !== ROUTES_URL.CART && isCustomer;
+  const isOrderRoute = isAllowedPage && location.pathname !== ROUTES_URL.ORDERS;
+  const { restaurantId = "" } = useParams<{ restaurantId: string }>();
 
   const cartItemCount = useMemo(
     () => cartItems.reduce((total, item) => total + item.quantity, 0),
@@ -59,6 +61,9 @@ export const HeaderContainer: React.FC = () => {
       dispatch(openRestaurantFormModal());
       return;
     }
+    if (isOrderRoute && isCustomer) {
+      navigate(ROUTES_URL.ORDERS);
+    }
   };
 
   let primaryActionLabel = "";
@@ -66,11 +71,17 @@ export const HeaderContainer: React.FC = () => {
     primaryActionLabel = "Create Item";
   } else if (isRestaurantRoute) {
     primaryActionLabel = "Create Restaurant";
+  } else if (isOrderRoute && isCustomer) {
+    primaryActionLabel = " View Orders";
   }
 
   const handleCartNavigate = useCallback(() => {
     navigate(ROUTES_URL.CART);
   }, [navigate]);
+
+  const handleRestaurantOrderView = useCallback(() => {
+    navigate(`${ROUTES_URL.RESTAURANT}/${restaurantId}${ROUTES_URL.ORDERS}`);
+  }, [navigate, restaurantId]);
 
   return (
     <HeaderComponent
@@ -82,6 +93,7 @@ export const HeaderContainer: React.FC = () => {
       userName={userName}
       onCartNavigate={isCartRoute ? handleCartNavigate : undefined}
       cartItemCount={isCartRoute ? cartItemCount : undefined}
+      restaurantOrderView={isOwner && restaurantId !== "" ? handleRestaurantOrderView : undefined}
     />
   );
 };

@@ -6,3 +6,4 @@ export { VerificationContainer } from "./VerificationContainer";
 export { MenuItemListContainer } from "./MenuItemListContainer";
 export { MenuItemDetailContainer } from "./MenuItemDetailContainer";
 export { CartContainer } from "./CartContainer";
+export { OrdersListContainer } from "./OrdersListContainer";

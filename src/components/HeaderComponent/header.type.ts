@@ -7,4 +7,5 @@ export interface HeaderProps {
   userName: string | null;
   onCartNavigate?: () => void;
   cartItemCount?: number;
+  restaurantOrderView?: () => void;
 }

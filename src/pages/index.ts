@@ -6,3 +6,4 @@ export { RestaurantPage } from "./RestaurantPage";
 export { RestaurantItemsPage } from "./RestaurantItemsPage";
 export { MenuItemPage } from "./MenuItemPage";
 export { CartPage } from "./CartPage";
+export { OrdersPage } from "./OrdersPage";

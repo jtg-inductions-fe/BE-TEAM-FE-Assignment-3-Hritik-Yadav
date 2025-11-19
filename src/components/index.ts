@@ -17,3 +17,5 @@ export { SignupComponent } from "./SignupComponent";
 export { VerificationComponent } from "./VerificationComponent";
 export { CartComponent } from "./CartComponent";
 export { CsvMenuUploadComponent } from "./CsvMenuUploadComponent";
+export { OrderDetails } from "./OrderDetailsComponent";
+export { OrdersList } from "./OrdersListComponent";

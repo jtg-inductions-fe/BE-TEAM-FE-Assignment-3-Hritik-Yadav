@@ -1,0 +1,21 @@
+@use "@styles/variables/colors" as *;
+
+.item-detail {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 3rem;
+  padding-right: 2rem;
+}
+
+.cost-detail {
+  margin-top: 1.5rem;
+  padding-right: 2rem;
+  &__items {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: end;
+  }
+}

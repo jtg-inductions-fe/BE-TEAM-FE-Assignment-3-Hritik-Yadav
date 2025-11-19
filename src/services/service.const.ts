@@ -1,15 +1,16 @@
 import { Role } from "./service.type";
 
-export const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:5000";
+export const BASE_URL = process.env.BASE_URL || "https://zomato-lite-be-708746112981.asia-south1.run.app";
 export const ERROR_MESSAGE = "Something Went Wrong";
 export enum ENDPOINT {
   SIGNUP = "auth/signup",
   USER = "users/me",
   RESTAURANT = "restaurants",
-  UPLOAD_URL = "upload-url",
+  UPLOAD_URL = "image-upload-url",
   MENU_ITEMS = "menu-items",
   LIST = "list",
   CSV_UPLOAD_URL = "csv-upload-url",
+  ORDER = "orders",
 }
 
 export enum USER_ROLE {

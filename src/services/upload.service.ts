@@ -48,10 +48,7 @@ export const getCsvSignedUrl = async (
   const params: Record<string, string> = {};
   params.type = type;
   params.email = email;
-  const url = buildApiUrl(
-    [ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.CSV_UPLOAD_URL],
-    params,
-  );
+  const url = buildApiUrl([ENDPOINT.RESTAURANT, restaurantId, ENDPOINT.CSV_UPLOAD_URL], params);
 
   const { data } = await axios.get<BackendResponse<CsvSignedUrlData>>(url, {
     headers: {

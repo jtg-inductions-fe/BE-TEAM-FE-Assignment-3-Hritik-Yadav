@@ -1,0 +1,40 @@
+@use "@styles/variables/colors" as *;
+
+.order-list {
+  width: 50rem;
+
+  &__filters {
+    padding-bottom: 1rem;
+  }
+  &__filter-button {
+    border-radius: 0.25rem;
+    &:focus-visible {
+      box-shadow: 0 0 0 0.2rem rgba($color-link, 0.45);
+    }
+  }
+  &__loader {
+    text-align: center;
+    padding: 1.5rem;
+  }
+  &__end {
+    margin-top: 1rem;
+    color: $color-text-muted;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.order-item {
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  &__panel {
+    padding: 0.25rem;
+  }
+}

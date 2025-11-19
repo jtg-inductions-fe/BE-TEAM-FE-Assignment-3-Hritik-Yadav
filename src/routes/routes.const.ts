@@ -8,4 +8,5 @@ export enum ROUTES_URL {
   ITEM = "item",
   RESTAURANT = "/restaurants",
   VERIFICATION = "/verify",
+  ORDERS = "/orders",
 }
