@@ -8,8 +8,15 @@ import {
   MenuItemListComponent,
   MenuItemFormModalComponent,
   BackToButtonComponent,
+  CsvMenuUploadComponent,
 } from "@/components";
-import { createMenuItem, listMenuItems, uploadImage, listPublicMenuItems } from "@/services";
+import {
+  createMenuItem,
+  listMenuItems,
+  uploadImage,
+  listPublicMenuItems,
+  uploadCsv,
+} from "@/services";
 import {
   selectIsMenuItemFormModalOpen,
   selectMenuItemNextPageToken,
@@ -43,6 +50,7 @@ export const MenuItemListContainer: React.FC = () => {
   const cartRestaurantId = useSelector(selectCartRestaurantId);
   const { restaurantId = "" } = useParams<{ restaurantId: string }>();
 
+  const [uploading, setUploading] = useState(false);
   const [items, setItems] = useState<MenuItem[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -242,13 +250,30 @@ export const MenuItemListContainer: React.FC = () => {
     [cartItems, cartRestaurantId, dispatch, restaurantId, isCustomer, navigate],
   );
 
+  const onUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const token = await getAuthToken();
+      await uploadCsv(token!, restaurantId!, file);
+      message.success("File uploaded successfully");
+    } catch (error) {
+      const errorMessage = resolveError({ error, AxiosErrorMessage: "Upload failed" });
+      message.error(errorMessage);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <section className="menu-container">
       <div className="menu-container__heading">
         <Title level={2} className="menu-container__section-title">
           Menu Items
         </Title>
-        <BackToButtonComponent label="Back To Restaurant" />
+        <div>
+          <BackToButtonComponent label="Back To Restaurant" />
+          <CsvMenuUploadComponent onUpload={onUpload} uploading={uploading} />
+        </div>
       </div>
       <MenuItemListComponent
         items={items}

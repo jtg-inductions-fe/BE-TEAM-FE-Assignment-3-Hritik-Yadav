@@ -4,7 +4,7 @@ import { DEFAULT_CART_CURRENCY } from "./cart.const";
 
 export const roundToTwoDecimals = (value: number): number => Math.round(value * 100) / 100;
 
-//for calculation the total amount 
+//for calculation the total amount
 export const calculateCartTotalAmount = (
   items: CartItem[],
   currency: Currency,

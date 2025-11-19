@@ -16,3 +16,4 @@ export { RootLayoutComponent } from "./RootLayoutComponent";
 export { SignupComponent } from "./SignupComponent";
 export { VerificationComponent } from "./VerificationComponent";
 export { CartComponent } from "./CartComponent";
+export { CsvMenuUploadComponent } from "./CsvMenuUploadComponent";

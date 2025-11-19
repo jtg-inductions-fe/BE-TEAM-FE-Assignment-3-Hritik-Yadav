@@ -16,4 +16,4 @@ export {
   listPublicMenuItems,
   getPublicMenuItem,
 } from "./menu.service";
-export { uploadImage } from "./upload.service";
+export { uploadImage, uploadCsv } from "./upload.service";
